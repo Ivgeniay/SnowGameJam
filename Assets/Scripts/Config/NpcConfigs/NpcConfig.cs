@@ -17,7 +17,7 @@ public class NpcConfig : ScriptableObject
     [SerializeField] private int _walkType;
 
 
-    public float speed { get; set; }
+    public float speed { get => _speed; }
 
     
     public void Initialize() 

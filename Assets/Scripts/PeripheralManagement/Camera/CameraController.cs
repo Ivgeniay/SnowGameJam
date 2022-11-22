@@ -1,4 +1,5 @@
-﻿using Cinemachine;
+﻿using Assets.Scripts.Player;
+using Cinemachine;
 using UnityEngine;
 
 namespace Assets.Scripts.Cameras
