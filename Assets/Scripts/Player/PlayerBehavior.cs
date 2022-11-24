@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Player.Control;
+using Assets.Scripts.Player.Weapon;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -9,6 +10,7 @@ namespace Assets.Scripts.Player
         [SerializeField] private IControllable controller;
         [SerializeField] private ShootingСontrol shootingСontrol;
         [SerializeField] private Projection projection;
+        [SerializeField] private Inventory inventory;
 
 
         private void Awake() {
@@ -16,11 +18,17 @@ namespace Assets.Scripts.Player
             if (shootingСontrol is null) shootingСontrol = GetComponent<ShootingСontrol>();
             if (playerControlContext is null) playerControlContext = controller.GetContext();
             if (projection is null) projection = GetComponent<Projection>();
+            if (inventory is null) inventory = GetComponent<Inventory>();
 
         }
 
         private void Start() {
             playerControlContext.OnPlayerStateChanged += PlayerControlContext_OnPlayerStateChanged;
+        }
+
+
+        private void Update() {
+            controller.Move();
         }
 
         private void PlayerControlContext_OnPlayerStateChanged(object sender, PlayerState e) {
@@ -32,9 +40,10 @@ namespace Assets.Scripts.Player
             else projection.DisableLine();
         }
 
-        private void Update() {
-            controller.Move();
-            controller.GetContext();
-        }
+        public void AddAmmo(IWeapon weapon, int amount) => inventory.AddAmmo(weapon, amount);
+        public bool isAmmoEmpty(IWeapon weapon) => inventory.isAmmoEmpty(weapon);
+        public void decrimentAmmo(IWeapon weapon) => inventory?.decrimentAmmo(weapon);
+        public IWeapon GetWeapon(WeaponVariety weapon) => inventory.GetWeapon(weapon);
+        public IWeapon GetCurrentWeapon() => shootingСontrol.GetCurrentWeapon();
     }
 }

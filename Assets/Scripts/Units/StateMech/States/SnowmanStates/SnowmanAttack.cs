@@ -85,7 +85,7 @@ namespace Assets.Scripts.Enemies.StateMech.States
         }
 
         public void Exit() {
-            if (currentCoroutine is not null) Coroutines.Stop(currentCoroutine);
+            Coroutines.Stop(currentCoroutine);
             targetTransform = null;
         }
 
@@ -103,9 +103,11 @@ namespace Assets.Scripts.Enemies.StateMech.States
         }
         private IEnumerator WalkingAfterStunDelay(float delayIsSecond) {
             yield return new WaitForSeconds(delayIsSecond);
+
             agent.destination = targetTransform.position;
-            animator.speed = 1;
             agent.speed = 1;
+            
+            animator.speed = 1;
             isAttacking = true;
         }
         private IEnumerator AttackDelay(float delayIsSecond) {

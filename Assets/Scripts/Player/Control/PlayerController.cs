@@ -1,6 +1,7 @@
 using Assets.Scripts.Enemies.StateMech;
 using Assets.Scripts.Game;
 using Assets.Scripts.Player.Control;
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ namespace Assets.Scripts.Player
         [SerializeField] private float aiminDelay = 0.3f;
         [SerializeField] private Animator animator;
 
-        private Inventory inventory;
+        private PlayerBehavior playerBehavior;
 
         private CharacterController _controller;
         private Vector3 _playerVelocity;
@@ -34,8 +35,8 @@ namespace Assets.Scripts.Player
 
 
         private void Awake(){
+            if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
             playerControlContext = new(PlayerState.Normal);
-            inventory = GetComponent<Inventory>();
         }
 
         private void Start() {
@@ -66,7 +67,7 @@ namespace Assets.Scripts.Player
             move = Camera.main!.transform.forward * move.z + Camera.main!.transform.right * move.x;
             move.y = 0;
             _controller.Move(move * (Time.deltaTime * playerSpeed));
-            //Debug.Log(move);
+
 
 
             if (move != Vector3.zero) {
@@ -76,7 +77,7 @@ namespace Assets.Scripts.Player
             else
                 animator.SetBool(IsMoving, false);
 
-            if (inventory.isEmpty() is false) {
+            if (playerBehavior.isAmmoEmpty(playerBehavior.GetCurrentWeapon()) is false) {
                 if (InputManager.Instance.IsPlayerAiming()) {
                     IncreaseCounter();
                     if (timer >= aiminDelay)
@@ -92,6 +93,8 @@ namespace Assets.Scripts.Player
 
                     timer = 0;
                     animator.SetBool(IsAttackWithoutAim, true);
+
+                    RotateBody();
                 }
                 else if (timer <= aiminDelay && aimCanceled && animator.GetBool(IsMoving) is true) {
                     animator.SetLayerWeight(_aimLayerIndex, 2);
@@ -112,7 +115,7 @@ namespace Assets.Scripts.Player
             }
 
             if (InputManager.Instance.PlayerJumpedThisFrame() && _groundedPlayer) {
-                _playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+                Jump();
             }
 
             _playerVelocity.y += gravityValue * Time.deltaTime;
@@ -126,7 +129,13 @@ namespace Assets.Scripts.Player
         private void LateUpdate() {
             aimCanceled = false;
         }
-
+        private void Jump() {
+            _playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+        }
+        private void RotateBody()
+        {
+            transform.rotation = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, Vector3.up);
+        }
         private void Instance_OnAimCanceled() => aimCanceled = true;
         private void IncreaseCounter() => timer += Time.deltaTime;
         private void AssistantControl(Type assistantType)

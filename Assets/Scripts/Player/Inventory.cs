@@ -2,28 +2,26 @@ using Assets.Scripts.Player.Weapon;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Sirenix.Serialization;
+using System;
+using Sirenix.OdinInspector;
+using Random = System.Random;
 
-public class Inventory : MonoBehaviour
+[Serializable]
+public class Inventory : SerializedMonoBehaviour
 {
-    [SerializeField] private Snowball sb;
-    [SerializeField] private Snowball tt;
-    [SerializeField] private int snowBalls;
+    [OdinSerialize] private Dictionary<IWeapon, int> Weapons;
 
-    public bool isEmpty() => snowBalls <= 0;
-    public void AddSnowballs(int snowball) => this.snowBalls += snowball;
-    public void decrimentSnowball() {
-        if (isEmpty()) return;
-        snowBalls--;
+    public void AddAmmo(IWeapon weapon, int amount) {
+        if (Weapons.TryGetValue(weapon, out int ammo)) Weapons[weapon] = ammo + amount;
+        else Weapons[weapon] = amount;
     }
-
-    public bool isAmmoLeft(IWeapon weapon) => snowBalls >= 0;
-    public void decrimentAmmo(IWeapon weapon) => decrimentSnowball();
-
+    public bool isAmmoEmpty(IWeapon weapon) => Weapons[weapon] <= 0;
+    public void decrimentAmmo(IWeapon weapon) {
+        Weapons[weapon] = Weapons[weapon] - 1;
+    }
     public IWeapon GetWeapon(WeaponVariety weapon) {
-        return sb;
+        var getter = Weapons.Where(x => x.Value > 0).FirstOrDefault();
+        return getter.Key;
     }
-    public IWeapon GetRandomWeapon() {
-        return sb;
-    }
-
 }

@@ -1,11 +1,13 @@
 ﻿using Assets.Scripts.Player;
 using Assets.Scripts.Player.Weapon;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Projection : MonoBehaviour 
 {
+    [SerializeField] private Transform paretOnSimulationScene;
     [SerializeField] private LineRenderer line;
     [SerializeField] private int maxPhysicsFrameIterations = 100;
     [SerializeField] private Transform obstaclesParent;
@@ -51,20 +53,24 @@ public class Projection : MonoBehaviour
         line.enabled = false;
     }
 
-    public void SimulateTrajectory(IWeapon ballPrefab, Vector3 pos, Vector3 velocity)
+    public void SimulateTrajectory(IWeapon ballPrefab, Transform pos, Vector3 velocity, CurvatureData curvatureData = null)
     {
-        var ghostObj = Instantiate(ballPrefab.GetPrefab(), pos, Quaternion.identity);
+        var ghostObj = Instantiate(ballPrefab.GetPrefab(), pos.transform.position, Quaternion.identity);
         var ghostScr = ghostObj.GetComponent<IWeapon>();
         SceneManager.MoveGameObjectToScene(ghostObj.gameObject, simulationScene);
 
-        ghostScr.GhostSetup(velocity);
+        ghostScr.GhostSetup(velocity, curvatureData);
+        
 
         line.positionCount = maxPhysicsFrameIterations;
         line.ResetBounds();
-        line.SetPosition(0, pos);
+        line.SetPosition(0, pos.transform.position);
 
+        Rigidbody rb = ghostObj.GetComponent<Rigidbody>();
         for (var i = 0; i < maxPhysicsFrameIterations; i++)
         {
+            if (curvatureData is not null) rb.AddForce(curvatureData.GetForce());
+            
             physicsScene.Simulate(Time.fixedDeltaTime);
             line.SetPosition(i, ghostObj.transform.position);
 

@@ -21,10 +21,12 @@ namespace Assets.Scripts.Enemies.StateMech
 
         private List<IDamageable> damageablesParts;
         private HealthSystem healthSystem;
+        private NavMeshAgent agent;
 
         #region Mono
         private void Awake() {
             stateDisposer = DisposerFactory.GetDisposer(stateDisposerType, transform);
+            agent = GetComponent<NavMeshAgent>();
 
             healthSystem = GetComponent<HealthSystem>();
             if (healthSystem is not null) {
@@ -59,6 +61,11 @@ namespace Assets.Scripts.Enemies.StateMech
             Attack(e.Shooter);
         }
         private void HealthSystem_OnDeath(object sender, System.EventArgs e) => stateDisposer.Die();
+
+        private void OnDestroy() {
+            agent.enabled = false;
+            StopAllCoroutines();
+        }
 
     }
 }

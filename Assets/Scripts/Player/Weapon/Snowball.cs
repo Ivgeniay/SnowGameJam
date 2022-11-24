@@ -12,6 +12,7 @@ namespace Assets.Scripts.Player.Weapon
         private Rigidbody rigidbody;
         private float damage;
         private Transform creator;
+        private CurvatureData curvatureData;
 
         public bool isCollided { get; set; }
         private bool isGhost = false;
@@ -23,23 +24,30 @@ namespace Assets.Scripts.Player.Weapon
             }
         }
 
-        public void Setup(Vector3 velocity, Transform snowBallSpawnPoint)
+        public void Setup(Vector3 velocity, Transform snowBallSpawnPoint, CurvatureData curvatureData = null)
         {
             this.snowBallSpawnPoint = snowBallSpawnPoint;
+            this.curvatureData = curvatureData;
             rigidbody.AddForce(velocity);
-
-            //velocity = velocity / 100;
-            rigidbody.velocity = velocity;
 
             damage = velocity.magnitude;
         }
-        public void GhostSetup(Vector3 velocity)
+        public void GhostSetup(Vector3 velocity, CurvatureData curvatureData = null)
         {
             isGhost = true;
+            this.curvatureData = curvatureData;
             rigidbody.AddForce(velocity);
+
 
             damage = velocity.magnitude;
         }
+
+        private void FixedUpdate()
+        {
+            if (curvatureData is null) return;
+            rigidbody.AddForce(curvatureData.GetForce());
+        }
+
         public void SetCreator(Transform transform) => creator = transform;
         public Transform GetPrefab() => transform;
         public Transform GetCreater() => creator;
@@ -47,6 +55,9 @@ namespace Assets.Scripts.Player.Weapon
 
         private void OnCollisionEnter(Collision collision)
         {
+            var player = collision.transform.GetComponent<PlayerBehavior>();
+            if (player is not null) return;
+
             if (!isGhost) {
                 Instantiate(impactEffect, transform.position, Quaternion.LookRotation(collision.contacts[0].normal));
             }

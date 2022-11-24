@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3791118221301519008
 MeshFilter:
@@ -118,4 +118,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e30697f129fd042afe90b3dc02ceae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Snowballs: 0
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 2542593025626988499, guid: 1558f6091120f404d86491e547d1ea8a, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: weapon
+      Entry: 10
+      Data: 0
+  Snowballs: 15
+  RotateSpeed: {x: 0, y: 0.2, z: 0}
