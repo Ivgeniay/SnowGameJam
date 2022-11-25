@@ -5,9 +5,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(LineRenderer))]
 public class Projection : MonoBehaviour 
 {
-    [SerializeField] private Transform paretOnSimulationScene;
     [SerializeField] private LineRenderer line;
     [SerializeField] private int maxPhysicsFrameIterations = 100;
     [SerializeField] private Transform obstaclesParent;

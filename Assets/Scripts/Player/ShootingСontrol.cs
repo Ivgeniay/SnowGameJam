@@ -9,6 +9,7 @@ namespace Assets.Scripts.Player
     {
 
         [SerializeField] public Transform SpawnPoint;
+        [SerializeField] private Projection projection;
         [SerializeField] private IWeapon currentWeapon;
 
         private PlayerBehavior playerBehavior;
@@ -16,14 +17,24 @@ namespace Assets.Scripts.Player
         [SerializeField] private float _forceIncreaseInSecond = 500f;
         [SerializeField] private float _force = 500f;
         [SerializeField] private float _maxForce = 5000f;
+        private float _defaultForce;
+        private bool isShowProjection = false;
 
         [SerializeField] private float leftForse = 20;
         [SerializeField] private float rightForse = 20;
         [SerializeField] private float duration = 0.5f;
 
         private void Awake() {
-            playerBehavior = GetComponent<PlayerBehavior>();
-            currentWeapon = playerBehavior.GetWeapon(WeaponVariety.snowball); //snowBallPrefab.GetComponent<IWeapon>();
+            if (projection is null) projection = GetComponent<Projection>();
+            if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
+            currentWeapon = playerBehavior.GetWeaponFromInventory(WeaponVariety.snowball);
+            _defaultForce = _force;
+
+        }
+
+        private void Update() {
+            if (isShowProjection && !playerBehavior.isAmmoEmpty(currentWeapon)) ProjectionConrol();
+            else projection.DisableLine();
         }
 
         public void OnAttack(IWeapon weapon)
@@ -49,12 +60,11 @@ namespace Assets.Scripts.Player
             instanceScr.Setup(((Vector3.up / 10f) + (Camera.main!.transform.forward)) * _force, SpawnPoint, curv);
 
             playerBehavior.decrimentAmmo(weapon);
-            _force = 500f;
+            _force = _defaultForce;
         }
 
         public void TakeAim(Projection projection) {
-            if (_force < _maxForce) _force += _forceIncreaseInSecond * Time.deltaTime;
-            else _force = _maxForce;
+            IncreasePower();
 
             var lForse = leftForse * (-Camera.main.transform.right);
             var rForse = rightForse * Camera.main.transform.right;
@@ -63,33 +73,39 @@ namespace Assets.Scripts.Player
             var weapon = currentWeapon as MonoBehaviour;
             projection.SimulateTrajectory(weapon.GetComponent<IWeapon>(), SpawnPoint, ((Vector3.up / 10f) + (Camera.main!.transform.forward)) * _force, curv);
         }
+
+        public void IncreasePower() {
+            if (_force < _maxForce) _force += _forceIncreaseInSecond * Time.deltaTime;
+            else _force = _maxForce;
+        }
+
+        private void ProjectionConrol() {
+            projection.EnableLine();
+            TakeAim(projection);
+        }
+
         public IWeapon GetCurrentWeapon() => currentWeapon;
+        private void OnAimCanceled() => isShowProjection = false;
+        private void OnAimPerformed() => isShowProjection = true;
+        private void Start()
+        {
+            InputManager.Instance.AimPerformed += OnAimPerformed;
+            InputManager.Instance.AimCanceled += OnAimCanceled;
+        }
+        private void OnEnable()
+        {
+            if (InputManager.Instance is not null)
+            {
+                InputManager.Instance.AimPerformed += OnAimPerformed;
+                InputManager.Instance.AimCanceled += OnAimCanceled;
+            }
+        }
+        private void OnDisable()
+        {
+            InputManager.Instance.AimPerformed -= OnAimPerformed;
+            InputManager.Instance.AimCanceled -= OnAimCanceled;
+        }
     }
-}
-
-public class CurvatureData
-{
-    public CurvatureData() { }
-    public CurvatureData(Vector3 lForse, Vector3 rForse, float duration)
-    {
-        this.lForse = lForse;
-        this.rForse = rForse;
-        this.duration = duration;
-    }
-    public Vector3 lForse;
-    public Vector3 rForse;
-    public float duration = 0;
-
-    public Vector3 GetForce() {
-
-        return Vector3.Lerp(lForse, rForse, duration);
-
-
-        //var lVector = leftForse * Vector3.left;
-        //var rVector = rightForse * Vector3.right;
-        //return Vector3.Lerp(lVector, rVector, duration);
-    }
-    
 }
 
 

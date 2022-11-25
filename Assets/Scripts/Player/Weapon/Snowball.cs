@@ -42,10 +42,9 @@ namespace Assets.Scripts.Player.Weapon
             damage = velocity.magnitude;
         }
 
-        private void FixedUpdate()
-        {
+        private void FixedUpdate() {
             if (curvatureData is null) return;
-            rigidbody.AddForce(curvatureData.GetForce());
+                rigidbody.AddForce(curvatureData.GetForce());
         }
 
         public void SetCreator(Transform transform) => creator = transform;

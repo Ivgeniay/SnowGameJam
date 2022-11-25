@@ -40,6 +40,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "FastAttack",
+                    "type": "Button",
+                    "id": "15c99c42-fcca-476c-a50a-0a8d290129d3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "AssistanControll",
+                    "type": "Button",
+                    "id": "569d16d8-cce2-4aa1-ba38-48e24cae216d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MouseWheel",
+                    "type": "Button",
+                    "id": "625bf36d-2de3-46ac-9638-4fd94268cff0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -124,10 +151,54 @@
                     "name": "",
                     "id": "43b53a95-ea31-4714-833a-5dc1d102b273",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "",
+                    "interactions": "Hold(duration=0.2)",
                     "processors": "",
                     "groups": "",
                     "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f332494-9d71-413e-8b5e-4c61931c6bbb",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AssistanControll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3ba61efb-d2df-46e2-a785-8ae88108a030",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FastAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a9caeafb-89ae-4afb-9864-455fb898b9b6",
+                    "path": "<Mouse>/forwardButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseWheel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5b8ac116-3b95-45a5-a8e2-11178f8e240c",
+                    "path": "<Mouse>/backButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseWheel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

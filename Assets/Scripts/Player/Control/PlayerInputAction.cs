@@ -62,6 +62,33 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""FastAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""15c99c42-fcca-476c-a50a-0a8d290129d3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AssistanControll"",
+                    ""type"": ""Button"",
+                    ""id"": ""569d16d8-cce2-4aa1-ba38-48e24cae216d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseWheel"",
+                    ""type"": ""Button"",
+                    ""id"": ""625bf36d-2de3-46ac-9638-4fd94268cff0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -146,10 +173,54 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""43b53a95-ea31-4714-833a-5dc1d102b273"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold(duration=0.2)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f332494-9d71-413e-8b5e-4c61931c6bbb"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AssistanControll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3ba61efb-d2df-46e2-a785-8ae88108a030"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FastAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9caeafb-89ae-4afb-9864-455fb898b9b6"",
+                    ""path"": ""<Mouse>/forwardButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseWheel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b8ac116-3b95-45a5-a8e2-11178f8e240c"",
+                    ""path"": ""<Mouse>/backButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseWheel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -164,6 +235,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_FPS_Jump = m_FPS.FindAction("Jump", throwIfNotFound: true);
         m_FPS_Look = m_FPS.FindAction("Look", throwIfNotFound: true);
         m_FPS_Aim = m_FPS.FindAction("Aim", throwIfNotFound: true);
+        m_FPS_FastAttack = m_FPS.FindAction("FastAttack", throwIfNotFound: true);
+        m_FPS_AssistanControll = m_FPS.FindAction("AssistanControll", throwIfNotFound: true);
+        m_FPS_MouseWheel = m_FPS.FindAction("MouseWheel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -227,6 +301,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_FPS_Jump;
     private readonly InputAction m_FPS_Look;
     private readonly InputAction m_FPS_Aim;
+    private readonly InputAction m_FPS_FastAttack;
+    private readonly InputAction m_FPS_AssistanControll;
+    private readonly InputAction m_FPS_MouseWheel;
     public struct FPSActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -235,6 +312,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_FPS_Jump;
         public InputAction @Look => m_Wrapper.m_FPS_Look;
         public InputAction @Aim => m_Wrapper.m_FPS_Aim;
+        public InputAction @FastAttack => m_Wrapper.m_FPS_FastAttack;
+        public InputAction @AssistanControll => m_Wrapper.m_FPS_AssistanControll;
+        public InputAction @MouseWheel => m_Wrapper.m_FPS_MouseWheel;
         public InputActionMap Get() { return m_Wrapper.m_FPS; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -256,6 +336,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Aim.started -= m_Wrapper.m_FPSActionsCallbackInterface.OnAim;
                 @Aim.performed -= m_Wrapper.m_FPSActionsCallbackInterface.OnAim;
                 @Aim.canceled -= m_Wrapper.m_FPSActionsCallbackInterface.OnAim;
+                @FastAttack.started -= m_Wrapper.m_FPSActionsCallbackInterface.OnFastAttack;
+                @FastAttack.performed -= m_Wrapper.m_FPSActionsCallbackInterface.OnFastAttack;
+                @FastAttack.canceled -= m_Wrapper.m_FPSActionsCallbackInterface.OnFastAttack;
+                @AssistanControll.started -= m_Wrapper.m_FPSActionsCallbackInterface.OnAssistanControll;
+                @AssistanControll.performed -= m_Wrapper.m_FPSActionsCallbackInterface.OnAssistanControll;
+                @AssistanControll.canceled -= m_Wrapper.m_FPSActionsCallbackInterface.OnAssistanControll;
+                @MouseWheel.started -= m_Wrapper.m_FPSActionsCallbackInterface.OnMouseWheel;
+                @MouseWheel.performed -= m_Wrapper.m_FPSActionsCallbackInterface.OnMouseWheel;
+                @MouseWheel.canceled -= m_Wrapper.m_FPSActionsCallbackInterface.OnMouseWheel;
             }
             m_Wrapper.m_FPSActionsCallbackInterface = instance;
             if (instance != null)
@@ -272,6 +361,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Aim.started += instance.OnAim;
                 @Aim.performed += instance.OnAim;
                 @Aim.canceled += instance.OnAim;
+                @FastAttack.started += instance.OnFastAttack;
+                @FastAttack.performed += instance.OnFastAttack;
+                @FastAttack.canceled += instance.OnFastAttack;
+                @AssistanControll.started += instance.OnAssistanControll;
+                @AssistanControll.performed += instance.OnAssistanControll;
+                @AssistanControll.canceled += instance.OnAssistanControll;
+                @MouseWheel.started += instance.OnMouseWheel;
+                @MouseWheel.performed += instance.OnMouseWheel;
+                @MouseWheel.canceled += instance.OnMouseWheel;
             }
         }
     }
@@ -282,5 +380,8 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
+        void OnFastAttack(InputAction.CallbackContext context);
+        void OnAssistanControll(InputAction.CallbackContext context);
+        void OnMouseWheel(InputAction.CallbackContext context);
     }
 }
