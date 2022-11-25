@@ -21,18 +21,42 @@ public class Inventory : SerializedMonoBehaviour
         else Weapons[weapon] = amount;
         AmmoReplenished?.Invoke();
     }
-    public bool isAmmoEmpty(IWeapon weapon) => Weapons[weapon] <= 0;
     public void decrimentAmmo(IWeapon weapon) {
         Weapons[weapon] = Weapons[weapon] - 1;
         isEmptyAmmo();
     }
-
+    public bool isAmmoEmpty(IWeapon weapon) => Weapons[weapon] <= 0;
     public IWeapon GetWeapon(IWeapon weapon) {
         if (Weapons.TryGetValue(weapon, out int value)) {
             if (value > 0) return weapon;
         } 
         return GetRandomWeapon();
     }
+
+    public IWeapon GetNextWeapon(IWeapon currentWeapon)
+    {
+        List<IWeapon> weapons = new List<IWeapon>();
+
+        foreach(KeyValuePair<IWeapon, int> weapon in Weapons)
+            weapons.Add(weapon.Key);
+
+        var count = weapons.FindIndex(x => x == currentWeapon);
+        if (count >= weapons.Count() - 1) return weapons[0];
+        else return weapons[count + 1];
+    }
+
+    public IWeapon GetPreviousWeapon(IWeapon currentWeapon)
+    {
+        List<IWeapon> weapons = new List<IWeapon>();
+
+        foreach (KeyValuePair<IWeapon, int> weapon in Weapons)
+            weapons.Add(weapon.Key);
+
+        var count = weapons.FindIndex(x => x == currentWeapon);
+        if (count == 0) return weapons[weapons.Count()-1];
+        else return weapons[count - 1];
+    }
+
     public IWeapon GetWeapon(WeaponVariety weapon) {
         switch (weapon) {
             case WeaponVariety.snowball: 

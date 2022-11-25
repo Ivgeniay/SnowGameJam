@@ -36,6 +36,8 @@ namespace Assets.Scripts.Player
         public void AddAmmo(IWeapon weapon, int amount) => inventory.AddAmmo(weapon, amount);
         public bool isAmmoEmpty(IWeapon weapon) => inventory.isAmmoEmpty(weapon);
         public void decrimentAmmo(IWeapon weapon) => inventory?.decrimentAmmo(weapon);
+        public IWeapon GetNextWeaponFromInventory(IWeapon weapon) => inventory.GetNextWeapon(weapon);
+        public IWeapon GetPreviousWeaponFromInventory(IWeapon weapon) => inventory.GetPreviousWeapon(weapon);
         public IWeapon GetWeaponFromInventory(WeaponVariety weapon) => inventory.GetWeapon(weapon);
         public IWeapon GetCurrentWeapon() => shootingСontrol.GetCurrentWeapon();
         private void OnAmmoReplenished() => AmmoReplenished?.Invoke();

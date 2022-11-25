@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
     public event Action AssistanControllStarted;
     public event Action AssistanControllCanceled;
     public event Action FastAttackPerformed;
+    public event Action<float> MouseWheelPerformed;
 
     private void Awake()
     {
@@ -27,12 +28,14 @@ public class InputManager : MonoBehaviour
         _playerInputAction.FPS.AssistanControll.started += OnAssistanControllStarted;
         _playerInputAction.FPS.AssistanControll.canceled += OnAssistanControllCanceled;
         _playerInputAction.FPS.FastAttack.performed += OnFastAttackPerformed;
+        _playerInputAction.FPS.MouseWheel.performed += OnMouseWheelPerformed;
     }
 
     private void OnEnable()
     {
         if (Instance is not null)
         {
+            _playerInputAction.FPS.MouseWheel.performed += OnMouseWheelPerformed;
             _playerInputAction.FPS.Aim.canceled += OnAimCanceled;
             _playerInputAction.FPS.Aim.started += OnAimStarted;
             _playerInputAction.FPS.Aim.performed += OnAimPerformed;
@@ -44,6 +47,7 @@ public class InputManager : MonoBehaviour
     }
     private void OnDisable()
     {
+        _playerInputAction.FPS.MouseWheel.performed -= OnMouseWheelPerformed;
         _playerInputAction.FPS.Aim.canceled -= OnAimCanceled;
         _playerInputAction.FPS.Aim.started -= OnAimStarted;
         _playerInputAction.FPS.Aim.performed -= OnAimPerformed;
@@ -77,11 +81,6 @@ public class InputManager : MonoBehaviour
     {
         return _playerInputAction.FPS.Look.ReadValue<Vector2>();
     }
-
-    public Vector2 mouseMove()
-    {
-        return _playerInputAction.FPS.MouseWheel.ReadValue<Vector2>();
-    }
     
     public bool PlayerJumpedThisFrame()
     {
@@ -113,5 +112,7 @@ public class InputManager : MonoBehaviour
     
     private void OnFastAttackPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj) =>
         FastAttackPerformed?.Invoke();
-    
+
+    private void OnMouseWheelPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj) => 
+        MouseWheelPerformed?.Invoke(obj.ReadValue<float>());
 }

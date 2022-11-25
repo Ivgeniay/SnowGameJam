@@ -55,11 +55,7 @@ namespace Assets.Scripts.Player
             if (_controller.isGrounded && _playerVelocity.y < 0)
                 _playerVelocity.y = 0f;
 
-
-            Debug.Log(InputManager.Instance.mouseMove());
-
             PlayerMove();
-            //animator.SetBool(IsAttackWithoutAim, false);
 
             _playerVelocity.y += gravityValue * Time.deltaTime;
             _controller.Move(_playerVelocity * Time.deltaTime);
@@ -107,7 +103,6 @@ namespace Assets.Scripts.Player
         }
         private void OnAimCanceled()
         {
-            animator.SetTrigger("Attack");
             playerControlContext.SetPlayerState(PlayerState.Normal);
             animator.SetBool(IsAiming, false);
             if (animator.GetCurrentAnimatorStateInfo(_aimLayerIndex).IsName("Idle"))

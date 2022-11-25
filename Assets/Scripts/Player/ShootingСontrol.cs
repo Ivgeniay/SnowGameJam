@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Player.Control;
 using Assets.Scripts.Player.Weapon;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 
@@ -30,6 +31,18 @@ namespace Assets.Scripts.Player
             currentWeapon = playerBehavior.GetWeaponFromInventory(WeaponVariety.snowball);
             _defaultForce = _force;
 
+        }
+        private void Start()
+        {
+            InputManager.Instance.MouseWheelPerformed += ChangeWeapon;
+            InputManager.Instance.AimPerformed += OnAimPerformed;
+            InputManager.Instance.AimCanceled += OnAimCanceled;
+        }
+
+        private void ChangeWeapon(float obj)
+        {
+            if (obj > 0) currentWeapon = playerBehavior.GetNextWeaponFromInventory(GetCurrentWeapon());
+            else if (obj < 0) currentWeapon = playerBehavior.GetPreviousWeaponFromInventory(GetCurrentWeapon());
         }
 
         private void Update() {
@@ -87,21 +100,18 @@ namespace Assets.Scripts.Player
         public IWeapon GetCurrentWeapon() => currentWeapon;
         private void OnAimCanceled() => isShowProjection = false;
         private void OnAimPerformed() => isShowProjection = true;
-        private void Start()
-        {
-            InputManager.Instance.AimPerformed += OnAimPerformed;
-            InputManager.Instance.AimCanceled += OnAimCanceled;
-        }
         private void OnEnable()
         {
             if (InputManager.Instance is not null)
             {
+                InputManager.Instance.MouseWheelPerformed += ChangeWeapon;
                 InputManager.Instance.AimPerformed += OnAimPerformed;
                 InputManager.Instance.AimCanceled += OnAimCanceled;
             }
         }
         private void OnDisable()
         {
+            InputManager.Instance.MouseWheelPerformed -= ChangeWeapon;
             InputManager.Instance.AimPerformed -= OnAimPerformed;
             InputManager.Instance.AimCanceled -= OnAimCanceled;
         }
