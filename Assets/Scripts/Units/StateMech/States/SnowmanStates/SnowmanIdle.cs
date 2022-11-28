@@ -1,27 +1,22 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Units.StateMech.States;
 
-namespace Assets.Scripts.Enemies.StateMech.States
+namespace Assets.Scripts.Units.StateMech.States.SnowmanStates
 {
     public class SnowmanIdle : IState
     {
-        private readonly Animator animator;
-        private Transform transform;
-
-        public SnowmanIdle(Transform transform, Animator animator)
+        public SnowmanIdle()
         {
-            this.transform = transform;
-            this.animator = animator;
+
         }
-        public void Start() {
-            animator.SetBool(AnimationConstants.IsWalking, false);
+        public void Start()
+        {
+        }
+        public void Update()
+        {
+        }
+        public void Exit()
+        {
         }
 
-        public void Update() {
-            //Debug.Log("Idle mooving");
-        }
-
-        public void Exit() {
-            //Debug.Log("Stop Idle mooving");
-        }
     }
 }

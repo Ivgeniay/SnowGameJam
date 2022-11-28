@@ -1,5 +1,6 @@
-using Assets.Scripts.Enemies.StateMech;
+using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.Game;
+using Assets.Scripts.Game.Pause;
 using Assets.Scripts.Player.Control;
 using Sirenix.OdinInspector;
 using System;
@@ -13,19 +14,21 @@ namespace Assets.Scripts.Player
         [SerializeField] private float playerSpeed = 2.0f;
         [SerializeField] private float jumpHeight = 1.0f;
         [SerializeField] private float gravityValue = -9.81f;
-        [SerializeField] private float aiminDelay = 0.3f;
         [SerializeField] private Animator animator;
 
         private PlayerBehavior playerBehavior;
         private PlayerControlContext playerControlContext;
         private CharacterController _controller;
 
-        private int _aimLayerIndex;
         private Vector3 _playerVelocity;
+        private int _aimLayerIndex;
 
+        
+        private static readonly int fastAttack = Animator.StringToHash("FastAttack");
+        private static readonly int canAttack = Animator.StringToHash("CanAttack");
         private static readonly int IsMoving = Animator.StringToHash("IsMoving");
         private static readonly int IsAiming = Animator.StringToHash("IsAiming");
-        private static readonly int IsAttackWithoutAim = Animator.StringToHash("Attack");
+        //private static readonly int jump = Animator.StringToHash("Jump");
 
 
 
@@ -69,9 +72,11 @@ namespace Assets.Scripts.Player
             move.y = 0;
             _controller.Move(move * (Time.deltaTime * playerSpeed));
 
+
             if (move != Vector3.zero)
             {
                 animator.SetBool(IsMoving, true);
+                transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
                 transform.forward = Vector3.Lerp(transform.forward, move, Time.deltaTime * 10);
             }
             else
@@ -81,6 +86,7 @@ namespace Assets.Scripts.Player
         private void OnJumpPerformed() {
             if (_controller.isGrounded is false) return;
             _playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+            //animator.SetTrigger(jump);
         }
         private void OnAimStarted()
         {
@@ -110,13 +116,20 @@ namespace Assets.Scripts.Player
         }
         private void OnAssistanControllStarted()
         {
+            animator.SetBool(canAttack, false);
+
             playerControlContext.SetPlayerState(PlayerState.AssistantControl);
+            Game.Game.Manager.GameStateManager.SetState(GameState.AssistentControl);
+
             animator.SetBool(IsMoving, false);
 
             AssistantControl(typeof(AssistantDisposer));
         }
         private void OnAssistanControllCanceled()
         {
+            animator.SetBool(canAttack, true);
+
+            Game.Game.Manager.GameStateManager.SetState(GameState.Gameplay);
             playerControlContext.SetPlayerState(PlayerState.Normal);
         }
 
@@ -129,18 +142,17 @@ namespace Assets.Scripts.Player
         }
         private void OnFastAttackPerformed()
         {
-            if (animator.GetBool("FastAttack") == true) animator.ResetTrigger("FastAttack");
+            if (animator.GetBool(fastAttack) == true) animator.ResetTrigger(fastAttack);
             if (playerControlContext.GetPlayerState() == PlayerState.Normal &&
-                animator.GetBool("CanAttack") == true)
+                animator.GetBool(canAttack) == true)
             {
-                animator.SetTrigger("FastAttack");
+                animator.SetTrigger(fastAttack);
             }
         }
-        private void OnAmmoReplenished() => animator.SetBool("CanAttack", true);
-        private void OnAmmoIsOver()
-        {
-            animator.SetBool("CanAttack", false);
-            animator.ResetTrigger("FastAttack");
+        private void OnAmmoReplenished() => animator.SetBool(canAttack, true);
+        private void OnAmmoIsOver() {
+            animator.SetBool(canAttack, false);
+            animator.ResetTrigger(fastAttack);
         }
         private void OnDisable() {
             playerBehavior.AmmoReplenished -= OnAmmoReplenished;

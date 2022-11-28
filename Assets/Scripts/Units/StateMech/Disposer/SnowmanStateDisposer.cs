@@ -1,19 +1,32 @@
-﻿using Assets.Scripts.Enemies.StateMech.States;
+﻿using Assets.Scripts.Units.StateMech.States;
+using Assets.Scripts.EventArgs;
+using Assets.Scripts.Units.StateMech.States.SnowmanStates;
+using Assets.Scripts.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.Enemies.StateMech
+namespace Assets.Scripts.Units.StateMech
 {
     public class SnowmanStateDisposer : StateDisposerBase
     {
-
+        private HealthSystem healthSystem;
         private Animator animator;
+
+        private float stunTime = 0.5f;
+
         public SnowmanStateDisposer(Transform transform) : base(transform) 
         {
             this.animator = transform.GetComponentInChildren<Animator>();
             states = FillStates();
             ChangeState(states[StateName.Idle]);
+
+            healthSystem = transform.GetComponent<HealthSystem>();
+            if (healthSystem is not null) {
+                healthSystem.OnDeath += HealthSystem_OnDeath;
+                healthSystem.OnTakeDamage += HealthSystem_OnTakeDamage;
+            }
         }
 
         #region Mono
@@ -23,7 +36,6 @@ namespace Assets.Scripts.Enemies.StateMech
             var state = states[StateName.Attack] as SnowmanAttack;
             if (state is null) throw new NullReferenceException($"From SnowmanStateDisposer Attack state is null");
             state.ChangeTarget(transform);
-            state.Stun();
             ChangeState(state);
         }
         public override void Die() {
@@ -39,11 +51,24 @@ namespace Assets.Scripts.Enemies.StateMech
             var states = new Dictionary<StateName, IState>();
 
             states.Add(StateName.Die, new SnowmanDie(transform, animator));
-            states.Add(StateName.Idle, new SnowmanIdle(transform, animator));
+            states.Add(StateName.Idle, new SnowmanIdle());
+            states.Add(StateName.Stun, new SnowmanStun(transform, animator));
             states.Add(StateName.Attack, new SnowmanAttack(transform, animator));
             states.Add(StateName.FollowPoint, new SnowmanFollowPoint(transform, animator));
 
             return states;
+        }
+        private void HealthSystem_OnTakeDamage(object sender, TakeDamagePartEventArgs e) {
+            if (healthSystem.isDead) return;
+
+            //Debug.Log($"prevState: {prevState}");
+            ChangeState(states[StateName.Stun]);
+            Coroutines.Start(StunExit(stunTime));
+        }
+        private void HealthSystem_OnDeath(object sender, System.EventArgs e) => Die();
+        private IEnumerator StunExit(float seconds) {
+            yield return new WaitForSeconds(seconds);
+            ChangeState(prevState);
         }
     }
 }
@@ -52,6 +77,7 @@ public enum StateName
 {
     Die,
     Idle,
+    Stun,
     Attack,
     FollowPoint,
     FollowObject,

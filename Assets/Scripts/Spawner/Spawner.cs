@@ -1,21 +1,22 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Assets.Scripts.Game.Pause;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using Game = Assets.Scripts.Game.Game;
 using Random = System.Random;
 
 namespace Assets.Scripts.Spawner
 {
-    public class Spawner : MonoBehaviour {
+    public class Spawner : MonoBehaviour, IGameStateHandler {
 
         public event Action<int> OnStageComplete;
         public event Action<int> OnStageStart;
         //public event Action OnSpawned;
 
         [SerializeField] private GameObject spanwObject;
+        [SerializeField] private Transform XmasTree;
+        [SerializeField] private int MaxXOffset;
+        [SerializeField] private int MaxZOffset;
         [SerializeField] private int currentWave = 0;
         [SerializeField] private int[] enemyNumDependWave = new int[10];
         [SerializeField] private int currentWaveSpeed;
@@ -29,26 +30,25 @@ namespace Assets.Scripts.Spawner
             StartCoroutine(SpawnByTimer());
             OnStageComplete += Spawner_OnStageComplete;
             OnStageStart += Spawner_OnStageStart;
+            Game.Game.Manager.OnInitialized += GameManagerOnInitialized;
+        }
+
+        private void GameManagerOnInitialized() {
+            Game.Game.Manager.GameStateManager.Register(this);
         }
         #endregion
 
-        public void SpawnSnowman() {
-            Game.Game.Manager.InstantiateSnowman(spanwObject, transform.position, Quaternion.identity);
+        public void SpawnSnowman(Vector3 position) {
+            var newSnowman = Game.Game.Manager.InstantiateSnowman(spanwObject, transform.position, Quaternion.identity);
+            newSnowman.Attack(XmasTree);
         }
 
 
         private void Spawner_OnStageStart(int obj) {
             currentWave = obj;
-            //Logger.Logger.SendMsg($"Stage {currentWave} is complete");
         }
 
         private void Spawner_OnStageComplete(int obj) {
-            //Logger.Logger.SendMsg($"Stage {obj} is complete");
-        }
-
-
-        private async Task timerDelay(int timerWithMilliseconds) {
-            await Task.Delay(timerWithMilliseconds);
         }
 
         private IEnumerator SpawnByTimer()
@@ -58,17 +58,15 @@ namespace Assets.Scripts.Spawner
                 yield return new WaitForSeconds(timeSpawnWaveOffset);
 
                 OnStageStart?.Invoke(i + 1);
-                if (i < 10)
-                {
+                if (i < 10) {
                     for (int j = 0; j < enemyNumDependWave[i]; j++) {
-                        Game.Game.Manager.InstantiateSnowman(spanwObject, new Vector3(rnd.Next(20), 0, rnd.Next(20)), Quaternion.identity);
+                        SpawnSnowman(new Vector3(rnd.Next(MaxXOffset), 0, rnd.Next(MaxZOffset)));
                         yield return new WaitForSeconds(timeSpawnInSeconds);
                     }
                 }
-                else
-                {
+                else {
                     for(int j = 0; j < i * multiplyEnemy; j++) {
-                        Game.Game.Manager.InstantiateSnowman(spanwObject, new Vector3(rnd.Next(20), 0, rnd.Next(20)), Quaternion.identity);
+                        SpawnSnowman(new Vector3(rnd.Next(MaxXOffset), 0, rnd.Next(MaxZOffset)));
                         yield return new WaitForSeconds(timeSpawnInSeconds);
                     }
                 }
@@ -76,5 +74,13 @@ namespace Assets.Scripts.Spawner
             }
         }
 
+        public void GameStateHandle(GameState gameState) {
+            //throw new NotImplementedException();
+        }
     }
+}
+
+public class Timer
+{
+
 }

@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Enemies.StateMech.Disposer
+﻿namespace Assets.Scripts.Units.StateMech.Disposer
 {
     public enum StateDisposerType
     {

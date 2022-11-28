@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.Enemies.StateMech.States.AssistantStates
+namespace Assets.Scripts.Units.StateMech.States.AssistantStates
 {
     public class AssistantDie : IState
     {

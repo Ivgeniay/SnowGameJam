@@ -1,42 +1,27 @@
-﻿using Assets.Scripts.Enemies.DamageMech;
-using Assets.Scripts.Enemies.Repository;
-using Assets.Scripts.Enemies.StateMech;
-using Assets.Scripts.Enemies.StateMech.Disposer;
-using Assets.Scripts.EventArgs;
+﻿using Assets.Scripts.Units.StateMech.Disposer;
+using Assets.Scripts.Game.Pause;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using EventArgs = System.EventArgs;
 
-namespace Assets.Scripts.Enemies.StateMech
+namespace Assets.Scripts.Units.StateMech
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(HealthSystem))]
-    public class UnitBehavior : MonoBehaviour, IBehaviour
+    public class UnitBehavior : MonoBehaviour, IBehaviour, IGameStateHandler
     {
         [SerializeField] private StateDisposerType stateDisposerType;
 
         private StateDisposerBase stateDisposer;
 
-        private List<IDamageable> damageablesParts;
-        private HealthSystem healthSystem;
-        private NavMeshAgent agent;
-
         #region Mono
         private void Awake() {
             stateDisposer = DisposerFactory.GetDisposer(stateDisposerType, transform);
-            agent = GetComponent<NavMeshAgent>();
-
-            healthSystem = GetComponent<HealthSystem>();
-            if (healthSystem is not null) {
-                healthSystem.OnDeath += HealthSystem_OnDeath;
-                healthSystem.OnTakeDamage += HealthSystem_OnTakeDamage;
-            }
         }
         private void Start() {
             if (stateDisposer is null) throw new Exception($"stateDisposer is null {this}");
             stateDisposer.StartAction();
+            Game.Game.Manager.OnInitialized += GameManagerOnInitialized;
         }
         private void Update() {
             if (stateDisposer is null) throw new Exception($"stateDisposer is null {this}");
@@ -54,18 +39,21 @@ namespace Assets.Scripts.Enemies.StateMech
                 }
             }
         }
-        public float GetCurrentHealth() => healthSystem.health;
-        private void HealthSystem_OnTakeDamage(object sender, TakeDamagePartEventArgs e)
+        private void GameManagerOnInitialized() {
+            Game.Game.Manager.GameStateManager.Register(this);
+        }
+        public void GameStateHandle(GameState gameState)
         {
-            if (healthSystem.isDead) return;
-            Attack(e.Shooter);
-        }
-        private void HealthSystem_OnDeath(object sender, System.EventArgs e) => stateDisposer.Die();
+            switch (gameState)
+            {
+                case GameState.AssistentControl:
 
-        private void OnDestroy() {
-            agent.enabled = false;
-            StopAllCoroutines();
+                    break;
+                case GameState.Pause:
+                    break;
+                case GameState.Gameplay:
+                    break;
+            }
         }
-
     }
 }

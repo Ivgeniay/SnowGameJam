@@ -1,11 +1,11 @@
-﻿using Assets.Scripts.Enemies.StateMech.States.AssistantStates;
+﻿using Assets.Scripts.Units.StateMech.States.AssistantStates;
 using Assets.Scripts.Logger;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using IState = Assets.Scripts.Enemies.StateMech.States.IState;
+using IState = Assets.Scripts.Units.StateMech.States.IState;
 
-namespace Assets.Scripts.Enemies.StateMech
+namespace Assets.Scripts.Units.StateMech
 {
     public class AssistantDisposer : StateDisposerBase
     {

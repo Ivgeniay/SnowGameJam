@@ -2,7 +2,7 @@ using Assets.Scripts.EventArgs;
 using System;
 using UnityEngine;
 
-namespace Assets.Scripts.Enemies.DamageMech
+namespace Assets.Scripts.Units.DamageMech
 {
     public interface IDamageable
     {

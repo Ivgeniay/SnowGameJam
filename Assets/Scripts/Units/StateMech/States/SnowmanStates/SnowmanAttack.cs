@@ -1,19 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using Assets.Scripts.Logger;
 using System.Collections;
 using Assets.Scripts.Utilities;
-using Assets.Scripts.Enemies.DamageMech;
-using System.Collections.Generic;
 
-namespace Assets.Scripts.Enemies.StateMech.States
+namespace Assets.Scripts.Units.StateMech.States
 {
     public class SnowmanAttack : IState
     {
+        
         private Transform transform;
         private Transform targetTransform;
         private NavMeshAgent agent;
         private Animator animator;
+        private HealthSystem healthSystem;
 
         private Coroutine currentCoroutine;
         public float WalkDelayIsSeconds { get; private set; } = 1;
@@ -48,15 +47,14 @@ namespace Assets.Scripts.Enemies.StateMech.States
             this.transform = transform;
             this.animator = animator;
             this.agent = this.transform.GetComponent<NavMeshAgent>();
+            this.healthSystem = transform.GetComponent<HealthSystem>();
 
-            WalkType = 0;
+            WalkType = Random.Range(0, 2);
             AttackType = 0;
         }
         
 
         public void Start() {
-            if (transform is null) return;
-            if (animator is null) Logger.Logger.SendMsg("animator is null");
         }
 
         public void Update() {
@@ -81,35 +79,42 @@ namespace Assets.Scripts.Enemies.StateMech.States
         }
 
         private void Walk() {
+            WalkTypeAnimationDefinitions();
             animator.SetBool(AnimationConstants.IsWalking, true);
+        }
+        private void WalkTypeAnimationDefinitions()
+        {
+            if (healthSystem.health >= healthSystem.MaxHealth) animator.SetInteger(AnimationConstants.WalkType, WalkType);
+            else animator.SetInteger(AnimationConstants.WalkType, 2);
         }
 
         public void Exit() {
-            Coroutines.Stop(currentCoroutine);
-            targetTransform = null;
+            //Coroutines.Stop(currentCoroutine);
+            //targetTransform = null;
         }
 
-        public void ChangeTarget(Transform targetTransform) {
+        public void ChangeTarget(Transform targetTransform)
+        {
             this.targetTransform = targetTransform;
             agent.destination = targetTransform.position;
         }
 
-        public void Stun() {
-            isAttacking = false;
-            animator.speed = 0;
-            agent.speed = 0;
-            agent.destination = transform.position;
-            currentCoroutine = Coroutines.Start(WalkingAfterStunDelay(WalkDelayIsSeconds));
-        }
-        private IEnumerator WalkingAfterStunDelay(float delayIsSecond) {
-            yield return new WaitForSeconds(delayIsSecond);
+        //public void Stun() {
+        //    isAttacking = false;
+        //    animator.speed = 0;
+        //    agent.speed = 0;
+        //    agent.destination = transform.position;
+        //    currentCoroutine = Coroutines.Start(WalkingAfterStunDelay(WalkDelayIsSeconds));
+        //}
+        //private IEnumerator WalkingAfterStunDelay(float delayIsSecond) {
+        //    yield return new WaitForSeconds(delayIsSecond);
 
-            agent.destination = targetTransform.position;
-            agent.speed = 1;
-            
-            animator.speed = 1;
-            isAttacking = true;
-        }
+        //    agent.destination = targetTransform.position;
+        //    agent.speed = 1;
+
+        //    animator.speed = 1;
+        //    isAttacking = true;
+        //}
         private IEnumerator AttackDelay(float delayIsSecond) {
             yield return new WaitForSeconds(delayIsSecond);
             isAttacking = true;

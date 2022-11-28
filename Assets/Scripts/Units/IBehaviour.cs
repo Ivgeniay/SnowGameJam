@@ -1,8 +1,6 @@
-﻿using Assets.Scripts.Enemies.StateMech;
-using Assets.Scripts.EventArgs;
-using System;
+﻿using System;
 
-namespace Assets.Scripts.Enemies
+namespace Assets.Scripts.Units
 {
     internal interface IBehaviour
     {

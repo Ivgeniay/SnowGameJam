@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 
-namespace Assets.Scripts.Enemies.DamageMech
+namespace Assets.Scripts.Units.DamageMech
 {
-    public interface IDestroyable
+    public interface IDestroyable : IDamageable
     {
         void Destroy();
     }

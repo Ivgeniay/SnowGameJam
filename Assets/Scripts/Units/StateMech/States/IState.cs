@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Enemies.StateMech.States
+﻿namespace Assets.Scripts.Units.StateMech.States
 {
     public interface IState
     {

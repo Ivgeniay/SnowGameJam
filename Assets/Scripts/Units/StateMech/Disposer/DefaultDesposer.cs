@@ -1,7 +1,7 @@
 ﻿using Assets.Scripts.EventArgs;
 using UnityEngine;
 
-namespace Assets.Scripts.Enemies.StateMech
+namespace Assets.Scripts.Units.StateMech
 {
     internal class DefaultDesposer : StateDisposerBase
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace Assets.Scripts.Enemies.Repository
+namespace Assets.Scripts.Units.Repository
 {
     public class SnowmanRepository : RepositoryBase
     {

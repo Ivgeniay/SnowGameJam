@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace Assets.Scripts.Enemies.StateMech.States
+namespace Assets.Scripts.Units.StateMech.States
 {
     public class SnowmanFollowPoint : IState
     {

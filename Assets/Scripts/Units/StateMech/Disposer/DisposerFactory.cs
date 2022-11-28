@@ -1,10 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using Assets.Scripts.Units.StateMech;
+using System;
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using Object = System.Object;
 
-namespace Assets.Scripts.Enemies.StateMech.Disposer
+namespace Assets.Scripts.Units.StateMech.Disposer
 {
     public static class DisposerFactory
     {

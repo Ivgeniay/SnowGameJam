@@ -5,8 +5,7 @@ public class AnimationEventProxy : MonoBehaviour
 {
     [SerializeField] private Shooting—ontrol playerShootingController;
 
-    public void OnAttack()
-    {
+    public void OnAttack() {
         playerShootingController.OnAttack(playerShootingController.GetCurrentWeapon());
     }
 }

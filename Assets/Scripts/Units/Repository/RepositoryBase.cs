@@ -1,7 +1,7 @@
 ﻿
-using Assets.Scripts.Enemies.StateMech;
+using Assets.Scripts.Units.StateMech;
 
-namespace Assets.Scripts.Enemies.Repository
+namespace Assets.Scripts.Units.Repository
 {
     public abstract class RepositoryBase
     {

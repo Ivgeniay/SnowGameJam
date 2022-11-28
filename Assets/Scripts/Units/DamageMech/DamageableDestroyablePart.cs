@@ -1,4 +1,4 @@
-using Assets.Scripts.Enemies.StateMech;
+using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.EventArgs;
 using System;
 using System.Collections;
@@ -7,9 +7,9 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.Enemies.DamageMech
+namespace Assets.Scripts.Units.DamageMech
 {
-    public class DamageableDestroyablePart : MonoBehaviour, IDamageable, IDestroyable
+    public class DamageableDestroyablePart : MonoBehaviour, IDestroyable
     {
         [SerializeField] private float _timerDelay = 0.2f;
         [SerializeField] private float _explotionForse = 5;

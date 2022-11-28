@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9012815581264624129}
   - component: {fileID: 4117149031864778157}
   - component: {fileID: 8788168880624059908}
+  - component: {fileID: 8620598384189382432}
   m_Layer: 0
   m_Name: SnowDrift
   m_TagString: Untagged
@@ -131,5 +132,26 @@ MonoBehaviour:
     - Name: weapon
       Entry: 10
       Data: 0
-  Snowballs: 15
+  AmmoQuantity: 15
+--- !u!114 &8620598384189382432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 893659164822435635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0ed2e8926b70cd43894a38f84b5e095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   RotateSpeed: {x: 0, y: 0.2, z: 0}

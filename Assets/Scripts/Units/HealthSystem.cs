@@ -1,11 +1,9 @@
-using Assets.Scripts.Enemies.DamageMech;
 using Assets.Scripts.EventArgs;
+using Assets.Scripts.Units.DamageMech;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -24,9 +22,16 @@ public class HealthSystem : MonoBehaviour
         damageablesParts = gameObject.GetComponentsInChildren<IDamageable>().ToList();
         foreach (var el in damageablesParts) el.OnTakeDamage += OnTakeDamageHandler;
     }
-
-    public void TakeDamage(TakeDamagePartEventArgs e) {
+    public void TakeDamage(object sender, TakeDamagePartEventArgs e) {
         if (isDead) return;
+
+        var head = sender as IUltimateDamageArea;
+        if (head is not null) {
+            health = 0;
+            isDead = true;
+            OnDeath?.Invoke(this, EventArgs.Empty);
+            return;
+        }
 
         if (health - e.Damage <= 0) {
             health = 0;
@@ -38,5 +43,5 @@ public class HealthSystem : MonoBehaviour
             OnTakeDamage?.Invoke(this, new TakeDamagePartEventArgs() { Damage = e.Damage, Direction = e.Direction, Shooter = e.Shooter, currentHealth = health});
         }
     }
-    private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) => TakeDamage(e);
+    private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) => TakeDamage(sender, e);
 }

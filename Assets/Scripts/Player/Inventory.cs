@@ -23,7 +23,7 @@ public class Inventory : SerializedMonoBehaviour
     }
     public void decrimentAmmo(IWeapon weapon) {
         Weapons[weapon] = Weapons[weapon] - 1;
-        isEmptyAmmo();
+        ChekIsEmptyAmmo();
     }
     public bool isAmmoEmpty(IWeapon weapon) => Weapons[weapon] <= 0;
     public IWeapon GetWeapon(IWeapon weapon) {
@@ -71,7 +71,7 @@ public class Inventory : SerializedMonoBehaviour
         return getter.Key;
     }
 
-    private void isEmptyAmmo() {
+    private void ChekIsEmptyAmmo() {
         int ammo = 0;
         foreach(KeyValuePair<IWeapon, int> weapon in Weapons) ammo += weapon.Value;
         if (ammo <= 0) AmmoIsOver?.Invoke();

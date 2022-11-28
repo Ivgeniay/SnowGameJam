@@ -1,10 +1,10 @@
-using Assets.Scripts.Enemies.StateMech;
+using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.EventArgs;
 using System;
 using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts.Enemies.DamageMech
+namespace Assets.Scripts.Units.DamageMech
 {
     public class DamageablePart : MonoBehaviour, IDamageable
     {

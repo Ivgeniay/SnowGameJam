@@ -1,6 +1,7 @@
-﻿using Assets.Scripts.Enemies.StateMech;
-using Assets.Scripts.EventArgs;
+﻿using Assets.Scripts.EventArgs;
+using Assets.Scripts.Game.Pause;
 using Assets.Scripts.PeripheralManagement._Cursor;
+using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.Utilities;
 using System;
 using System.Linq;
@@ -10,15 +11,15 @@ namespace Assets.Scripts.Game
 {
     public sealed class Game
     {
-        public event Action isInitialized;
+        public event Action OnInitialized;
         public event EventHandler OnDeathNpcDestroy;
         public event EventHandler<TakeDamagePartEventArgs> OnNpcGetDamage;
         public event EventHandler<OnNpcInstantiateEventArg> OnNpcInstantiate;
-        public CursorSetting cursorSetting { get; private set; }
 
         private static Game instance;
         private StorageNpc storage;
-
+        public GameStateManager GameStateManager { get; private set; }
+        public CursorSetting CursorSetting { get; private set; }
         public static Game Manager {
             get { 
                 if (instance is null) return instance = new Game();
@@ -26,12 +27,12 @@ namespace Assets.Scripts.Game
             }
         }
         private Game() { }
-
         
 
         public void Initialize()
         {
-            cursorSetting = new CursorSetting();
+            GameStateManager = new GameStateManager();
+            CursorSetting = new CursorSetting();
             storage = new StorageNpc();
 
             foreach (var el in GameObject.FindObjectsOfType<UnitBehavior>()) {
@@ -39,7 +40,7 @@ namespace Assets.Scripts.Game
                 OnNpcInstantiate?.Invoke(this, new OnNpcInstantiateEventArg() { type = el.GetComponent<UnitBehavior>().BehaviourType });
             }
 
-            isInitialized?.Invoke();
+            OnInitialized?.Invoke();
         }
 
         public UnitBehavior InstantiateSnowman(GameObject prefab, Vector3 position, Quaternion quaternion)
@@ -63,6 +64,12 @@ namespace Assets.Scripts.Game
             if (assistant is null) throw new Exception($"There is no typeof({assistentType}) in the storage (Game)");
             assistant.Follow(position);
         }
+
+        public void SetPause()
+        {
+
+        }
+
 
         private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) {
             OnNpcGetDamage?.Invoke(sender, e);

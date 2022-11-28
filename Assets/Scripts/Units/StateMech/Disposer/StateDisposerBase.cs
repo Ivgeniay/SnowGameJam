@@ -1,10 +1,9 @@
-﻿using Assets.Scripts.Enemies.StateMech.States;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using UnityEngine;
-using Assets.Scripts.EventArgs;
+using Assets.Scripts.Units.StateMech.States;
 
-namespace Assets.Scripts.Enemies.StateMech
+namespace Assets.Scripts.Units.StateMech
 {
     public abstract class StateDisposerBase
     {

@@ -1,29 +1,28 @@
-﻿using Assets.Scripts.Enemies.DamageMech;
+﻿using Assets.Scripts.Units.DamageMech;
 using Assets.Scripts.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.Enemies.StateMech.States
+namespace Assets.Scripts.Units.StateMech.States
 {
     public class SnowmanDie : IState
     {
-        private Transform transform;
+        private readonly Transform transform;
+        private readonly Animator animator;
         private List<IDestroyable> destroyableParts;
         private List<IDamageable> damagebleParts;
-        private Animator animator;
         public SnowmanDie(Transform transform, Animator animator)  { 
             this.transform = transform; 
             this.animator = animator;
         }
         public void Start() {
             animator.speed = 0f;
-            destroyableParts = new List<IDestroyable>();
-            destroyableParts = transform.GetComponentsInChildren<IDestroyable>().ToList();
-            damagebleParts = transform.GetComponentsInChildren<IDamageable>().ToList();
-            destroyableParts.ForEach(x => x.Destroy());
-            damagebleParts.ForEach(x => x.Destroy());
+                destroyableParts = transform.GetComponentsInChildren<IDestroyable>().ToList();
+                damagebleParts = transform.GetComponentsInChildren<IDamageable>().ToList();
+                destroyableParts.ForEach(x => x.Destroy());
+                damagebleParts.ForEach(x => x.Destroy());
             Coroutines.Start(_Destroy());
         }
         public void Update() {
@@ -34,8 +33,8 @@ namespace Assets.Scripts.Enemies.StateMech.States
         private IEnumerator _Destroy()
         {
             yield return new WaitForSeconds(1);
-            UnityEngine.Object.Destroy(transform.gameObject, 0f);
-            transform.gameObject.SetActive(false);
+            UnityEngine.Object.Destroy(transform.gameObject);
+            //transform.gameObject.SetActive(false);
         }
     }
 }

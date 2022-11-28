@@ -11,7 +11,7 @@ namespace Assets.Scripts.UI
         private int counter = 0;
 
         private void Awake() {
-            Game.Game.Manager.isInitialized += GameIsInitializedHandler;
+            Game.Game.Manager.OnInitialized += GameOnInitializedHandler;
             Game.Game.Manager.OnNpcInstantiate += Manager_OnNpcInstantiate;
             Game.Game.Manager.OnDeathNpcDestroy += Manager_OnDeathNpcDestroy;
         }
@@ -26,7 +26,7 @@ namespace Assets.Scripts.UI
             textMeshPro.text = counter.ToString();
         }
 
-        private void GameIsInitializedHandler() {
+        private void GameOnInitializedHandler() {
             //textMeshPro.text = counter.ToString();
         }
     }

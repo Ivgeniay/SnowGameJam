@@ -21,14 +21,14 @@ public class InputManager : MonoBehaviour
         _playerInputAction = new PlayerInputAction();
         _playerInputAction.Enable();
 
-        _playerInputAction.FPS.Aim.canceled += OnAimCanceled;
-        _playerInputAction.FPS.Aim.started += OnAimStarted;
-        _playerInputAction.FPS.Aim.performed += OnAimPerformed;
-        _playerInputAction.FPS.Jump.performed += OnJumpPerformed;
-        _playerInputAction.FPS.AssistanControll.started += OnAssistanControllStarted;
         _playerInputAction.FPS.AssistanControll.canceled += OnAssistanControllCanceled;
+        _playerInputAction.FPS.AssistanControll.started += OnAssistanControllStarted;
         _playerInputAction.FPS.FastAttack.performed += OnFastAttackPerformed;
         _playerInputAction.FPS.MouseWheel.performed += OnMouseWheelPerformed;
+        _playerInputAction.FPS.Jump.performed += OnJumpPerformed;
+        _playerInputAction.FPS.Aim.performed += OnAimPerformed;
+        _playerInputAction.FPS.Aim.canceled += OnAimCanceled;
+        _playerInputAction.FPS.Aim.started += OnAimStarted;
     }
 
     private void OnEnable()
@@ -56,7 +56,6 @@ public class InputManager : MonoBehaviour
         _playerInputAction.FPS.AssistanControll.canceled -= OnAssistanControllCanceled;
         _playerInputAction.FPS.FastAttack.performed -= OnFastAttackPerformed;
     }
-
     public bool PlayerAimHolding()
     {
         return _playerInputAction.FPS.Aim.inProgress;
