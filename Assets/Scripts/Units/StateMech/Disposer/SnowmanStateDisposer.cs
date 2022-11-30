@@ -13,12 +13,15 @@ namespace Assets.Scripts.Units.StateMech
     {
         private HealthSystem healthSystem;
         private Animator animator;
+        private UnitConfiguration unitConfiguration;
 
         private float stunTime = 0.5f;
 
         public SnowmanStateDisposer(Transform transform) : base(transform) 
         {
             this.animator = transform.GetComponentInChildren<Animator>();
+            //Debug.Log(animator.gameObject.name);
+            this.unitConfiguration = transform.GetComponent<UnitConfiguration>();
             states = FillStates();
             ChangeState(states[StateName.Idle]);
 
@@ -61,9 +64,8 @@ namespace Assets.Scripts.Units.StateMech
         private void HealthSystem_OnTakeDamage(object sender, TakeDamagePartEventArgs e) {
             if (healthSystem.isDead) return;
 
-            //Debug.Log($"prevState: {prevState}");
             ChangeState(states[StateName.Stun]);
-            Coroutines.Start(StunExit(stunTime));
+            Coroutines.Start(StunExit(unitConfiguration.StunTime));
         }
         private void HealthSystem_OnDeath(object sender, System.EventArgs e) => Die();
         private IEnumerator StunExit(float seconds) {

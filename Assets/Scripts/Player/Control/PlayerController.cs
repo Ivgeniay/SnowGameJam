@@ -22,8 +22,9 @@ namespace Assets.Scripts.Player
 
         private Vector3 _playerVelocity;
         private int _aimLayerIndex;
+        private bool _isAimingNow;
 
-        
+
         private static readonly int fastAttack = Animator.StringToHash("FastAttack");
         private static readonly int canAttack = Animator.StringToHash("CanAttack");
         private static readonly int IsMoving = Animator.StringToHash("IsMoving");
@@ -80,7 +81,11 @@ namespace Assets.Scripts.Player
                 transform.forward = Vector3.Lerp(transform.forward, move, Time.deltaTime * 10);
             }
             else
+            {
                 animator.SetBool(IsMoving, false);
+                if (_isAimingNow == true)
+                    transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
+            }
         }
 
         private void OnJumpPerformed() {
@@ -103,12 +108,14 @@ namespace Assets.Scripts.Player
         {
             if (playerBehavior.isAmmoEmpty(playerBehavior.GetCurrentWeapon()) is true) return;
 
+            _isAimingNow = true;
             playerControlContext.SetPlayerState(PlayerState.Aim);
             animator.SetBool(IsAiming, true);
             animator.SetLayerWeight(_aimLayerIndex, 1);
         }
         private void OnAimCanceled()
         {
+            _isAimingNow = false;
             playerControlContext.SetPlayerState(PlayerState.Normal);
             animator.SetBool(IsAiming, false);
             if (animator.GetCurrentAnimatorStateInfo(_aimLayerIndex).IsName("Idle"))

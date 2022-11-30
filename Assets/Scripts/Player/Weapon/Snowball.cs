@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Particles;
+using Assets.Scripts.Units.StateMech;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -54,12 +55,16 @@ namespace Assets.Scripts.Player.Weapon
 
         private void OnCollisionEnter(Collision collision)
         {
-            var player = collision.transform.GetComponent<PlayerBehavior>();
-            if (player is not null) return;
+            if (GetCreater() == collision.transform) return;
 
-            if (!isGhost) {
-                Instantiate(impactEffect, transform.position, Quaternion.LookRotation(collision.contacts[0].normal));
+            var unitBehaviour = collision.transform.GetComponentInParent<UnitBehavior>();
+            if (unitBehaviour != null) {
+                var trans = unitBehaviour.GetComponent<Transform>();
+                if (GetCreater() == trans) return;
             }
+
+            if (!isGhost) Instantiate(impactEffect, transform.position, Quaternion.LookRotation(collision.contacts[0].normal));
+            
             Destroy(gameObject);
             isCollided = true;
         }

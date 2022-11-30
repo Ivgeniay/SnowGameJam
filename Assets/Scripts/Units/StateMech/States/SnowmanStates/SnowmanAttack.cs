@@ -2,17 +2,21 @@
 using UnityEngine.AI;
 using System.Collections;
 using Assets.Scripts.Utilities;
+using Assets.Scripts.Player.Weapon;
+using Assets.Scripts.Player;
 
 namespace Assets.Scripts.Units.StateMech.States
 {
     public class SnowmanAttack : IState
     {
         
-        private Transform transform;
-        private Transform targetTransform;
-        private NavMeshAgent agent;
-        private Animator animator;
+        private UnitConfiguration unitConfiguration;
         private HealthSystem healthSystem;
+        private Transform targetTransform;
+        private Transform transform;
+        private Animator animator;
+        private NavMeshAgent agent;
+        private bool isAttacking = true;
 
         private Coroutine currentCoroutine;
         public float WalkDelayIsSeconds { get; private set; } = 1;
@@ -35,26 +39,29 @@ namespace Assets.Scripts.Units.StateMech.States
             } 
         }
         private float _damage;
-        public float damage { get => _damage;
+        public float Damage { get => _damage;
             set {
                 if (value > 0 ) _damage = value;
             }
         }
 
-        private bool isAttacking = false;
 
         public SnowmanAttack(Transform transform, Animator animator) {
             this.transform = transform;
             this.animator = animator;
             this.agent = this.transform.GetComponent<NavMeshAgent>();
             this.healthSystem = transform.GetComponent<HealthSystem>();
+            this.unitConfiguration = transform.GetComponent<UnitConfiguration>();
 
-            WalkType = Random.Range(0, 2);
-            AttackType = 0;
+            WalkType = unitConfiguration.TypeWalkAnimation;
+            AttackType = unitConfiguration.TypeAttackAnimation;
+            Damage = unitConfiguration.Damage;
         }
         
 
         public void Start() {
+            WalkType = unitConfiguration.TypeWalkAnimation;
+            AttackType = unitConfiguration.TypeAttackAnimation;
         }
 
         public void Update() {
@@ -62,26 +69,49 @@ namespace Assets.Scripts.Units.StateMech.States
 
             agent.destination = targetTransform.position;
 
-            if (agent.remainingDistance > agent.stoppingDistance) {
+            if (agent.remainingDistance > agent.stoppingDistance)
+            {
                 agent.destination = targetTransform.position;
                 Walk();
             }
             else
-                if(isAttacking)
+            {
+                if (isAttacking)
+                {
                     Attack();
+                }
+            }
         }
 
         private void Attack() {
             isAttacking = false;
             animator.SetBool(AnimationConstants.IsWalking, false);
             animator.SetTrigger(AnimationConstants.Attack);
+
+            transform.LookAt(targetTransform.position);
+            OnAttack(unitConfiguration.weapon);
+
             currentCoroutine = Coroutines.Start(AttackDelay(AttackDelayIsSeconds));
+        }
+
+        public void OnAttack(IWeapon weapon)
+        {
+            if (weapon is null) {
+                Debug.Log("HEY, THIS SNOWMAN HAS NO WEAPON");
+                return;
+            }
+
+            var instance = Instantiator.Instantiate(weapon.GetPrefab(), unitConfiguration.SpawnPoint.position, unitConfiguration.SpawnPoint.rotation);
+            var instanceScr = instance.GetComponent<IWeapon>();
+            instanceScr.SetCreator(transform);
+            instanceScr.Setup(((Vector3.up / 10f) + (transform.forward)) * unitConfiguration.Damage, unitConfiguration.SpawnPoint);
         }
 
         private void Walk() {
             WalkTypeAnimationDefinitions();
             animator.SetBool(AnimationConstants.IsWalking, true);
         }
+
         private void WalkTypeAnimationDefinitions()
         {
             if (healthSystem.health >= healthSystem.MaxHealth) animator.SetInteger(AnimationConstants.WalkType, WalkType);
@@ -89,8 +119,6 @@ namespace Assets.Scripts.Units.StateMech.States
         }
 
         public void Exit() {
-            //Coroutines.Stop(currentCoroutine);
-            //targetTransform = null;
         }
 
         public void ChangeTarget(Transform targetTransform)
@@ -99,22 +127,6 @@ namespace Assets.Scripts.Units.StateMech.States
             agent.destination = targetTransform.position;
         }
 
-        //public void Stun() {
-        //    isAttacking = false;
-        //    animator.speed = 0;
-        //    agent.speed = 0;
-        //    agent.destination = transform.position;
-        //    currentCoroutine = Coroutines.Start(WalkingAfterStunDelay(WalkDelayIsSeconds));
-        //}
-        //private IEnumerator WalkingAfterStunDelay(float delayIsSecond) {
-        //    yield return new WaitForSeconds(delayIsSecond);
-
-        //    agent.destination = targetTransform.position;
-        //    agent.speed = 1;
-
-        //    animator.speed = 1;
-        //    isAttacking = true;
-        //}
         private IEnumerator AttackDelay(float delayIsSecond) {
             yield return new WaitForSeconds(delayIsSecond);
             isAttacking = true;

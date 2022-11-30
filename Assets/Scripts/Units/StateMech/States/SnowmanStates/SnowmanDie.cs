@@ -23,18 +23,11 @@ namespace Assets.Scripts.Units.StateMech.States
                 damagebleParts = transform.GetComponentsInChildren<IDamageable>().ToList();
                 destroyableParts.ForEach(x => x.Destroy());
                 damagebleParts.ForEach(x => x.Destroy());
-            Coroutines.Start(_Destroy());
+            UnityEngine.Object.Destroy(this.transform.gameObject, 1);
         }
         public void Update() {
         }
         public void Exit() {
-        }
-
-        private IEnumerator _Destroy()
-        {
-            yield return new WaitForSeconds(1);
-            UnityEngine.Object.Destroy(transform.gameObject);
-            //transform.gameObject.SetActive(false);
         }
     }
 }

@@ -3,11 +3,13 @@ using Assets.Scripts.Game.Pause;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using Sirenix.OdinInspector;
 
 namespace Assets.Scripts.Units.StateMech
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(HealthSystem))]
+    [RequireComponent(typeof(UnitConfiguration))]
     public class UnitBehavior : MonoBehaviour, IBehaviour, IGameStateHandler
     {
         [SerializeField] private StateDisposerType stateDisposerType;

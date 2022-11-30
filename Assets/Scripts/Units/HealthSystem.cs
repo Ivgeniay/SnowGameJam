@@ -1,4 +1,5 @@
 using Assets.Scripts.EventArgs;
+using Assets.Scripts.Units;
 using Assets.Scripts.Units.DamageMech;
 using System;
 using System.Collections.Generic;
@@ -10,18 +11,28 @@ public class HealthSystem : MonoBehaviour
     public event EventHandler OnDeath;
     public event EventHandler<TakeDamagePartEventArgs> OnTakeDamage;
 
-    [SerializeField] private float maxHealth;
-
+    private UnitConfiguration unitConfiguration;
     private List<IDamageable> damageablesParts;
+
+
+
+    [SerializeField] private float maxHealth = 1000;
     public float MaxHealth { get => maxHealth; }
     public float health { get; private set; }
     public bool isDead { get; private set; }  = false;
-
     private void Awake() {
+        unitConfiguration = GetComponent<UnitConfiguration>();
+        if (unitConfiguration is not null)
+            maxHealth = unitConfiguration.Health;
         health = maxHealth;
         damageablesParts = gameObject.GetComponentsInChildren<IDamageable>().ToList();
-        foreach (var el in damageablesParts) el.OnTakeDamage += OnTakeDamageHandler;
+        if (damageablesParts.Count > 0)
+            foreach (var el in damageablesParts) el.OnTakeDamage += OnTakeDamageHandler;
     }
+    private void Start() {
+    }
+
+    private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) => TakeDamage(sender, e);
     public void TakeDamage(object sender, TakeDamagePartEventArgs e) {
         if (isDead) return;
 
@@ -39,9 +50,8 @@ public class HealthSystem : MonoBehaviour
             OnDeath?.Invoke(this, EventArgs.Empty);
         }
         else {
-            health = health - e.Damage;
+            health -= e.Damage;
             OnTakeDamage?.Invoke(this, new TakeDamagePartEventArgs() { Damage = e.Damage, Direction = e.Direction, Shooter = e.Shooter, currentHealth = health});
         }
     }
-    private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) => TakeDamage(sender, e);
 }

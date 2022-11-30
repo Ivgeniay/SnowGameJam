@@ -22,6 +22,9 @@ namespace Assets.Scripts.Units.DamageMech
         {
             var bullet = collision.transform.GetComponent<IBullet>();
             if (bullet == null) return;
+            var me = transform.GetComponentInParent<UnitBehavior>().GetComponentInParent<Transform>();
+            if (bullet.GetCreater() == me) return;
+
 
             GetDamage(bullet.GetCreater(), bullet.GetDamage(), collision.contacts[0].normal);
         }
