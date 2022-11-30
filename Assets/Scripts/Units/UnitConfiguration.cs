@@ -15,6 +15,7 @@ namespace Assets.Scripts.Units
     {
         private NavMeshAgent agent;
         private UnitBehavior unitBehavior;
+        private StateDisposerType stateDisposerType;
 
         private void Awake() {
             transform.GetComponent<UnitBehavior>();
@@ -25,11 +26,13 @@ namespace Assets.Scripts.Units
         }
 
 
-        [Title("Weapons settings")]
+        [BoxGroup("Weapons settings")]
         [OdinSerialize] public IWeapon weapon;
+        [BoxGroup("Weapons settings")]
         [OdinSerialize] public Transform SpawnPoint;
 
         [Title("UnitBehaviour settings")]
+
         [OdinSerialize] public int IndexCurrentAttack { get; set; } = 0;
         [OdinSerialize] public int TypeAttackAnimation { get; private set; } = 0;
         [OdinSerialize] public int TypeWalkAnimation { get; private set; } = 0;
@@ -48,6 +51,10 @@ namespace Assets.Scripts.Units
             Gizmos.DrawSphere(transform.position, AttackDistance);
         }
 
+        private void OnValidate()
+        {
+            unitBehavior = GetComponent<UnitBehavior>();
 
+        }
     }
 }

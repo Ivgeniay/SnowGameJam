@@ -43,6 +43,10 @@ namespace Assets.Scripts.Player.Weapon
             damage = velocity.magnitude;
         }
 
+        private void Update() {
+            SelfDestroy(-100);
+        }
+
         private void FixedUpdate() {
             if (curvatureData is null) return;
                 rigidbody.AddForce(curvatureData.GetForce());
@@ -68,5 +72,12 @@ namespace Assets.Scripts.Player.Weapon
             Destroy(gameObject);
             isCollided = true;
         }
+
+        private void SelfDestroy(float yPosition) {
+            if (transform.position.y > yPosition) return;
+            Destroy(gameObject);
+        }
+
+
     }
 }

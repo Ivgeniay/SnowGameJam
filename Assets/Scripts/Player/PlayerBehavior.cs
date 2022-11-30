@@ -50,7 +50,6 @@ namespace Assets.Scripts.Player
         public void GameStateHandle(GameState isPaused)
         {
             Debug.Log(isPaused);
-            //throw new NotImplementedException();
         }
 
     }
