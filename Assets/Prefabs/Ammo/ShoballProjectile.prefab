@@ -152,11 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b0252021bebf7a41bdf79d6f13c8406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snowBall: {fileID: 7461643252458344323}
-  snowBallSpawnPoint: {fileID: 0}
   impactEffect: {fileID: 132280928587042886, guid: cf57ccfb90df16448872801b719905b5,
     type: 3}
-  Collided: 0
 --- !u!54 &-701449129959242565
 Rigidbody:
   m_ObjectHideFlags: 0

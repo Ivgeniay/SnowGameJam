@@ -35,7 +35,6 @@ public class InputManager : MonoBehaviour
         _playerInputAction.FPS.Aim.canceled += OnAimCanceled;
         _playerInputAction.FPS.Aim.started += OnAimStarted;
 
-        Debug.Log(Guid.NewGuid());
     }
 
     private void OnEnable()
