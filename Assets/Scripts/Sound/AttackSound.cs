@@ -21,6 +21,7 @@ namespace Assets.Scripts.Sound
         {
             var rnd = Random.Range(0, soundManager.hits.Length);
             var sound = soundManager.hits[rnd];
+            //Debug.Log(soundManager.hits[rnd].name);
             PlayAudio(sound);
         }
     }
