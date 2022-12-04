@@ -1,10 +1,9 @@
 using Assets.Scripts.Units.StateMech;
-using Assets.Scripts.Game;
 using Assets.Scripts.Game.Pause;
 using Assets.Scripts.Player.Control;
-using Sirenix.OdinInspector;
-using System;
+using UnityEngine.EventSystems;
 using UnityEngine;
+using System;
 
 namespace Assets.Scripts.Player
 {
@@ -15,6 +14,7 @@ namespace Assets.Scripts.Player
         [SerializeField] private float jumpHeight = 1.0f;
         [SerializeField] private float gravityValue = -9.81f;
         [SerializeField] private Animator animator;
+
 
         private PlayerBehavior playerBehavior;
         private PlayerControlContext playerControlContext;
@@ -30,7 +30,6 @@ namespace Assets.Scripts.Player
         private static readonly int IsMoving = Animator.StringToHash("IsMoving");
         private static readonly int IsAiming = Animator.StringToHash("IsAiming");
         //private static readonly int jump = Animator.StringToHash("Jump");
-
 
 
         private void Awake(){
@@ -55,6 +54,8 @@ namespace Assets.Scripts.Player
 
         public PlayerControlContext GetContext() => playerControlContext;
         public void Move() {
+
+
             if (_controller == null) return;
             if (_controller.isGrounded && _playerVelocity.y < 0)
                 _playerVelocity.y = 0f;
@@ -115,6 +116,8 @@ namespace Assets.Scripts.Player
         }
         private void OnAimCanceled()
         {
+            if (_isAimingNow == false) return;
+
             _isAimingNow = false;
             playerControlContext.SetPlayerState(PlayerState.Normal);
             animator.SetBool(IsAiming, false);
@@ -144,7 +147,7 @@ namespace Assets.Scripts.Player
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(ray, out RaycastHit hitinfo);
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
                 Game.Game.Manager.MoveAssistant(hitinfo.point, assistantType);
         }
         private void OnFastAttackPerformed()
@@ -189,5 +192,7 @@ namespace Assets.Scripts.Player
                 playerBehavior.AmmoIsOver += OnAmmoIsOver;
             }
         }
+
+
     }
 }

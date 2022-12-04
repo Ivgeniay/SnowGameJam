@@ -12,16 +12,17 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         private NavMeshAgent agent;
         private Vector3 destination;
         private LineRenderer lineRenderer;
+        private UnitConfiguration unitConfiguration;
 
         private List<Vector3> pointsDest = new List<Vector3>();
 
         public AssistantFollowPoint(Transform transform)
         {
             this.transform = transform;
+            unitConfiguration = transform.GetComponent<UnitConfiguration>();
             agent = transform.GetComponent<NavMeshAgent>();
-            if (!agent.isActiveAndEnabled) {
-                Logger.Logger.SendMsg("Agent is not active");
-            }
+
+            if (!agent.isActiveAndEnabled) Logger.Logger.SendMsg("Agent is not active");
 
             if (transform.TryGetComponent<LineRenderer>(out LineRenderer lineRenderer))
                 this.lineRenderer = lineRenderer;
@@ -35,8 +36,6 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         }
 
         public void Update() {
-
-
             agent.destination = destination;
             lineRenderer.positionCount = pointsDest.Count + 1;
             lineRenderer.SetPosition(0, transform.position);
@@ -47,7 +46,7 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
 
 
             var distance = (destination - transform.position).magnitude;
-            if (distance > 0.5f) return;
+            if (distance > unitConfiguration.AttackDistance) return;
             pointsDest.Remove(destination);
 
             if (pointsDest.Count > 0) {

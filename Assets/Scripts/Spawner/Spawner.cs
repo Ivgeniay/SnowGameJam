@@ -13,16 +13,19 @@ namespace Assets.Scripts.Spawner
         public event Action<int> OnStageStart;
         //public event Action OnSpawned;
 
+        [Header("Game Objects setUp")]
         [SerializeField] private GameObject spanwObject;
         [SerializeField] private Transform XmasTree;
-        [SerializeField] private int MaxXOffset;
-        [SerializeField] private int MaxZOffset;
-        [SerializeField] private int currentWave = 0;
-        [SerializeField] private int[] enemyNumDependWave = new int[10];
+        [Header("Waves")]
+        [SerializeField] public int currentWave = 0;
         [SerializeField] private int currentWaveSpeed;
-        [SerializeField] private float multiplyEnemy = 1.5f;
+        [Header("Time")]
         [SerializeField] private float timeSpawnInSeconds = 0;
         [SerializeField] private float timeSpawnWaveOffset = 0;
+        [Header("Over Wave Multiplier")]
+        [SerializeField] private float multiplyEnemy = 1.5f;
+
+        [SerializeField] private int[] enemyNumDependWave = new int[10];
 
         #region
         private void Start()
@@ -39,7 +42,7 @@ namespace Assets.Scripts.Spawner
         #endregion
 
         public void SpawnSnowman(Vector3 position) {
-            var newSnowman = Game.Game.Manager.InstantiateSnowman(spanwObject, transform.position, Quaternion.identity);
+            var newSnowman = Game.Game.Manager.InstantiateNpc(spanwObject, transform.position, Quaternion.identity);
             newSnowman.Attack(XmasTree);
         }
 
@@ -60,13 +63,13 @@ namespace Assets.Scripts.Spawner
                 OnStageStart?.Invoke(i + 1);
                 if (i < 10) {
                     for (int j = 0; j < enemyNumDependWave[i]; j++) {
-                        SpawnSnowman(new Vector3(rnd.Next(MaxXOffset), 0, rnd.Next(MaxZOffset)));
+                        SpawnSnowman(transform.position);
                         yield return new WaitForSeconds(timeSpawnInSeconds);
                     }
                 }
                 else {
                     for(int j = 0; j < i * multiplyEnemy; j++) {
-                        SpawnSnowman(new Vector3(rnd.Next(MaxXOffset), 0, rnd.Next(MaxZOffset)));
+                        SpawnSnowman(transform.position);
                         yield return new WaitForSeconds(timeSpawnInSeconds);
                     }
                 }

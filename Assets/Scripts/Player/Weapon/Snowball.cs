@@ -25,7 +25,7 @@ namespace Assets.Scripts.Player.Weapon
             }
         }
 
-        public void Setup(Vector3 velocity, Transform snowBallSpawnPoint, CurvatureData curvatureData = null)
+        public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint, CurvatureData curvatureData = null)
         {
             this.snowBallSpawnPoint = snowBallSpawnPoint;
             this.curvatureData = curvatureData;
@@ -33,7 +33,7 @@ namespace Assets.Scripts.Player.Weapon
 
             damage = velocity.magnitude;
         }
-        public void GhostSetup(Vector3 velocity, CurvatureData curvatureData = null)
+        public void GhostSetup(in Vector3 velocity, CurvatureData curvatureData = null)
         {
             isGhost = true;
             this.curvatureData = curvatureData;

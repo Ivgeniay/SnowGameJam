@@ -33,6 +33,7 @@ namespace Assets.Scripts.Units.StateMech
         public void Attack(Transform target) => stateDisposer.Attack(target);
         public void Follow(Vector3 vector3) => stateDisposer.Follow(vector3);
         public void Follow(Transform transform) => stateDisposer.Follow(transform);
+        public void Stop() => Debug.Log("Stop machine " + transform.position);
         public Type BehaviourType { get {   
                 if (stateDisposer is not null) return stateDisposer.GetType(); 
                 else{

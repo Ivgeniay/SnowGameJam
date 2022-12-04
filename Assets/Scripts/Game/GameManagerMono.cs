@@ -1,18 +1,19 @@
 using Assets.Scripts.Game;
 using Assets.Scripts.Game.Pause;
+using Init.Demo;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
 public class GameManagerMono : SerializedMonoBehaviour, IGameStateHandler
 {
+
     [BoxGroup("Game State")]
     [OdinSerialize]
     [EnumToggleButtons]
     [OnValueChanged("GameStateChange")]
     private Pause CurrentState;
 
-    [SerializeField] private string msg;
 
     private void Start() {
         Game.Manager.Initialize();

@@ -1,8 +1,6 @@
-﻿using Assets.Scripts.Player.Control;
-using Assets.Scripts.Player.Weapon;
-using Unity.VisualScripting;
+﻿using Assets.Scripts.Player.Weapon;
+using Sisus.Init;
 using UnityEngine;
-using UnityEngine.ProBuilder;
 
 namespace Assets.Scripts.Player
 {
@@ -13,17 +11,18 @@ namespace Assets.Scripts.Player
         private float _defaultForce;
         private bool isShowProjection = false;
 
-        [SerializeField] public Transform SpawnPoint;
+        [SerializeField] private Transform SpawnPoint;
         [SerializeField] private Projection projection;
         [SerializeField] private IWeapon currentWeapon;
 
         [SerializeField] private float _forceIncreaseInSecond = 500f;
-        [SerializeField] private float _force = 500f;
+        [SerializeField] private float _force = 750f;
         [SerializeField] private float _maxForce = 5000f;
 
-        [SerializeField] private float leftForse = 20;
-        [SerializeField] private float rightForse = 20;
-        [SerializeField] private float duration = 0.5f;
+        [SerializeField] private float leftForse = 0;
+        [SerializeField] private float rightForse = 0;
+        [SerializeField] private float duration = 0.2f;
+
 
         private void Awake() {
             if (projection is null) projection = GetComponent<Projection>();
@@ -107,6 +106,8 @@ namespace Assets.Scripts.Player
             InputManager.Instance.AimPerformed -= OnAimPerformed;
             InputManager.Instance.AimCanceled -= OnAimCanceled;
         }
+
+
     }
 }
 

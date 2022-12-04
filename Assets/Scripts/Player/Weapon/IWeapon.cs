@@ -6,8 +6,8 @@ namespace Assets.Scripts.Player.Weapon
     {
         public Transform GetPrefab();
         public bool isCollided { get; set; }
-        public void Setup(Vector3 velocity, Transform spawnPointTransform, CurvatureData curvatureData = null);
-        public void GhostSetup(Vector3 velocity, CurvatureData curvatureData = null);
+        public void Setup(in Vector3 velocity, Transform spawnPointTransform, CurvatureData curvatureData = null);
+        public void GhostSetup(in Vector3 velocity, CurvatureData curvatureData = null);
         public void SetCreator(Transform transform);
     }
 }

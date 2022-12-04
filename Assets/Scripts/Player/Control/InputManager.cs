@@ -1,11 +1,15 @@
+using Sisus.Init;
 using System;
 using UnityEngine;
+
 
 public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
 
     private PlayerInputAction _playerInputAction;
+
+    #region Action's
     public event Action AimCanceled;
     public event Action AimStarted;
     public event Action AimPerformed;
@@ -14,6 +18,7 @@ public class InputManager : MonoBehaviour
     public event Action AssistanControllCanceled;
     public event Action FastAttackPerformed;
     public event Action<float> MouseWheelPerformed;
+    #endregion
 
     private void Awake()
     {
@@ -29,6 +34,8 @@ public class InputManager : MonoBehaviour
         _playerInputAction.FPS.Aim.performed += OnAimPerformed;
         _playerInputAction.FPS.Aim.canceled += OnAimCanceled;
         _playerInputAction.FPS.Aim.started += OnAimStarted;
+
+        Debug.Log(Guid.NewGuid());
     }
 
     private void OnEnable()

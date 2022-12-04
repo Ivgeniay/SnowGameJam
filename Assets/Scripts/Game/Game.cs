@@ -17,7 +17,7 @@ namespace Assets.Scripts.Game
         public event EventHandler<OnNpcInstantiateEventArg> OnNpcInstantiate;
 
         private static Game instance;
-        private StorageNpc storage;
+        public StorageNpc storage;
         public GameStateManager GameStateManager { get; private set; }
         public CursorSetting CursorSetting { get; private set; }
         public static Game Manager {
@@ -43,7 +43,7 @@ namespace Assets.Scripts.Game
             OnInitialized?.Invoke();
         }
 
-        public UnitBehavior InstantiateSnowman(GameObject prefab, Vector3 position, Quaternion quaternion)
+        public UnitBehavior InstantiateNpc(GameObject prefab, Vector3 position, Quaternion quaternion)
         {
             var go = Instantiator.Instantiate(prefab, position, quaternion);
             var scr = go.GetComponent<UnitBehavior>();

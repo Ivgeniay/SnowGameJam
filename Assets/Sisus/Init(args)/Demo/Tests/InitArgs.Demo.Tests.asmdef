@@ -1,0 +1,27 @@
+{
+    "name": "InitArgs.Demo.Tests",
+    "rootNamespace": "Init.Demo.Tests",
+    "references": [
+        "GUID:d263cfcb6fe4c8e458b5530d29ee4d1f",
+        "GUID:382b51f79fae5634884dfdc10bd52eeb",
+        "GUID:c4f855d8e782df94786dd683da2bf4f3",
+        "GUID:689c10e88b27c2e439aecdc25b90a792",
+        "GUID:0ea6477025809724888a559d01a5a4b9",
+        "GUID:f60ee4fbebe90334eacb85cdfb7a4200",
+        "GUID:1298789654cd78d4fbd6b242bca0f598",
+        "GUID:614fb3d7c9d697d44973a74cb53828a4"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

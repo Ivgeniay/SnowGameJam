@@ -1,13 +1,8 @@
 ﻿using Assets.Scripts.Game.Pause;
 using Assets.Scripts.Player.Control;
 using Assets.Scripts.Player.Weapon;
-using Sirenix.OdinInspector.Editor.Validation;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-//Vector3(0,1.45000005,0)
 
 namespace Assets.Scripts.Player
 {
@@ -47,8 +42,7 @@ namespace Assets.Scripts.Player
         private void GameManagerOnInitialized() {
             Game.Game.Manager.GameStateManager.Register(this);
         }
-        public void GameStateHandle(GameState isPaused)
-        {
+        public void GameStateHandle(GameState isPaused) {
             Debug.Log(isPaused);
         }
 
