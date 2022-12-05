@@ -549,7 +549,7 @@ MonoBehaviour:
     SerializationNodes:
     - Name: CurrentState
       Entry: 3
-      Data: 1
+      Data: 0
 --- !u!114 &7569296111103616970
 MonoBehaviour:
   m_ObjectHideFlags: 0

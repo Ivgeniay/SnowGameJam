@@ -1,5 +1,8 @@
-﻿using Assets.Scripts.Player.Weapon;
+﻿using Assets.Scripts.Player.Shoot;
+using Assets.Scripts.Player.Weapon;
+using Assets.Scripts.Utilities;
 using Sisus.Init;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -11,9 +14,12 @@ namespace Assets.Scripts.Player
         private float _defaultForce;
         private bool isShowProjection = false;
 
-        [SerializeField] private Transform SpawnPoint;
+        [SerializeField] private Transform spawnPoint;
+        [SerializeField] public Transform SpawnPoint1 {get; private set; }
         [SerializeField] private Projection projection;
+
         [SerializeField] private IWeapon currentWeapon;
+        [SerializeField] private IShoot shootType;
 
         [SerializeField] private float _forceIncreaseInSecond = 500f;
         [SerializeField] private float _force = 750f;
@@ -24,11 +30,26 @@ namespace Assets.Scripts.Player
         [SerializeField] private float duration = 0.2f;
 
 
+
+        [Header("NonPhysics")]
+        private Besiers besiers;
+        [SerializeField] public float throwLength;
+        [SerializeField] public Vector3 curve ;
+        [SerializeField] public float speedOfNonPhysics;
+        [SerializeField][Range(0, 1)] public float t;
+
+
         private void Awake() {
             if (projection is null) projection = GetComponent<Projection>();
             if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
             currentWeapon = playerBehavior.GetWeaponFromInventory(WeaponVariety.snowball);
             _defaultForce = _force;
+
+            besiers = new Besiers();
+            Vector3[] points = new Vector3[3];
+
+            //shootType = new PhysicAttack(transform, spawnPoint);
+            shootType = new BesiersAttack(transform, spawnPoint);
         }
         private void Start() {
             InputManager.Instance.MouseWheelPerformed += ChangeWeapon;
@@ -52,17 +73,11 @@ namespace Assets.Scripts.Player
                 Debug.Log("HEY, THERE ARE NO AMMO");
                 return;
             }
-            
 
-            var instance = Instantiate(weapon.GetPrefab(), SpawnPoint.position, SpawnPoint.rotation);
-            var instanceScr = instance.GetComponent<IWeapon>();
-            instanceScr.SetCreator(transform);
-
-            var lForse = leftForse * (-Camera.main.transform.right);
-            var rForse = rightForse * Camera.main.transform.right;
-            var curv = new CurvatureData(lForse, rForse, duration);
-
-            instanceScr.Setup(((Vector3.up / 10f) + (Camera.main!.transform.forward)) * _force, SpawnPoint, curv);
+            shootType.GetAttack( new AttackDTO() { 
+                                    SpawnPoint = spawnPoint, 
+                                    ThrowForce = _force, 
+                                    Weapon = weapon });
 
             playerBehavior.decrimentAmmo(weapon);
             _force = _defaultForce;
@@ -72,13 +87,15 @@ namespace Assets.Scripts.Player
             if (_force < _maxForce) _force += _forceIncreaseInSecond * Time.deltaTime;
             else _force = _maxForce;
 
-            var lForse = leftForse * (-Camera.main.transform.right);
-            var rForse = rightForse * Camera.main.transform.right;
-            var curv = new CurvatureData(lForse, rForse, duration);
-
-            var weapon = currentWeapon as MonoBehaviour;
-            projection.SimulateTrajectory(weapon.GetComponent<IWeapon>(), SpawnPoint, ((Vector3.up / 10f) + (Camera.main!.transform.forward)) * _force, curv);
+            shootType.GetAim(new AimDTO() { 
+                                    IncreaseInSecond = _forceIncreaseInSecond, 
+                                    MaxForce = _maxForce, 
+                                    Weapon = currentWeapon, 
+                                    Force = _force, 
+                                    SpawnPoint = spawnPoint, 
+                                    Projection = projection });
         }
+
         public IWeapon GetCurrentWeapon() => currentWeapon;
         private void ProjectionConrol() {
             projection.EnableLine();
