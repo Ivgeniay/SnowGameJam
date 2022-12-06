@@ -65,15 +65,55 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 17011200000049006e00640065007800430075007200720065006e007400410074007400610063006b00000000001701130000005400790070006500410074007400610063006b0041006e0069006d006100740069006f006e00010000001701110000005400790070006500570061006c006b0041006e0069006d006100740069006f006e000100000017011a0000005400790070006500440061006d0061006700650062006c006500570061006c006b0041006e0069006d006100740069006f006e00000000001f010b0000004d006f00760069006e00670053007000650065006400cdcc5c401f010e0000005300700065006500640041006e0069006d006100740069006f006e000000803f1f01060000004800650061006c0074006800000048421f01080000005300740075006e00540069006d0065000000003f1f0106000000440061006d006100670065000000803f1f010e000000410074007400610063006b00440069007300740061006e0063006500000000001f0114000000410074007400610063006b00440065006c0061007900490073005300650063006f006e00640073000000003f2d010600000077006500610070006f006e000b010a00000053007000610077006e0050006f0069006e00740000000000
+    SerializedFormat: 2
+    SerializedBytes: 
     ReferencedUnityObjects:
+    - {fileID: 7161260070581351157, guid: 340181363623c14478a33c41a22f9ed5, type: 3}
     - {fileID: 584183800014290144}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: IndexCurrentAttack
+      Entry: 3
+      Data: 0
+    - Name: TypeAttackAnimation
+      Entry: 3
+      Data: 1
+    - Name: TypeWalkAnimation
+      Entry: 3
+      Data: 1
+    - Name: TypeDamagebleWalkAnimation
+      Entry: 3
+      Data: 0
+    - Name: MovingSpeed
+      Entry: 4
+      Data: 3.45
+    - Name: SpeedAnimation
+      Entry: 4
+      Data: 1
+    - Name: StunTime
+      Entry: 4
+      Data: 0.5
+    - Name: Damage
+      Entry: 4
+      Data: 1
+    - Name: AttackDistance
+      Entry: 4
+      Data: 0
+    - Name: AttackDelayIsSeconds
+      Entry: 4
+      Data: 0.5
+    - Name: Health
+      Entry: 4
+      Data: 50
+    - Name: weapon
+      Entry: 10
+      Data: 0
+    - Name: SpawnPoint
+      Entry: 10
+      Data: 1
   SpawnPoint: {fileID: 584183800014290144}
 --- !u!114 &6279370393105572915
 MonoBehaviour:
@@ -102,7 +142,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 60
   m_AngularSpeed: 120
-  m_StoppingDistance: 2
+  m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Player.Weapon;
+﻿using Assets.Scripts.Player.Shoot.DTO;
+using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
@@ -52,22 +53,4 @@ namespace Assets.Scripts.Player.Shoot
             aimDTO.Projection.SimulateTrajectory(weapon.GetComponent<IWeapon>(), spawnPoint, ((Vector3.up / 10f) + (Camera.main!.transform.forward)) * aimDTO.Force);
         }
     }
-}
-
-
-public class AttackDTO
-{
-    public IWeapon Weapon;
-    public Transform SpawnPoint;
-    public float ThrowForce;
-}
-
-public class AimDTO
-{
-    public IWeapon Weapon;
-    public Transform SpawnPoint;
-    public Projection Projection;
-    public float MaxForce;
-    public float Force;
-    public float IncreaseInSecond;
 }

@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Player.Shoot;
+using Assets.Scripts.Player.Shoot.DTO;
 using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Utilities;
 using Sisus.Init;
@@ -13,6 +14,7 @@ namespace Assets.Scripts.Player
 
         private float _defaultForce;
         private bool isShowProjection = false;
+        private AimDTO aimDTO;
 
         [SerializeField] private Transform spawnPoint;
         [SerializeField] public Transform SpawnPoint1 {get; private set; }
@@ -44,6 +46,7 @@ namespace Assets.Scripts.Player
             if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
             currentWeapon = playerBehavior.GetWeaponFromInventory(WeaponVariety.snowball);
             _defaultForce = _force;
+            aimDTO = new();
 
             besiers = new Besiers();
             Vector3[] points = new Vector3[3];
@@ -87,13 +90,15 @@ namespace Assets.Scripts.Player
             if (_force < _maxForce) _force += _forceIncreaseInSecond * Time.deltaTime;
             else _force = _maxForce;
 
-            shootType.GetAim(new AimDTO() { 
-                                    IncreaseInSecond = _forceIncreaseInSecond, 
-                                    MaxForce = _maxForce, 
-                                    Weapon = currentWeapon, 
-                                    Force = _force, 
-                                    SpawnPoint = spawnPoint, 
-                                    Projection = projection });
+
+            aimDTO.IncreaseInSecond = _forceIncreaseInSecond;
+            aimDTO.MaxForce = _maxForce;
+            aimDTO.Weapon = currentWeapon;
+            aimDTO.Force = _force;
+            aimDTO.SpawnPoint = spawnPoint;
+            aimDTO.Projection = projection;
+
+            shootType.GetAim(aimDTO);
         }
 
         public IWeapon GetCurrentWeapon() => currentWeapon;
@@ -122,6 +127,10 @@ namespace Assets.Scripts.Player
             InputManager.Instance.MouseWheelPerformed -= ChangeWeapon;
             InputManager.Instance.AimPerformed -= OnAimPerformed;
             InputManager.Instance.AimCanceled -= OnAimCanceled;
+        }
+        private void OnValidate()
+        {
+            if (throwLength < 2) throwLength = 2;  
         }
 
 

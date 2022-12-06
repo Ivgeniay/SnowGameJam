@@ -1,9 +1,4 @@
-﻿using Assets.Scripts.Player.Weapon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Assets.Scripts.Player.Shoot.DTO;
 
 namespace Assets.Scripts.Player.Shoot
 {

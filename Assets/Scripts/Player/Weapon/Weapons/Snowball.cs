@@ -1,11 +1,14 @@
 ﻿using Assets.Scripts.Particles;
+using Assets.Scripts.Player.Weapon.DTO;
 using Assets.Scripts.Units.StateMech;
+using Assets.Scripts.Utilities;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts.Player.Weapon
 {
-    public class Snowball : MonoBehaviour, IWeapon, IBullet
+    public class Snowball : MonoBehaviour, IWeapon, IBullet, INonPhysicWeapon
     {
         [SerializeField] private Transform impactEffect;
 
@@ -14,6 +17,9 @@ namespace Assets.Scripts.Player.Weapon
         private float damage;
         private Transform creator;
         private CurvatureData curvatureData;
+
+        private NonPhysicParameters nonPhysicParameters;
+        private Besiers besie;
 
         public bool isCollided { get; set; }
         private bool isGhost = false;
@@ -78,6 +84,33 @@ namespace Assets.Scripts.Player.Weapon
             Destroy(gameObject);
         }
 
+        public IEnumerator SetNonPhyMove(NonPhysicParameters _nonPhysicParameters)
+        {
+            if (nonPhysicParameters is null) nonPhysicParameters = (NonPhysicParameters)_nonPhysicParameters.Clone();
+            if (besie is null) besie = new Besiers();
 
+            float t = nonPhysicParameters.t;
+
+            if (t >= 1)
+            {
+                rigidbody.useGravity = true;
+                rigidbody.isKinematic = false;
+                Vector3 direction = Vector3.zero;
+                rigidbody.AddForce(direction * nonPhysicParameters.force);
+
+                yield break;
+            }
+
+            rigidbody.useGravity = false;
+            rigidbody.isKinematic = true;
+
+            nonPhysicParameters.pastPosition = besie.GetPoint(nonPhysicParameters.positions, t);
+
+            transform.position = nonPhysicParameters.pastPosition;
+            nonPhysicParameters.t += nonPhysicParameters.step;
+            yield return new WaitForSeconds(nonPhysicParameters.delaySecond);
+            StartCoroutine(SetNonPhyMove(nonPhysicParameters));
+            
+        }
     }
 }
