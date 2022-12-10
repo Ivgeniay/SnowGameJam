@@ -27,19 +27,18 @@ namespace Assets.Scripts.Player
         [SerializeField] private float _force = 750f;
         [SerializeField] private float _maxForce = 5000f;
 
-        [SerializeField] private float leftForse = 0;
-        [SerializeField] private float rightForse = 0;
-        [SerializeField] private float duration = 0.2f;
+        //[SerializeField] private float leftForse = 0;
+        //[SerializeField] private float rightForse = 0;
+        //[SerializeField] private float duration = 0.2f;
 
 
 
         [Header("NonPhysics")]
         private Besiers besiers;
+        [SerializeField] public Vector3 curve;
         [SerializeField] public float throwLength;
-        [SerializeField] public Vector3 curve ;
-        [SerializeField] public float speedOfNonPhysics;
-        [SerializeField][Range(0, 1)] public float t;
-
+        [SerializeField] [Range(1, 100)] public int StepNonPhysic;
+        [SerializeField] [Range(1, 100)] public int frameDelayNonPhysics;
 
         private void Awake() {
             if (projection is null) projection = GetComponent<Projection>();
@@ -128,8 +127,7 @@ namespace Assets.Scripts.Player
             InputManager.Instance.AimPerformed -= OnAimPerformed;
             InputManager.Instance.AimCanceled -= OnAimCanceled;
         }
-        private void OnValidate()
-        {
+        private void OnValidate() {
             if (throwLength < 2) throwLength = 2;  
         }
 

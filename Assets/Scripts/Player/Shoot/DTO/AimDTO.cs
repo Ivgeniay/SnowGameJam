@@ -8,8 +8,9 @@ namespace Assets.Scripts.Player.Shoot.DTO
         public IWeapon Weapon;
         public Transform SpawnPoint;
         public Projection Projection;
+
+        public float IncreaseInSecond;
         public float MaxForce;
         public float Force;
-        public float IncreaseInSecond;
     }
 }

@@ -2,6 +2,7 @@
 using Assets.Scripts.Player.Weapon.DTO;
 using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.Utilities;
+using Init.Demo;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace Assets.Scripts.Player.Weapon
         private NonPhysicParameters nonPhysicParameters;
         private Besiers besie;
 
-        public bool isCollided { get; set; }
+        public bool isCollided { get; set; } = false;
         private bool isGhost = false;
 
         private void Awake() {
@@ -65,7 +66,10 @@ namespace Assets.Scripts.Player.Weapon
 
         private void OnCollisionEnter(Collision collision)
         {
+            //Debug.Log($"{this} created by {GetCreater()} collision {collision.transform.name}");
+            if (isCollided) return;
             if (GetCreater() == collision.transform) return;
+
 
             var unitBehaviour = collision.transform.GetComponentInParent<UnitBehavior>();
             if (unitBehaviour != null) {
@@ -86,28 +90,38 @@ namespace Assets.Scripts.Player.Weapon
 
         public IEnumerator SetNonPhyMove(NonPhysicParameters _nonPhysicParameters)
         {
-            if (nonPhysicParameters is null) nonPhysicParameters = (NonPhysicParameters)_nonPhysicParameters.Clone();
+            if (nonPhysicParameters is null) {
+                nonPhysicParameters = (NonPhysicParameters)_nonPhysicParameters.Clone();
+                nonPhysicParameters.pastPosition = transform.position;
+            }
+
             if (besie is null) besie = new Besiers();
 
             float t = nonPhysicParameters.t;
+            transform.position = nonPhysicParameters.pastPosition;
 
             if (t >= 1)
             {
                 rigidbody.useGravity = true;
-                rigidbody.isKinematic = false;
-                Vector3 direction = Vector3.zero;
-                rigidbody.AddForce(direction * nonPhysicParameters.force);
+                //rigidbody.isKinematic = false;
+                var heading = nonPhysicParameters.positions[2] - nonPhysicParameters.positions[1];
+                float distance = Vector3.Distance(nonPhysicParameters.positions[1], nonPhysicParameters.positions[2]);
+                Vector3 direction = heading / distance;
+
+                Debug.Log(direction);
+                //yield return new WaitForFixedUpdate();
+
+                rigidbody.AddForce(direction * 1500);
 
                 yield break;
             }
 
             rigidbody.useGravity = false;
-            rigidbody.isKinematic = true;
+            //rigidbody.isKinematic = true;
 
             nonPhysicParameters.pastPosition = besie.GetPoint(nonPhysicParameters.positions, t);
-
-            transform.position = nonPhysicParameters.pastPosition;
             nonPhysicParameters.t += nonPhysicParameters.step;
+
             yield return new WaitForSeconds(nonPhysicParameters.delaySecond);
             StartCoroutine(SetNonPhyMove(nonPhysicParameters));
             

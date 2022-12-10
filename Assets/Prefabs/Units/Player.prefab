@@ -134,10 +134,10 @@ MonoBehaviour:
   leftForse: 0
   rightForse: 0
   duration: 0.2
-  throwLength: 2
   curve: {x: 0, y: 2, z: 0}
-  speedOfNonPhysics: 0
-  t: 0
+  throwLength: 50
+  StepNonPhysic: 10
+  frameDelayNonPhysics: 10
 --- !u!114 &3859332669641396370
 MonoBehaviour:
   m_ObjectHideFlags: 0
