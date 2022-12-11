@@ -48,7 +48,6 @@ namespace Assets.Scripts.Player.Shoot
             _ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 
             Physics.Raycast(_ray, out RaycastHit hitinfo, throwLength);
-            //Debug.DrawRay(_ray.origin, _ray.direction * throwLength, Color.green);
 
             if (hitinfo.collider is not null) {
                 points[2] = hitinfo.point;
@@ -87,11 +86,12 @@ namespace Assets.Scripts.Player.Shoot
             instanceScr.SetCreator(transform);
 
             var nonPhy = instance.GetComponent<INonPhysicWeapon>();
+            nonPhy.ItineraryPoints = points;
+
             Coroutines.Start(nonPhy.SetNonPhyMove(new NonPhysicParameters() 
                 {
                     delaySecond = shootingСontrol.frameDelayNonPhysics * 0.001f,
                     step = shootingСontrol.StepNonPhysic * 0.001f,
-                    positions = points,
                     t = 0
                 }));
         }

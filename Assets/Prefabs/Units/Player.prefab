@@ -112,8 +112,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 879022c3a8349fe47a36a8291d1f985e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  "shooting\u0421ontrol": {fileID: 3859332669641396457}
-  inventory: {fileID: 3859332669641396375}
 --- !u!114 &3859332669641396457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,12 +126,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 3859332669786556189}
   projection: {fileID: 3859332669641396374}
-  _forceIncreaseInSecond: 500
-  _force: 750
-  _maxForce: 5000
-  leftForse: 0
-  rightForse: 0
-  duration: 0.2
   curve: {x: 0, y: 2, z: 0}
   throwLength: 50
   StepNonPhysic: 10
@@ -168,7 +160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   line: {fileID: 3859332669641396373}
   maxPhysicsFrameIterations: 100
-  obstaclesParent: {fileID: 0}
+  obstaclesParent: {fileID: 3859332669641396372}
 --- !u!114 &3859332669641396375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,8 +178,6 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 2542593025626988499, guid: 1558f6091120f404d86491e547d1ea8a, type: 3}
-    - {fileID: -2892504049773441522, guid: 14f34825dab29db4d9afc2568f5e5b32, type: 3}
-    - {fileID: 7161260070581351157, guid: 340181363623c14478a33c41a22f9ed5, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -206,7 +196,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 3
+      Data: 1
     - Name: 
       Entry: 7
       Data: 
@@ -215,31 +205,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 3
-      Data: 20
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 10
-      Data: 1
-    - Name: $v
-      Entry: 3
-      Data: 45
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 10
-      Data: 2
-    - Name: $v
-      Entry: 3
-      Data: 25
+      Data: 50
     - Name: 
       Entry: 8
       Data: 
@@ -249,7 +215,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  snowball: {fileID: -2892504049773441522, guid: 14f34825dab29db4d9afc2568f5e5b32,
+  snowball: {fileID: 2542593025626988499, guid: 1558f6091120f404d86491e547d1ea8a,
     type: 3}
 --- !u!120 &3859332669641396373
 LineRenderer:

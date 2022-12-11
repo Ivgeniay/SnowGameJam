@@ -6,6 +6,7 @@ using Sirenix.Serialization;
 using System;
 using Sirenix.OdinInspector;
 using Random = System.Random;
+using Sirenix.Utilities;
 
 [Serializable]
 public class Inventory : SerializedMonoBehaviour
@@ -16,6 +17,12 @@ public class Inventory : SerializedMonoBehaviour
     [SerializeField] private Snowball snowball;
     [OdinSerialize] private Dictionary<IWeapon, int> Weapons;
 
+    private void Start()
+    {
+        //Weapons.ForEach(x => Debug.Log($"{x.Key} {x.Value}"));
+        //Debug.Log(snowball.name);
+    }
+
     public void AddAmmo(IWeapon weapon, int amount) {
         if (Weapons.TryGetValue(weapon, out int ammo)) Weapons[weapon] = ammo + amount;
         else Weapons[weapon] = amount;
@@ -25,7 +32,10 @@ public class Inventory : SerializedMonoBehaviour
         Weapons[weapon] = Weapons[weapon] - 1;
         ChekIsEmptyAmmo();
     }
-    public bool isAmmoEmpty(IWeapon weapon) => Weapons[weapon] <= 0;
+    public bool isAmmoEmpty(IWeapon weapon) {
+        if (weapon is null) throw new NullReferenceException();
+        return Weapons[weapon] <= 0;
+    }
     public IWeapon GetWeapon(IWeapon weapon) {
         if (Weapons.TryGetValue(weapon, out int value)) {
             if (value > 0) return weapon;
@@ -35,14 +45,21 @@ public class Inventory : SerializedMonoBehaviour
 
     public IWeapon GetNextWeapon(IWeapon currentWeapon)
     {
+        Debug.Log("NextWeapon");
         List<IWeapon> weapons = new List<IWeapon>();
 
         foreach(KeyValuePair<IWeapon, int> weapon in Weapons)
             weapons.Add(weapon.Key);
 
         var count = weapons.FindIndex(x => x == currentWeapon);
-        if (count >= weapons.Count() - 1) return weapons[0];
-        else return weapons[count + 1];
+        if (count >= weapons.Count() - 1) {
+            Debug.Log(weapons[0]);
+            return weapons[0];
+        }
+        else {
+            Debug.Log(weapons[count + 1]);
+            return weapons[count + 1];
+        } 
     }
 
     public IWeapon GetPreviousWeapon(IWeapon currentWeapon)
@@ -58,16 +75,18 @@ public class Inventory : SerializedMonoBehaviour
     }
 
     public IWeapon GetWeapon(WeaponVariety weapon) {
-        switch (weapon) {
-            case WeaponVariety.snowball: 
+        switch (weapon)
+        {
+            case WeaponVariety.snowball:
                 return GetWeapon(snowball);
-            default: 
+            default:
                 return GetRandomWeapon();
         }
     }
 
     public IWeapon GetRandomWeapon() {
         var getter = Weapons.Where(x => x.Value > 0).FirstOrDefault();
+        Debug.Log(getter);
         return getter.Key;
     }
 

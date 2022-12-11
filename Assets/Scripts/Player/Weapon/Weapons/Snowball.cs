@@ -3,6 +3,8 @@ using Assets.Scripts.Player.Weapon.DTO;
 using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.Utilities;
 using Init.Demo;
+using Sirenix.Utilities;
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -22,9 +24,8 @@ namespace Assets.Scripts.Player.Weapon
         private NonPhysicParameters nonPhysicParameters;
         private Besiers besie;
 
-        public bool isCollided { get; set; } = false;
-        private bool isGhost = false;
 
+        #region Mono
         private void Awake() {
             if (rigidbody is null) {
                 if (TryGetComponent<Rigidbody>(out Rigidbody rb)) rigidbody = rb;
@@ -32,23 +33,6 @@ namespace Assets.Scripts.Player.Weapon
             }
         }
 
-        public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint, CurvatureData curvatureData = null)
-        {
-            this.snowBallSpawnPoint = snowBallSpawnPoint;
-            this.curvatureData = curvatureData;
-            rigidbody.AddForce(velocity);
-
-            damage = velocity.magnitude;
-        }
-        public void GhostSetup(in Vector3 velocity, CurvatureData curvatureData = null)
-        {
-            isGhost = true;
-            this.curvatureData = curvatureData;
-            rigidbody.AddForce(velocity);
-
-
-            damage = velocity.magnitude;
-        }
 
         private void Update() {
             SelfDestroy(-100);
@@ -59,10 +43,6 @@ namespace Assets.Scripts.Player.Weapon
                 rigidbody.AddForce(curvatureData.GetForce());
         }
 
-        public void SetCreator(Transform transform) => creator = transform;
-        public Transform GetPrefab() => transform;
-        public Transform GetCreater() => creator;
-        public float GetDamage() => damage;
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -83,13 +63,39 @@ namespace Assets.Scripts.Player.Weapon
             isCollided = true;
         }
 
-        private void SelfDestroy(float yPosition) {
-            if (transform.position.y > yPosition) return;
-            Destroy(gameObject);
-        }
+        #endregion
+        #region IWeapon
+        public bool isCollided { get; set; } = false;
 
+        private bool isGhost = false;
+        public Transform GetPrefab() => transform;
+        public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint, CurvatureData curvatureData = null)
+        {
+            this.snowBallSpawnPoint = snowBallSpawnPoint;
+            this.curvatureData = curvatureData;
+            rigidbody.AddForce(velocity);
+
+            damage = 1;
+        }
+        public void GhostSetup(in Vector3 velocity, CurvatureData curvatureData = null)
+        {
+            isGhost = true;
+            this.curvatureData = curvatureData;
+            rigidbody.AddForce(velocity);
+        }
+        public void SetCreator(Transform transform) => creator = transform;
+        #endregion  
+        #region IBullet
+        public Transform GetCreater() => creator;
+        public float GetDamage() => damage;
+        #endregion  
+        #region NonPhy
+
+        public Vector3[] ItineraryPoints { get; set; }
         public IEnumerator SetNonPhyMove(NonPhysicParameters _nonPhysicParameters)
         {
+            if (ItineraryPoints == null) throw new NullReferenceException(this.name);
+
             if (nonPhysicParameters is null) {
                 nonPhysicParameters = (NonPhysicParameters)_nonPhysicParameters.Clone();
                 nonPhysicParameters.pastPosition = transform.position;
@@ -103,13 +109,9 @@ namespace Assets.Scripts.Player.Weapon
             if (t >= 1)
             {
                 rigidbody.useGravity = true;
-                //rigidbody.isKinematic = false;
-                var heading = nonPhysicParameters.positions[2] - nonPhysicParameters.positions[1];
-                float distance = Vector3.Distance(nonPhysicParameters.positions[1], nonPhysicParameters.positions[2]);
+                var heading = ItineraryPoints[2] - ItineraryPoints[1];
+                float distance = Vector3.Distance(ItineraryPoints[1], ItineraryPoints[2]);
                 Vector3 direction = heading / distance;
-
-                Debug.Log(direction);
-                //yield return new WaitForFixedUpdate();
 
                 rigidbody.AddForce(direction * 1500);
 
@@ -117,14 +119,19 @@ namespace Assets.Scripts.Player.Weapon
             }
 
             rigidbody.useGravity = false;
-            //rigidbody.isKinematic = true;
 
-            nonPhysicParameters.pastPosition = besie.GetPoint(nonPhysicParameters.positions, t);
+            nonPhysicParameters.pastPosition = besie.GetPoint(ItineraryPoints, t);
             nonPhysicParameters.t += nonPhysicParameters.step;
 
             yield return new WaitForSeconds(nonPhysicParameters.delaySecond);
             StartCoroutine(SetNonPhyMove(nonPhysicParameters));
             
+        }
+        #endregion
+
+        private void SelfDestroy(float yPosition) {
+            if (transform.position.y > yPosition) return;
+            Destroy(gameObject);
         }
     }
 }

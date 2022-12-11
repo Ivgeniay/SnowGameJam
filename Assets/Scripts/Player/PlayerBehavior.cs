@@ -6,15 +6,16 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
+
     public class PlayerBehavior : MonoBehaviour, IGameStateHandler
     {
         public event Action AmmoIsOver;
         public event Action AmmoReplenished;
 
-        [SerializeField] private PlayerControlContext playerControlContext;
-        [SerializeField] private IControllable controller;
-        [SerializeField] private ShootingСontrol shootingСontrol;
-        [SerializeField] private Inventory inventory;
+        private PlayerControlContext playerControlContext;
+        private IControllable controller;
+        private ShootingСontrol shootingСontrol;
+        private Inventory inventory;
 
         private void Awake() {
             if (controller is null) controller = GetComponent<IControllable>();

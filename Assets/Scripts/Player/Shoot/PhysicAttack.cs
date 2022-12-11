@@ -17,9 +17,19 @@ namespace Assets.Scripts.Player.Shoot
         private PlayerBehavior playerBehavior;
         private AttackDTO attackDTO;
 
-        public PhysicAttack(Transform transform, Transform spawnPoint) {
+        private float maxForce;
+        private float increaseInSecond;
+        private float beginingForse;
+        private float force;
+
+
+        public PhysicAttack(Transform transform, Transform spawnPoint, (float MaxForce, float beginingForse, float IncreaseInSecond) forceTuple) {
             this.transform = transform;
             this.spawnPoint = spawnPoint;
+
+            maxForce = forceTuple.MaxForce;
+            increaseInSecond = forceTuple.IncreaseInSecond;
+            beginingForse = forceTuple.beginingForse;
 
             playerBehavior = transform.GetComponent<PlayerBehavior>();
         }
@@ -38,11 +48,12 @@ namespace Assets.Scripts.Player.Shoot
             instanceScr.Setup(((Vector3.up / 10f) + (Camera.main!.transform.forward)) * attackDTO.ThrowForce, spawnPoint);
 
             playerBehavior.decrimentAmmo(attackDTO.Weapon);
+            force = beginingForse;
         }
         public void GetAim(AimDTO aimDTO)
         {
-            if (aimDTO.Force < aimDTO.MaxForce) aimDTO.Force += aimDTO.IncreaseInSecond * Time.deltaTime;
-            else aimDTO.Force = aimDTO.MaxForce;
+            if (force < maxForce) force += increaseInSecond * Time.deltaTime;
+            else force = maxForce;
 
             //var lForse = leftForse * (-Camera.main.transform.right);
             //var rForse = rightForse * Camera.main.transform.right;
@@ -50,7 +61,7 @@ namespace Assets.Scripts.Player.Shoot
             //projection.SimulateTrajectory(weapon.GetComponent<IWeapon>(), spawnPoint, ((Vector3.up / 10f) + (Camera.main!.transform.forward)) * _force, curv);
 
             var weapon = aimDTO.Weapon as MonoBehaviour;
-            aimDTO.Projection.SimulateTrajectory(weapon.GetComponent<IWeapon>(), spawnPoint, ((Vector3.up / 10f) + (Camera.main!.transform.forward)) * aimDTO.Force);
+            aimDTO.Projection.SimulateTrajectory(weapon.GetComponent<IWeapon>(), spawnPoint, ((Vector3.up / 10f) + (Camera.main!.transform.forward)) * force);
         }
     }
 }

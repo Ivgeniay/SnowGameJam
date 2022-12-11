@@ -7,5 +7,6 @@ namespace Assets.Scripts.Player.Weapon
     public interface INonPhysicWeapon
     {
         public IEnumerator SetNonPhyMove(NonPhysicParameters nonPhysicParameters);
+        public Vector3[] ItineraryPoints { get; set; }
     }
 }
