@@ -1,11 +1,7 @@
 using Assets.Scripts.Game;
 using Assets.Scripts.Game.Pause;
-using Assets.Scripts.Utilities;
-using Init.Demo;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
-using System.Linq;
-using UnityEngine;
 
 public class GameManagerMono : SerializedMonoBehaviour, IGameStateHandler
 {
@@ -29,7 +25,7 @@ public class GameManagerMono : SerializedMonoBehaviour, IGameStateHandler
 
     public void GameStateHandle(GameState gameState) {
         if (gameState == GameState.Pause) CurrentState = Pause.Pause;
-        else CurrentState = Pause.Game;
+        else CurrentState = Pause.GamePlay;
     }
 
     private void GameStateChange(Pause gameState) {
@@ -41,5 +37,5 @@ public class GameManagerMono : SerializedMonoBehaviour, IGameStateHandler
 public enum Pause
 {
     Pause,
-    Game
+    GamePlay
 }
