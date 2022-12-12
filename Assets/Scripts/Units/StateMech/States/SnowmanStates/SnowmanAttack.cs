@@ -4,6 +4,7 @@ using System.Collections;
 using Assets.Scripts.Utilities;
 using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Player;
+using System;
 
 namespace Assets.Scripts.Units.StateMech.States
 {
@@ -45,7 +46,7 @@ namespace Assets.Scripts.Units.StateMech.States
             }
         }
 
-
+        #region Const/Destr
         public SnowmanAttack(Transform transform, Animator animator) {
             this.transform = transform;
             this.animator = animator;
@@ -53,12 +54,36 @@ namespace Assets.Scripts.Units.StateMech.States
             this.healthSystem = transform.GetComponent<HealthSystem>();
             this.unitConfiguration = transform.GetComponent<UnitConfiguration>();
 
+            unitConfiguration.OnMovingSpeedChanged += OnMovingSpeedChanged;
+            unitConfiguration.OnSpeedAnimationChanged += OnSpeedAnimationChanged;
+            unitConfiguration.OnDamageChanged += OnDamageChanged; ;
+            unitConfiguration.OnAttackDistanceChanged += OnAttackDistanceChanged; ;
+            unitConfiguration.OnAttackDelayIsSecondsChanged += OnAttackDelayIsSecondsChanged; ;
+
             WalkType = unitConfiguration.TypeWalkAnimation;
             AttackType = unitConfiguration.TypeAttackAnimation;
             Damage = unitConfiguration.Damage;
         }
-        
+        ~SnowmanAttack()
+        {
+            unitConfiguration.OnMovingSpeedChanged -= OnMovingSpeedChanged;
+            unitConfiguration.OnSpeedAnimationChanged -= OnSpeedAnimationChanged;
+            unitConfiguration.OnDamageChanged -= OnDamageChanged; ;
+            unitConfiguration.OnAttackDistanceChanged -= OnAttackDistanceChanged; ;
+            unitConfiguration.OnAttackDelayIsSecondsChanged -= OnAttackDelayIsSecondsChanged; ;
+        }
+        #endregion
 
+        #region EventHandlers
+        private void OnAttackDelayIsSecondsChanged(float obj) => AttackDelayIsSeconds = obj;
+        private void OnAttackDistanceChanged(float obj) => agent.stoppingDistance = obj;
+        private void OnDamageChanged(float obj) => Damage = obj;
+        private void OnSpeedAnimationChanged(float obj) => animator.speed = obj;
+        private void OnMovingSpeedChanged(float obj) => agent.speed = obj;
+
+        #endregion
+
+        #region Mono
         public void Start() {
             WalkType = unitConfiguration.TypeWalkAnimation;
             AttackType = unitConfiguration.TypeAttackAnimation;
@@ -82,7 +107,12 @@ namespace Assets.Scripts.Units.StateMech.States
                 }
             }
         }
+        public void Exit()
+        {
+        }
+        #endregion
 
+        #region AiControl
         private void Attack() {
             isAttacking = false;
             animator.SetBool(AnimationConstants.IsWalking, false);
@@ -114,11 +144,9 @@ namespace Assets.Scripts.Units.StateMech.States
 
         private void WalkTypeAnimationDefinitions()
         {
+            if (animator is null) return;
             if (healthSystem.health >= healthSystem.MaxHealth) animator.SetInteger(AnimationConstants.WalkType, WalkType);
             else animator.SetInteger(AnimationConstants.WalkType, 2);
-        }
-
-        public void Exit() {
         }
 
         public void ChangeTarget(Transform targetTransform)
@@ -131,6 +159,7 @@ namespace Assets.Scripts.Units.StateMech.States
             yield return new WaitForSeconds(delayIsSecond);
             isAttacking = true;
         }
+        #endregion
 
 
     }

@@ -5,5 +5,6 @@
         Pause,
         Gameplay,
         AssistentControl,
+        GameOver
     }
 }

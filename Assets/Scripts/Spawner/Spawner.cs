@@ -77,8 +77,19 @@ namespace Assets.Scripts.Spawner
             }
         }
 
-        public void GameStateHandle(GameState gameState) {
-            //throw new NotImplementedException();
+        public void GameStateHandle(GameState gameState)
+        {
+            switch (gameState)
+            {
+                case GameState.AssistentControl:
+                    break;
+                case GameState.Pause:
+                    break;
+                case GameState.Gameplay:
+                    break;
+                case GameState.GameOver:
+                    break;
+            }
         }
     }
 }

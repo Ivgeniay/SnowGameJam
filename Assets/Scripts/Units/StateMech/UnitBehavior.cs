@@ -15,6 +15,7 @@ namespace Assets.Scripts.Units.StateMech
         [SerializeField] private StateDisposerType stateDisposerType;
 
         private StateDisposerBase stateDisposer;
+        private bool isFreezed = false;
 
         #region Mono
         private void Awake() {
@@ -27,6 +28,7 @@ namespace Assets.Scripts.Units.StateMech
         }
         private void Update() {
             if (stateDisposer is null) throw new Exception($"stateDisposer is null {this}");
+            if (isFreezed is false) return; 
             stateDisposer.FrameAction();
         }
         #endregion
@@ -50,11 +52,16 @@ namespace Assets.Scripts.Units.StateMech
             switch (gameState)
             {
                 case GameState.AssistentControl:
-
+                    isFreezed = true;
                     break;
                 case GameState.Pause:
+                    isFreezed = true;
                     break;
                 case GameState.Gameplay:
+                    isFreezed = false;
+                    break;
+                case GameState.GameOver:
+                    isFreezed = true;
                     break;
             }
         }
