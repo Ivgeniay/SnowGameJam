@@ -2,6 +2,7 @@ using Assets.Scripts.Game;
 using Assets.Scripts.Game.Pause;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
 
 public class GameManagerMono : SerializedMonoBehaviour, IGameStateHandler
 {
@@ -13,13 +14,13 @@ public class GameManagerMono : SerializedMonoBehaviour, IGameStateHandler
     private Pause CurrentState;
 
     private void Start() {
-        Game.Manager.Initialize();
         Game.Manager.OnInitialized += GameManagerOnInitialized;
-        Game.Manager.CursorSetting.HideLock();
-       
+        Game.Manager.Initialize();
+        //Game.Manager.CursorSetting.HideLock();
     }
 
     private void GameManagerOnInitialized() {
+        Game.Manager.OnInitialized -= GameManagerOnInitialized;
         Game.Manager.GameStateManager.Register(this);
     }
 
@@ -34,8 +35,7 @@ public class GameManagerMono : SerializedMonoBehaviour, IGameStateHandler
     }
 
 }
-public enum Pause
-{
+public enum Pause {
     Pause,
     GamePlay
 }

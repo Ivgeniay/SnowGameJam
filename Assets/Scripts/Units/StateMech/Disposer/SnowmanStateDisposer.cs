@@ -64,6 +64,7 @@ namespace Assets.Scripts.Units.StateMech
         }
         private void HealthSystem_OnTakeDamage(object sender, TakeDamagePartEventArgs e) {
             if (healthSystem.isDead) return;
+            //Debug.Log($"Sender:{sender} Shooter:{e.Shooter} Damage:{e.Damage} CurrentHealth: {e.currentHealth}");
 
             ChangeState(states[StateName.Stun]);
             Coroutines.Start(StunExit(stunTime));

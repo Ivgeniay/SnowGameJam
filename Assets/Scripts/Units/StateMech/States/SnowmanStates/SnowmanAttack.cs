@@ -5,10 +5,11 @@ using Assets.Scripts.Utilities;
 using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Player;
 using System;
+using Assets.Scripts.Game.Pause;
 
 namespace Assets.Scripts.Units.StateMech.States
 {
-    public class SnowmanAttack : IState
+    public class SnowmanAttack : IState, IGameStateHandler
     {
         
         private UnitConfiguration unitConfiguration;
@@ -17,11 +18,12 @@ namespace Assets.Scripts.Units.StateMech.States
         private Transform transform;
         private Animator animator;
         private NavMeshAgent agent;
-        private bool isAttacking = true;
 
         private Coroutine currentCoroutine;
-        public float WalkDelayIsSeconds { get; private set; } = 1;
-        public float AttackDelayIsSeconds { get; private set; } = 0.5f;
+
+        private bool isAttacking = false;
+        public float WalkDelayIsSeconds { get; private set; }
+        public float AttackDelayIsSeconds { get; private set; }
 
         private int _walkType;
         public int WalkType {
@@ -40,11 +42,37 @@ namespace Assets.Scripts.Units.StateMech.States
             } 
         }
         private float _damage;
-        public float Damage { get => _damage;
-            set {
-                if (value > 0 ) _damage = value;
-            }
+
+        #region Mono
+        public void Start() {
+            WalkType = unitConfiguration.TypeWalkAnimation;
+            AttackType = unitConfiguration.TypeAttackAnimation;
+
+            animator.SetFloat(AnimationConstants.AttackDistance, unitConfiguration.AttackDistance);
         }
+
+        public void Update() {
+            if (targetTransform is null) return;
+
+            agent.destination = targetTransform.position;
+
+            if (agent.remainingDistance > unitConfiguration.AttackDistance) {
+                agent.destination = targetTransform.position;
+                Walk();
+            }
+            else {
+
+                //Attack()
+                //if (isAttacking) {
+                //    Attack();
+                //}
+            }
+
+        }
+        public void Exit()
+        {
+        }
+        #endregion
 
         #region Const/Destr
         public SnowmanAttack(Transform transform, Animator animator) {
@@ -62,7 +90,7 @@ namespace Assets.Scripts.Units.StateMech.States
 
             WalkType = unitConfiguration.TypeWalkAnimation;
             AttackType = unitConfiguration.TypeAttackAnimation;
-            Damage = unitConfiguration.Damage;
+            _damage = unitConfiguration.Damage;
         }
         ~SnowmanAttack()
         {
@@ -76,40 +104,13 @@ namespace Assets.Scripts.Units.StateMech.States
 
         #region EventHandlers
         private void OnAttackDelayIsSecondsChanged(float obj) => AttackDelayIsSeconds = obj;
-        private void OnAttackDistanceChanged(float obj) => agent.stoppingDistance = obj;
-        private void OnDamageChanged(float obj) => Damage = obj;
+        private void OnAttackDistanceChanged(float obj) {
+            agent.stoppingDistance = obj;
+        }
+        private void OnDamageChanged(float obj) => _damage = obj;
         private void OnSpeedAnimationChanged(float obj) => animator.speed = obj;
         private void OnMovingSpeedChanged(float obj) => agent.speed = obj;
 
-        #endregion
-
-        #region Mono
-        public void Start() {
-            WalkType = unitConfiguration.TypeWalkAnimation;
-            AttackType = unitConfiguration.TypeAttackAnimation;
-        }
-
-        public void Update() {
-            if (targetTransform is null) return;
-
-            agent.destination = targetTransform.position;
-
-            if (agent.remainingDistance > agent.stoppingDistance)
-            {
-                agent.destination = targetTransform.position;
-                Walk();
-            }
-            else
-            {
-                if (isAttacking)
-                {
-                    Attack();
-                }
-            }
-        }
-        public void Exit()
-        {
-        }
         #endregion
 
         #region AiControl
@@ -159,9 +160,11 @@ namespace Assets.Scripts.Units.StateMech.States
             yield return new WaitForSeconds(delayIsSecond);
             isAttacking = true;
         }
+
         #endregion
-
-
+        public void GameStateHandle(GameState gameState)
+        {
+        }
     }
 }
 

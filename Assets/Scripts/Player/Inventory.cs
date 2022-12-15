@@ -45,7 +45,6 @@ public class Inventory : SerializedMonoBehaviour
 
     public IWeapon GetNextWeapon(IWeapon currentWeapon)
     {
-        Debug.Log("NextWeapon");
         List<IWeapon> weapons = new List<IWeapon>();
 
         foreach(KeyValuePair<IWeapon, int> weapon in Weapons)
@@ -53,11 +52,9 @@ public class Inventory : SerializedMonoBehaviour
 
         var count = weapons.FindIndex(x => x == currentWeapon);
         if (count >= weapons.Count() - 1) {
-            Debug.Log(weapons[0]);
             return weapons[0];
         }
         else {
-            Debug.Log(weapons[count + 1]);
             return weapons[count + 1];
         } 
     }

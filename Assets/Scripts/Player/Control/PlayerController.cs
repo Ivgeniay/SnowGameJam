@@ -8,7 +8,7 @@ using System;
 namespace Assets.Scripts.Player
 {
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : MonoBehaviour, IControllable
+    public class PlayerController : MonoBehaviour, IControllable, IGameStateHandler
     {
         [SerializeField] private float playerSpeed = 2.0f;
         [SerializeField] private float jumpHeight = 1.0f;
@@ -31,10 +31,19 @@ namespace Assets.Scripts.Player
         private static readonly int IsAiming = Animator.StringToHash("IsAiming");
         //private static readonly int jump = Animator.StringToHash("Jump");
 
+        private GameState currentGameState;
+
 
         private void Awake(){
             if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
             playerControlContext = new(PlayerState.Normal);
+            Game.Game.Manager.OnInitialized += ManagerOnInitialized;
+        }
+
+        private void ManagerOnInitialized() {
+            Game.Game.Manager.OnInitialized -= ManagerOnInitialized;
+            currentGameState = Game.Game.Manager.GameStateManager.CurrentGameState;
+            Game.Game.Manager.GameStateManager.Register(this);
         }
 
         private void Start() {
@@ -91,11 +100,14 @@ namespace Assets.Scripts.Player
 
         private void OnJumpPerformed() {
             if (_controller.isGrounded is false) return;
-            _playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+            _playerVelocity.y += Mathf.Sqrt(jumpHeight * -1.0f * gravityValue);
             //animator.SetTrigger(jump);
         }
         private void OnAimStarted()
         {
+            if (currentGameState is not GameState.Gameplay) return;
+
+
             switch (playerControlContext.GetPlayerState())
             {
                 case PlayerState.AssistantControl:
@@ -107,6 +119,8 @@ namespace Assets.Scripts.Player
         }
         private void OnAimPerformed()
         {
+            if (currentGameState is not GameState.Gameplay) return;
+
             if (playerBehavior.isAmmoEmpty(playerBehavior.GetCurrentWeapon()) is true) return;
 
             _isAimingNow = true;
@@ -116,6 +130,8 @@ namespace Assets.Scripts.Player
         }
         private void OnAimCanceled()
         {
+            if (currentGameState is not GameState.Gameplay) return;
+
             if (_isAimingNow == false) return;
 
             _isAimingNow = false;
@@ -152,6 +168,8 @@ namespace Assets.Scripts.Player
         }
         private void OnFastAttackPerformed()
         {
+            if (currentGameState is not GameState.Gameplay) return;
+
             if (animator.GetBool(fastAttack) == true) animator.ResetTrigger(fastAttack);
             if (playerControlContext.GetPlayerState() == PlayerState.Normal &&
                 animator.GetBool(canAttack) == true)
@@ -193,6 +211,8 @@ namespace Assets.Scripts.Player
             }
         }
 
-
+        public void GameStateHandle(GameState gameState) {
+            currentGameState = gameState;
+        }
     }
 }

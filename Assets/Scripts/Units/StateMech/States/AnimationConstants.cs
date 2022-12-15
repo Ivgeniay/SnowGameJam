@@ -4,5 +4,6 @@
     public const string WalkType = "WalkType";
     public const string Attack = "Attack";
     public const string AttackType = "AttackType";
+    public const string AttackDistance = "AttackDistance";
 }
 

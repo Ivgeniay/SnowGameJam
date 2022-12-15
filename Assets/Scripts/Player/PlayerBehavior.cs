@@ -17,6 +17,8 @@ namespace Assets.Scripts.Player
         private ShootingСontrol shootingСontrol;
         private Inventory inventory;
 
+        private GameState currentGameState;
+
         private void Awake() {
             if (controller is null) controller = GetComponent<IControllable>();
             if (shootingСontrol is null) shootingСontrol = GetComponent<ShootingСontrol>();
@@ -29,7 +31,8 @@ namespace Assets.Scripts.Player
             inventory.AmmoReplenished += OnAmmoReplenished;
         }
         private void Update() {
-            controller.Move();
+            if (currentGameState == GameState.Gameplay)
+                controller.Move();
         }
         public void AddAmmo(IWeapon weapon, int amount) => inventory.AddAmmo(weapon, amount);
         public bool isAmmoEmpty(IWeapon weapon) => inventory.isAmmoEmpty(weapon);
@@ -41,10 +44,14 @@ namespace Assets.Scripts.Player
         private void OnAmmoReplenished() => AmmoReplenished?.Invoke();
         private void OnAmmoIsOver() => AmmoIsOver?.Invoke();
         private void GameManagerOnInitialized() {
+            Game.Game.Manager.OnInitialized -= GameManagerOnInitialized;
             Game.Game.Manager.GameStateManager.Register(this);
         }
-        public void GameStateHandle(GameState isPaused) {
-            Debug.Log(isPaused);
+        public void GameStateHandle(GameState gameState) {
+            Debug.Log(gameState);
+            currentGameState = gameState;
+            if (gameState != GameState.Gameplay) Time.timeScale = 0;
+            else Time.timeScale = 1;
         }
 
     }

@@ -2,9 +2,11 @@
 {
     public enum GameState
     {
-        Pause,
+        beforeGamePlay,
         Gameplay,
         AssistentControl,
+        Pause,
         GameOver
     }
+
 }

@@ -49,7 +49,7 @@ namespace Assets.Scripts.Player
             else projection.DisableLine();
         }
 
-        public void OnAttack(IWeapon weapon)
+        public void OnAttack(IWeapon weapon, TypeAttack typeAttack = TypeAttack.Physics)
         {
             if (weapon is null) {
                 Debug.Log("HEY, THERE IS NO WEAPON");
@@ -82,8 +82,7 @@ namespace Assets.Scripts.Player
         }
         private void OnAimCanceled() => isShowProjection = false;
         private void OnAimPerformed() => isShowProjection = true;
-        private void ChangeWeapon(float obj)
-        {
+        private void ChangeWeapon(float obj) {
             if (obj > 0) currentWeapon = playerBehavior.GetNextWeaponFromInventory(GetCurrentWeapon());
             else if (obj < 0) currentWeapon = playerBehavior.GetPreviousWeaponFromInventory(GetCurrentWeapon());
         }
@@ -107,6 +106,12 @@ namespace Assets.Scripts.Player
         }
 
 
+    }
+
+    public enum TypeAttack
+    {
+        Physics,
+        Nonphysics
     }
 }
 

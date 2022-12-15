@@ -17,7 +17,7 @@ namespace Assets.Scripts.Player.Weapon
 
         private Transform snowBallSpawnPoint;
         private Rigidbody rigidbody;
-        private float damage;
+        private float damage { get; set; }
         private Transform creator;
         private CurvatureData curvatureData;
 
@@ -69,7 +69,7 @@ namespace Assets.Scripts.Player.Weapon
 
         private bool isGhost = false;
         public Transform GetPrefab() => transform;
-        public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint, CurvatureData curvatureData = null)
+        public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint = null, CurvatureData curvatureData = null)
         {
             this.snowBallSpawnPoint = snowBallSpawnPoint;
             this.curvatureData = curvatureData;
@@ -90,7 +90,6 @@ namespace Assets.Scripts.Player.Weapon
         public float GetDamage() => damage;
         #endregion  
         #region NonPhy
-
         public Vector3[] ItineraryPoints { get; set; }
         public IEnumerator SetNonPhyMove(NonPhysicParameters _nonPhysicParameters)
         {
@@ -100,6 +99,7 @@ namespace Assets.Scripts.Player.Weapon
                 nonPhysicParameters = (NonPhysicParameters)_nonPhysicParameters.Clone();
                 nonPhysicParameters.pastPosition = transform.position;
             }
+            if (damage == 0) damage = 1;
 
             if (besie is null) besie = new Besiers();
 

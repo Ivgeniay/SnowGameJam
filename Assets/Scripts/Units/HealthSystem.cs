@@ -15,15 +15,16 @@ public class HealthSystem : MonoBehaviour
     private List<IDamageable> damageablesParts;
 
 
-
-    [SerializeField] private float maxHealth = 1000;
+    private float maxHealth = 1;
     public float MaxHealth { get => maxHealth; }
     public float health { get; private set; }
     public bool isDead { get; private set; }  = false;
     private void Awake() {
         unitConfiguration = GetComponent<UnitConfiguration>();
-        if (unitConfiguration is not null)
+        if (unitConfiguration is not null) {
             maxHealth = unitConfiguration.Health;
+            //Debug.Log(maxHealth);
+        }
         health = maxHealth;
         damageablesParts = gameObject.GetComponentsInChildren<IDamageable>().ToList();
         if (damageablesParts.Count > 0)
