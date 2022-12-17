@@ -37,6 +37,14 @@ public class HealthSystem : MonoBehaviour
     public void TakeDamage(object sender, TakeDamagePartEventArgs e) {
         if (isDead) return;
 
+        OnTakeDamage?.Invoke(this, new TakeDamagePartEventArgs() {
+            Damage = e.Damage,
+            Direction = e.Direction,
+            Shooter = e.Shooter,
+            currentHealth = health,
+            SenderPartOfBody = sender
+        });
+
         var head = sender as IUltimateDamageArea;
         if (head is not null) {
             health = 0;
@@ -52,7 +60,6 @@ public class HealthSystem : MonoBehaviour
         }
         else {
             health -= e.Damage;
-            OnTakeDamage?.Invoke(this, new TakeDamagePartEventArgs() { Damage = e.Damage, Direction = e.Direction, Shooter = e.Shooter, currentHealth = health});
         }
     }
 }

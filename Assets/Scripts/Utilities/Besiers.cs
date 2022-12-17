@@ -7,9 +7,9 @@ namespace Assets.Scripts.Utilities
 {
 
     /*
-        For 2 points: P = (1-t)P1 + tP2
-        For 3 points: P = (1−t)2P1 + 2(1−t)tP2 + t2P3
-        For 4 points: P = (1−t)3P1 + 3(1−t)2tP2 +3(1−t)t2P3 + t3P4
+        For 2 positionPoints: P = (1-t)P1 + tP2
+        For 3 positionPoints: P = (1−t)2P1 + 2(1−t)tP2 + t2P3
+        For 4 positionPoints: P = (1−t)3P1 + 3(1−t)2tP2 +3(1−t)t2P3 + t3P4
     */
 
     public class Besiers
@@ -40,21 +40,21 @@ namespace Assets.Scripts.Utilities
             return newList;
         }
 
-        //public Vector3 GetPointFromFourPoint(in Vector3[] points, float t) {
-        //    if (points.Count() != 4) throw new ArgumentException(points.ToString());
-        //    return GetPointBetweenFourPointsByMath(points[0], points[1], points[2], points[3], t);
+        //public Vector3 GetPointFromFourPoint(in Vector3[] positionPoints, float t) {
+        //    if (positionPoints.Count() != 4) throw new ArgumentException(positionPoints.ToString());
+        //    return GetPointBetweenFourPointsByMath(positionPoints[0], positionPoints[1], positionPoints[2], positionPoints[3], t);
         //}
         //public Vector3 GetPointFromFourPoint(in Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4, float t) => GetPointFromFourPoint(new Vector3[4] { point1, point2, point3, point4 }, t);
 
-        //public Vector3 GetPointFromThreePoint(in Vector3[] points, float t) {
-        //    if (points.Count() != 3) throw new ArgumentException(points.ToString());
-        //    return GetPointBetweenThreePointsByMath(points[0], points[1], points[2], t);
+        //public Vector3 GetPointFromThreePoint(in Vector3[] positionPoints, float t) {
+        //    if (positionPoints.Count() != 3) throw new ArgumentException(positionPoints.ToString());
+        //    return GetPointBetweenThreePointsByMath(positionPoints[0], positionPoints[1], positionPoints[2], t);
         //}
         //public Vector3 GetPointFromThreePoint(in Vector3 point1, Vector3 point2, Vector3 point3, float t) => GetPointFromThreePoint(new Vector3[3] { point1, point2, point3 }, t);
 
-        //public Vector3 GetPointFromTwoPoint(in Vector3[] points, float t) {
-        //    if (points.Count() != 2) throw new ArgumentException(points.ToString());
-        //    return GetPointBetweenTwoPointsByMath(points[0], points[1], t);
+        //public Vector3 GetPointFromTwoPoint(in Vector3[] positionPoints, float t) {
+        //    if (positionPoints.Count() != 2) throw new ArgumentException(positionPoints.ToString());
+        //    return GetPointBetweenTwoPointsByMath(positionPoints[0], positionPoints[1], t);
         //}
         //public Vector3 GetPointFromTwoPoint(in Vector3 point1, Vector3 point2, float t) => GetPointFromTwoPoint(new Vector3[2] { point1, point2 }, t);
 

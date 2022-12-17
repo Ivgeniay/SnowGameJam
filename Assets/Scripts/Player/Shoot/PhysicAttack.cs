@@ -1,11 +1,6 @@
 ﻿using Assets.Scripts.Player.Shoot.DTO;
 using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Player.Shoot
@@ -15,7 +10,6 @@ namespace Assets.Scripts.Player.Shoot
         private Transform transform;
         private Transform spawnPoint;
         private PlayerBehavior playerBehavior;
-        private AttackDTO attackDTO;
 
         private float maxForce;
         private float increaseInSecond;
@@ -45,7 +39,7 @@ namespace Assets.Scripts.Player.Shoot
             //var curv = new CurvatureData(lForse, rForse, duration);
             //instanceScr.Setup(((Vector3.up / 10f) + (Camera.main!.transform.forward)) * _force, spawnPoint, curv);
 
-            instanceScr.Setup(((Vector3.up / 10f) + (Camera.main!.transform.forward)) * attackDTO.ThrowForce, spawnPoint);
+            instanceScr.Setup(((Vector3.up / 10f) + (Camera.main!.transform.forward)) * force, spawnPoint);
 
             playerBehavior.decrimentAmmo(attackDTO.Weapon);
             force = beginingForse;

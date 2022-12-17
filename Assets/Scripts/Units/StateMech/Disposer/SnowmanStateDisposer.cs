@@ -6,14 +6,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.Units.GlobalTarget;
+using Assets.Scripts.Game.Pause;
 
 namespace Assets.Scripts.Units.StateMech
 {
-    public class SnowmanStateDisposer : StateDisposerBase
+    public class SnowmanStateDisposer : StateDisposerBase, IGameStateHandler
     {
         private HealthSystem healthSystem;
         private Animator animator;
         private UnitConfiguration unitConfiguration;
+
+        private IGlobalTarget globalTarget;
 
         private float stunTime { get; set; } = 0.5f;
 
@@ -25,6 +29,9 @@ namespace Assets.Scripts.Units.StateMech
 
             states = FillStates();
             ChangeState(states[StateName.Idle]);
+
+            globalTarget = GameObject.FindObjectOfType<XMasTree>();
+            if (globalTarget is not null) Attack(globalTarget.GetTransform());
 
             healthSystem = transform.GetComponent<HealthSystem>();
             if (healthSystem is not null) {
@@ -72,9 +79,16 @@ namespace Assets.Scripts.Units.StateMech
         private void HealthSystem_OnDeath(object sender, System.EventArgs e) => Die();
         private IEnumerator StunExit(float seconds) {
             yield return new WaitForSeconds(seconds);
-            ChangeState(prevState);
+            ChangeState(states[StateName.Attack]);
         }
         private void OnStunTimeChanged(float obj) => stunTime = obj;
+
+        public void GameStateHandle(GameState gameState)
+        {
+            if (gameState is not GameState.Gameplay) Time.timeScale = 0;
+            else Time.timeScale = 1;
+        }
+
         ~SnowmanStateDisposer()
         {
             unitConfiguration.OnStunTimeChanged -= OnStunTimeChanged;

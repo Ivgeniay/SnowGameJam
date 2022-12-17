@@ -1,10 +1,4 @@
 ﻿using Assets.Scripts.Game.Pause;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts.UI.Buttons
@@ -13,7 +7,8 @@ namespace Assets.Scripts.UI.Buttons
     {
         public void OnButtonClick() {
             Game.Game.Manager.GameStateManager.SetState(GameState.Gameplay);
-            Game.Game.Manager.CursorSetting.HideLock();
+            Game.Game.Manager.CursorSetting.Hide();
+            Game.Game.Manager.CursorSetting.Lock();
             this.gameObject.SetActive(false);
         }
     }

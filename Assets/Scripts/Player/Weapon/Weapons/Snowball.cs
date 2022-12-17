@@ -71,6 +71,7 @@ namespace Assets.Scripts.Player.Weapon
         public Transform GetPrefab() => transform;
         public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint = null, CurvatureData curvatureData = null)
         {
+            Debug.Log(velocity);
             this.snowBallSpawnPoint = snowBallSpawnPoint;
             this.curvatureData = curvatureData;
             rigidbody.AddForce(velocity);
@@ -114,7 +115,7 @@ namespace Assets.Scripts.Player.Weapon
                 Vector3 direction = heading / distance;
 
                 rigidbody.AddForce(direction * 1500);
-
+                nonPhysicParameters = null;
                 yield break;
             }
 

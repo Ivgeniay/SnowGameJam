@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,10 @@ namespace Assets.Scripts.Player.Weapon
         public bool isCollided { get; set; }
         private float damage;
         private Transform creator;
+
+        private void Start() {
+            Destroy(gameObject);
+        }
 
 
 
@@ -30,6 +35,12 @@ namespace Assets.Scripts.Player.Weapon
         public Transform GetPrefab() => transform;
         public Transform GetCreater() => creator;
         public float GetDamage() => damage;
+
+        private IEnumerator Destroy()
+        {
+            yield return null;
+            Destroy(this);
+        }
 
     }
 }

@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Assets.Scripts.Utilities
 {
-    [ExecuteAlways]
+    [ExecuteInEditMode]
     public class Pointer : MonoBehaviour
     {
-        [SerializeField] Transform pinterIconTransform;
+        [SerializeField] Transform pointerIconTransform;
         Transform player;
         Camera currentCamera;
 
@@ -47,13 +47,13 @@ namespace Assets.Scripts.Utilities
             Vector3 worldPosition = ray.GetPoint(minDistance);
 
             if (worldPosition.y <= 0.05f && worldPosition.y >= -0.05f) {
-                pinterIconTransform.gameObject.SetActive(false);
+                pointerIconTransform.gameObject.SetActive(false);
                 return;
             }
-            else pinterIconTransform.gameObject.SetActive(true);
+            else pointerIconTransform.gameObject.SetActive(true);
 
-            pinterIconTransform.position = currentCamera.WorldToScreenPoint(worldPosition);
-            pinterIconTransform.rotation = GetIconRotation(planeIndex);
+            pointerIconTransform.position = currentCamera.WorldToScreenPoint(worldPosition);
+            pointerIconTransform.rotation = GetIconRotation(planeIndex);
         }
 
         private Quaternion GetIconRotation(int index)
@@ -61,13 +61,13 @@ namespace Assets.Scripts.Utilities
             switch (index)
             {
                 case 0: 
-                    return Quaternion.Euler(0, 0, 90);
+                    return Quaternion.Euler(0f, 0f, 90f);
                 case 1: 
-                    return Quaternion.Euler(0, 0, -90);
+                    return Quaternion.Euler(0f, 0f, -90f);
                 case 2: 
-                    return Quaternion.Euler(0, 0, 180);
+                    return Quaternion.Euler(0f, 0f, 180f);
                 case 3: 
-                    return Quaternion.Euler(0, 0, 0);
+                    return Quaternion.Euler(0f, 0f, 0f);
                 default: return Quaternion.identity;
             }
         }

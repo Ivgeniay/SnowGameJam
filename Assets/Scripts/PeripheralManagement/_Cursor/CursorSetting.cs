@@ -8,14 +8,19 @@ namespace Assets.Scripts.PeripheralManagement._Cursor
         {
         }
 
-        public void HideLock() {
+        public void Hide() {
             Cursor.visible = false;
+        }
+        public void Lock() {
             Cursor.lockState = CursorLockMode.Locked;
         }
 
-        public void ShowUnlock() {
+        public void Show() {
             Cursor.visible = true;
+        }
+        public void Unlock() {
             Cursor.lockState = CursorLockMode.None;
         }
+
     }
 }

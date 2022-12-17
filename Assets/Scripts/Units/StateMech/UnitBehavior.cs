@@ -28,7 +28,7 @@ namespace Assets.Scripts.Units.StateMech
         }
         private void Update() {
             if (stateDisposer is null) throw new Exception($"stateDisposer is null {this}");
-            if (isFreezed is false) return; 
+            if (isFreezed is true) return; 
             stateDisposer.FrameAction();
         }
         #endregion

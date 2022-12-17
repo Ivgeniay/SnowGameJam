@@ -58,21 +58,24 @@ namespace Assets.Scripts.Cameras
             normalCinemachineVirtualCamera.Priority = 2;
             aimCinemachineVirtualCamera.Priority = 1;
 
-            Game.Game.Manager.CursorSetting.ShowUnlock();
+            Game.Game.Manager.CursorSetting.Show();
+            Game.Game.Manager.CursorSetting.Unlock();
         }
         private void SetNormalCamera() {
             controlCinemachineVirtualCamera.Priority = 1;
             normalCinemachineVirtualCamera.Priority = 3;
             aimCinemachineVirtualCamera.Priority = 2;
 
-            Game.Game.Manager.CursorSetting.HideLock();
+            Game.Game.Manager.CursorSetting.Hide();
+            Game.Game.Manager.CursorSetting.Lock();
         }
         private void SetAimCamera() {
             controlCinemachineVirtualCamera.Priority = 1;
             normalCinemachineVirtualCamera.Priority = 2;
             aimCinemachineVirtualCamera.Priority = 3;
 
-            Game.Game.Manager.CursorSetting.HideLock();
+            Game.Game.Manager.CursorSetting.Hide();
+            Game.Game.Manager.CursorSetting.Lock();
         }
     }
 }

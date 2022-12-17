@@ -97,7 +97,6 @@ namespace Assets.Scripts.Spawner
             for (int i = 0; i < 15; i++)
             {
                 yield return new WaitUntil(() => canProduce);
-                yield return new WaitUntil(() => productedAlive.Count == 0);
                 yield return new WaitForSeconds(timeSpawnWaveOffset);
 
 
@@ -121,6 +120,8 @@ namespace Assets.Scripts.Spawner
                         yield return new WaitForSeconds(timeSpawnInSeconds);
                     }
                 }
+
+                yield return new WaitUntil(() => productedAlive.Count == 0);
                 OnStageComplete?.Invoke(i + 1);
             }
         }

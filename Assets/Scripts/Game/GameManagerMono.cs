@@ -16,11 +16,12 @@ public class GameManagerMono : SerializedMonoBehaviour, IGameStateHandler
     private void Start() {
         Game.Manager.OnInitialized += GameManagerOnInitialized;
         Game.Manager.Initialize();
-        //Game.Manager.CursorSetting.HideLock();
     }
 
     private void GameManagerOnInitialized() {
         Game.Manager.OnInitialized -= GameManagerOnInitialized;
+        Game.Manager.CursorSetting.Show();
+        Game.Manager.CursorSetting.Unlock();
         Game.Manager.GameStateManager.Register(this);
     }
 

@@ -1,16 +1,30 @@
 ﻿using Assets.Scripts.Player;
 using Assets.Scripts.Player.Weapon;
+using Assets.Scripts.Utilities;
+using System;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(LineRenderer))]
-public class Projection : MonoBehaviour 
+public class Projection : SerializedMonoBehaviour
 {
+    public event Action<int> OnMaxPhysicsFrameIterationsChanged;
+
     [SerializeField] private LineRenderer line;
-    [SerializeField] private int maxPhysicsFrameIterations = 100;
+    private int _maxPhysicsFrameIterations;
+    [OdinSerialize] public int maxPhysicsFrameIterations { 
+        get => _maxPhysicsFrameIterations;
+        private set
+        {
+            _maxPhysicsFrameIterations = value;
+            OnMaxPhysicsFrameIterationsChanged?.Invoke(value);
+        }
+    } 
     [SerializeField] private Transform obstaclesParent;
+
 
     private PlayerBehavior playerBehavior;
     private Scene simulationScene;

@@ -48,7 +48,9 @@ namespace Assets.Scripts.Units.StateMech.States
             WalkType = unitConfiguration.TypeWalkAnimation;
             AttackType = unitConfiguration.TypeAttackAnimation;
 
-            animator.SetFloat(AnimationConstants.AttackDistance, unitConfiguration.AttackDistance);
+            animator.SetInteger(AnimationConstants.WalkType, WalkType);
+            animator.SetInteger(AnimationConstants.AttackType, AttackType);
+            animator.SetBool(AnimationConstants.IsWalking, true);
         }
 
         public void Update() {
@@ -61,9 +63,9 @@ namespace Assets.Scripts.Units.StateMech.States
                 Walk();
             }
             else {
-
-                //Attack()
-                //if (isAttacking) {
+                Attack();
+                //if (isAttacking)
+                //{
                 //    Attack();
                 //}
             }
@@ -122,7 +124,7 @@ namespace Assets.Scripts.Units.StateMech.States
             transform.LookAt(targetTransform.position);
             OnAttack(unitConfiguration.weapon);
 
-            currentCoroutine = Coroutines.Start(AttackDelay(AttackDelayIsSeconds));
+            //currentCoroutine = Coroutines.Start(AttackDelay(AttackDelayIsSeconds));
         }
 
         public void OnAttack(IWeapon weapon)
