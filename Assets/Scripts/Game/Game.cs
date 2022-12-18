@@ -29,8 +29,7 @@ namespace Assets.Scripts.Game
         private Game() { }
         
 
-        public void Initialize()
-        {
+        public void Initialize() {
             GameStateManager = new GameStateManager();
             CursorSetting = new CursorSetting();
             storage = new StorageNpc();

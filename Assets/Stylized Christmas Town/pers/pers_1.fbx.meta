@@ -3,7 +3,12 @@ guid: 8eae5a91526c9434bb9262399ae8bc52
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Merged_pers head sketch5_1_default
+    second: {fileID: 2100000, guid: 058aaabd0afcd934995b4d92acd0bad3, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
