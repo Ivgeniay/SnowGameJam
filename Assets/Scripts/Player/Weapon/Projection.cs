@@ -38,6 +38,7 @@ public class Projection : SerializedMonoBehaviour
 
     private void Start() {
         CreatePhysicsScene();
+        if (maxPhysicsFrameIterations == 0) maxPhysicsFrameIterations = 100;
     }
 
     private void CreatePhysicsScene() {

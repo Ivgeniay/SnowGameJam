@@ -8,7 +8,7 @@ namespace Assets.Scripts.Cameras
 {
     public class CameraController : MonoBehaviour
     {
-        [SerializeField] private PlayerController PlayerController;
+        [SerializeField] private Transform Player;
         private IControllable controller;
         private PlayerControlContext playerControlContext;
 
@@ -32,7 +32,7 @@ namespace Assets.Scripts.Cameras
         }
 
         private void Start() {
-            controller = PlayerController.GetComponent<IControllable>();
+            controller = Player.GetComponent<IControllable>();
             playerControlContext = controller.GetContext();
             playerControlContext.OnPlayerStateChanged += OnPlayerStateChangedHandler;
         }

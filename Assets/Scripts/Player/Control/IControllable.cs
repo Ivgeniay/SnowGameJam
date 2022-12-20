@@ -2,7 +2,7 @@
 {
     public interface IControllable
     {
-        public void Move();
+        public void MoveUpdate();
         public PlayerControlContext GetContext();
     }
 }

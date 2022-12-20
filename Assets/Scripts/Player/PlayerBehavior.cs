@@ -32,7 +32,7 @@ namespace Assets.Scripts.Player
         }
         private void Update() {
             if (currentGameState == GameState.Gameplay)
-                controller.Move();
+                controller.MoveUpdate();
         }
         public void AddAmmo(IWeapon weapon, int amount) => inventory.AddAmmo(weapon, amount);
         public bool isAmmoEmpty(IWeapon weapon) => inventory.isAmmoEmpty(weapon);

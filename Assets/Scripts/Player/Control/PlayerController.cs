@@ -21,10 +21,9 @@ namespace Assets.Scripts.Player
         private CharacterController _controller;
 
         private Vector3 _playerVelocity;
+
         private int _aimLayerIndex;
         private bool _isAimingNow;
-
-
         private static readonly int fastAttack = Animator.StringToHash("FastAttack");
         private static readonly int canAttack = Animator.StringToHash("CanAttack");
         private static readonly int IsMoving = Animator.StringToHash("IsMoving");
@@ -62,7 +61,7 @@ namespace Assets.Scripts.Player
         }
 
         public PlayerControlContext GetContext() => playerControlContext;
-        public void Move() {
+        public void MoveUpdate() {
 
 
             if (_controller == null) return;
@@ -101,7 +100,6 @@ namespace Assets.Scripts.Player
         private void OnJumpPerformed() {
             if (_controller.isGrounded is false) return;
             _playerVelocity.y += Mathf.Sqrt(jumpHeight * -1.0f * gravityValue);
-            //animator.SetTrigger(jump);
         }
         private void OnAimStarted()
         {
