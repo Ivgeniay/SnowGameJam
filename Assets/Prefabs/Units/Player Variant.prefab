@@ -270,7 +270,8 @@ PrefabInstance:
       propertyPath: frameDelayNonPhysics
       value: 8
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3859332669641396370, guid: 2d32dce29259159449e22414dc52d351, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3859332669641396372, guid: 2d32dce29259159449e22414dc52d351,

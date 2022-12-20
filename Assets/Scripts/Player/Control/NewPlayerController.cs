@@ -18,23 +18,22 @@ namespace Assets.Scripts.Player
         [SerializeField] private float jumpHeight = 1.0f;
         [SerializeField] private float gravityValue = -9.81f;
         [SerializeField] private Animator animator;
-
+        [SerializeField] private CapsuleCollider _capsuleCollider;
 
         private PlayerBehavior playerBehavior;
         private PlayerControlContext playerControlContext;
         private CharacterController _controller;
 
-        [SerializeField] private Vector3 _playerVelocity;
+        private Vector3 _playerVelocity;
         private Vector3 pastMoveDirection;
-        private CapsuleCollider _capsuleCollider;
 
-        private int LegsLayer; 
+
+        private int LegsLayer;
         private int HandsLayer;
         private int BaseLayer;
 
-
         private bool _isAimingNow = false;
-        private bool isAimingNow { get =>_isAimingNow; 
+        private bool isAimingNow { get => _isAimingNow;
             set {
                 _isAimingNow = value;
                 SetAimAnimator(animator, _isAimingNow);
@@ -43,33 +42,31 @@ namespace Assets.Scripts.Player
 
         [SerializeField] private LayerMask groundLayerMask;
         private bool _isGround;
-        private bool isGround
-        {
-            get => _isGround;
-            set {
-                _isGround = value;
-                OnIsGround?.Invoke(value);
+        private bool ColliderGrounded {
+            get {
+                var bottomCenterPoint = new Vector3(_capsuleCollider.bounds.center.x, _capsuleCollider.bounds.min.y, _capsuleCollider.bounds.center.z);
+                return Physics.CheckCapsule(_capsuleCollider.bounds.center, bottomCenterPoint, _capsuleCollider.bounds.size.x / 2 * 0.9f, groundLayerMask);
             }
         }
 
+        private GameState currentGameState { get; set; }
 
-        private GameState currentGameState;
-
-        private void Awake()
-        {
-            if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
-            playerControlContext = new(PlayerState.Normal);
-            _capsuleCollider = GetComponent<CapsuleCollider>();
-            Game.Game.Manager.OnInitialized += ManagerOnInitialized;
-            OnIsGround += OnIsGroundHandler;
-        }
-
-        private void ManagerOnInitialized()
-        {
+        private void ManagerOnInitialized() {
             Game.Game.Manager.OnInitialized -= ManagerOnInitialized;
             currentGameState = Game.Game.Manager.GameStateManager.CurrentGameState;
             Game.Game.Manager.GameStateManager.Register(this);
         }
+
+        #region Mono
+        private void Awake()
+        {
+            if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
+            playerControlContext = new(PlayerState.Normal);
+            if (_capsuleCollider is null) _capsuleCollider = GetComponent<CapsuleCollider>();
+            Game.Game.Manager.OnInitialized += ManagerOnInitialized;
+            OnIsGround += OnIsGroundHandler;
+        }
+
 
         private void Start()
         {
@@ -80,44 +77,25 @@ namespace Assets.Scripts.Player
             HandsLayer = animator.GetLayerIndex(AnimationConstants.HandsLayer);
             BaseLayer = animator.GetLayerIndex(AnimationConstants.BaseLayer);
 
-
             //playerBehavior.AmmoReplenished += OnAmmoReplenished;
             //playerBehavior.AmmoIsOver += OnAmmoIsOver;
-            //InputManager.Instance.FastAttackPerformed += OnFastAttackPerformed;
+            InputManager.Instance.FastAttackPerformed += OnFastAttackPerformed;
             InputManager.Instance.JumpPerformed += OnJumpPerformed;
             //InputManager.Instance.AimStarted += OnAimStarted;
             InputManager.Instance.AimCanceled += OnAimCanceled;
             InputManager.Instance.AimPerformed += OnAimPerformed;
-            //InputManager.Instance.AssistanControllStarted += OnAssistanControllStarted;
-            //InputManager.Instance.AssistanControllCanceled += OnAssistanControllCanceled;
+            InputManager.Instance.AssistanControllStarted += OnAssistanControllStarted;
+            InputManager.Instance.AssistanControllCanceled += OnAssistanControllCanceled;
         }
-
-
-        public void MoveUpdate()
-        {
+        public void MoveUpdate() {
             if (_controller == null) return;
 
-            var groundedPlayer = _controller.isGrounded;
-            if (groundedPlayer && _playerVelocity.y < 0)
-            {
-                _playerVelocity.y = 0f;
-            }
-
-            //Debug.Log(TestMethod());
-            Debug.Log(groundedPlayer);
-
-            CheckIsGround(_controller.isGrounded);
-            PlayerMove();
-            //ApplyGravity(isGround);
-
-            _playerVelocity.y += gravityValue * Time.deltaTime;
-            _controller.Move(_playerVelocity * Time.deltaTime);
+            UpdateIsGround(ColliderGrounded);
+            CharacterYVelocityReset();
+            if( playerControlContext.PlayerState != PlayerState.AssistantControl ) PlayerMove();
+            ApplyGravity();
         }
-
-        private bool TestMethod()
-        {
-            return Physics.CheckSphere(transform.position, 0);
-        }
+        #endregion
 
         private void PlayerMove()
         {
@@ -130,11 +108,11 @@ namespace Assets.Scripts.Player
                 transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * 10);
 
                 pastMoveDirection = moveDirection;
-                SetFractionToAnimator(animator, CalculateFractionToAnimator(animator, 1, acceleration) );
+                SetFractionToAnimator(animator, CalculateFractionToAnimator(animator, 1, acceleration));
             }
             else {
-                if (_isAimingNow == true) 
-                        RotatePlayerAhead();
+                if (_isAimingNow == true)
+                    RotatePlayerAhead();
 
                 if (GetFractionFromAnimator(animator) > 0.002f) {
                     SetFractionToAnimator(animator, CalculateFractionToAnimator(animator, 0, slowdown));
@@ -165,31 +143,26 @@ namespace Assets.Scripts.Player
         #endregion
 
         #region Jump/Gravity
-        private void OnJumpPerformed()
-        {
-            if (isGround) 
+        private void OnJumpPerformed() {
+            if (_isGround) {
                 _playerVelocity.y += Mathf.Sqrt(jumpHeight * -1.0f * gravityValue);
+            }
         }
 
-        private void ApplyGravity(bool isGrounded)
+        private void CharacterYVelocityReset()  {
+            if (_isGround && _playerVelocity.y < 0) _playerVelocity.y = 0f;
+        }
+
+        private void ApplyGravity()
         {
-            if (isGrounded is false)
-            {
-                _playerVelocity.y += gravityValue * Time.deltaTime;
-                _controller.Move(_playerVelocity * Time.deltaTime);
-            }
-            else
-            {
-                if (_playerVelocity.y < 0f)
-                {
-                    _playerVelocity.y = 0f;
-                }
-            }
+            _playerVelocity.y += gravityValue * Time.deltaTime;
+            _controller.Move(_playerVelocity * Time.deltaTime);
         }
 
-        private void CheckIsGround(bool value) {
-            if (value == isGround) return ;
-            isGround = value;
+        private void UpdateIsGround(bool value) {
+            if (value == _isGround) return ;
+            _isGround = value;
+            OnIsGround?.Invoke(value);
         }
 
         private void OnIsGroundHandler(bool value)
@@ -197,20 +170,19 @@ namespace Assets.Scripts.Player
             if (value is true) {
                 animator.SetBool(AnimationConstants.IsGround, value);
                 animator.SetLayerWeight(LegsLayer, 0f);
-                animator.SetTrigger(AnimationConstants.JumpTrigger);
-                //Debug.Log(_isGround);
             }
             else if (value is false) {
                 animator.SetBool(AnimationConstants.IsGround, value);
                 animator.SetLayerWeight(LegsLayer, 1f);
-                //Debug.Log(_isGround);
             }
         }
         #endregion
 
-        #region AIM
+        #region AIM/Attack
         private void OnAimCanceled() {
             playerControlContext.SetPlayerState(PlayerState.Normal);
+
+            animator.SetTrigger(AnimationConstants.Attack);
             isAimingNow = false;
         }
         private void OnAimPerformed() {
@@ -219,8 +191,13 @@ namespace Assets.Scripts.Player
             isAimingNow = true;
             playerControlContext.SetPlayerState(PlayerState.Aim);
         } 
+        private void OnFastAttackPerformed()
+        {
+            if (currentGameState is not GameState.Gameplay) return;
+            animator.SetTrigger(AnimationConstants.Attack);
+
+        }
         private void SetAimAnimator(Animator animator, bool isAiming) => animator.SetBool(AnimationConstants.IsAiming, isAiming);
-        
         #endregion
 
 
@@ -228,26 +205,26 @@ namespace Assets.Scripts.Player
         {
         //    playerBehavior.AmmoReplenished -= OnAmmoReplenished;
         //    playerBehavior.AmmoIsOver -= OnAmmoIsOver;
-        //    InputManager.Instance.FastAttackPerformed -= OnFastAttackPerformed;
+            InputManager.Instance.FastAttackPerformed -= OnFastAttackPerformed;
             InputManager.Instance.JumpPerformed -= OnJumpPerformed;
             //    InputManager.Instance.AimStarted -= OnAimStarted;
             InputManager.Instance.AimCanceled -= OnAimCanceled;
             InputManager.Instance.AimPerformed -= OnAimPerformed;
-            //    InputManager.Instance.AssistanControllStarted -= OnAssistanControllStarted;
-            //    InputManager.Instance.AssistanControllCanceled -= OnAssistanControllCanceled;
+            InputManager.Instance.AssistanControllStarted -= OnAssistanControllStarted;
+            InputManager.Instance.AssistanControllCanceled -= OnAssistanControllCanceled;
 
         }
         private void OnEnable()
         {
             if (InputManager.Instance is not null)
             {
-        //        InputManager.Instance.FastAttackPerformed += OnFastAttackPerformed;
+                InputManager.Instance.FastAttackPerformed += OnFastAttackPerformed;
                 InputManager.Instance.JumpPerformed += OnJumpPerformed;
         //        InputManager.Instance.AimStarted += OnAimStarted;
                 InputManager.Instance.AimCanceled += OnAimCanceled;
                 InputManager.Instance.AimPerformed += OnAimPerformed;
-        //        InputManager.Instance.AssistanControllStarted += OnAssistanControllStarted;
-        //        InputManager.Instance.AssistanControllCanceled += OnAssistanControllCanceled;
+                InputManager.Instance.AssistanControllStarted += OnAssistanControllStarted;
+                InputManager.Instance.AssistanControllCanceled += OnAssistanControllCanceled;
             }
             if (playerBehavior is not null)
             {
@@ -262,6 +239,8 @@ namespace Assets.Scripts.Player
             currentGameState = gameState;
         }
         public PlayerControlContext GetContext() => playerControlContext;
+        private void OnAssistanControllCanceled() => playerControlContext.SetPlayerState(PlayerState.Normal);
+        private void OnAssistanControllStarted() => playerControlContext.SetPlayerState(PlayerState.AssistantControl);
 
         private void OnValidate() {
             if (playerSpeed < 0) playerSpeed = 0;

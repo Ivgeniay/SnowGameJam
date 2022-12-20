@@ -37,6 +37,7 @@ namespace Assets.Scripts.Game
             foreach (var el in GameObject.FindObjectsOfType<UnitBehavior>()) {
                 storage.AddNpc(el);
                 OnNpcInstantiate?.Invoke(this, new OnNpcInstantiateEventArg() { type = el.GetComponent<UnitBehavior>().BehaviourType });
+                Debug.Log(el.BehaviourType);
             }
 
             OnInitialized?.Invoke();

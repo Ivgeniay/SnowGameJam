@@ -17,7 +17,7 @@ namespace Assets.Scripts.Player
         private ShootingСontrol shootingСontrol;
         private Inventory inventory;
 
-        private GameState currentGameState;
+        private GameState currentGameState { get; set; }
 
         private void Awake() {
             if (controller is null) controller = GetComponent<IControllable>();
