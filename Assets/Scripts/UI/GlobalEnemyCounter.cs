@@ -12,22 +12,21 @@ namespace Assets.Scripts.UI
 
         private void Awake() {
             Game.Game.Manager.OnInitialized += GameOnInitializedHandler;
-            Game.Game.Manager.OnNpcInstantiate += Manager_OnNpcInstantiate;
-            Game.Game.Manager.OnDeathNpcDestroy += Manager_OnDeathNpcDestroy;
+            Game.Game.Manager.OnNpcInstantiate += OnNpcInstantiateHandler;
+            Game.Game.Manager.OnNpcDied += OnDeathNpcDestroyHandler;
         }
 
-        private void Manager_OnDeathNpcDestroy(object sender, System.EventArgs e) {
+        private void OnDeathNpcDestroyHandler(object sender, OnNpcDieEventArg e) {
             counter--;
             textMeshPro.text = counter.ToString();
         }
 
-        private void Manager_OnNpcInstantiate(object sender, OnNpcInstantiateEventArg e) {
+        private void OnNpcInstantiateHandler(object sender, OnNpcInstantiateEventArg e) {
             counter++;
             textMeshPro.text = counter.ToString();
         }
 
         private void GameOnInitializedHandler() {
-            //textMeshPro.text = counter.ToString();
         }
     }
 }

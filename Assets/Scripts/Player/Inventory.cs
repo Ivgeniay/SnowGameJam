@@ -6,7 +6,7 @@ using Sirenix.Serialization;
 using System;
 using Sirenix.OdinInspector;
 using Random = System.Random;
-using Sirenix.Utilities;
+using Assets.Scripts.Player.Weapon.Interfaces;
 
 [Serializable]
 public class Inventory : SerializedMonoBehaviour
@@ -14,40 +14,35 @@ public class Inventory : SerializedMonoBehaviour
     public event Action AmmoIsOver;
     public event Action AmmoReplenished;
 
+    [SerializeField] private Transform gunPlaceTransform;
     [SerializeField] private Snowball snowball;
-    [OdinSerialize] private Dictionary<IWeapon, int> Weapons;
+    [SerializeField] private SnowCannon snowCannon;
+    [OdinSerialize] private Dictionary<IWeapon_, int> Weapons;
 
-    private void Start()
-    {
-        //Weapons.ForEach(x => Debug.Log($"{x.Key} {x.Value}"));
-        //Debug.Log(snowball.name);
+    private void Awake() {
+        Weapons = new Dictionary<IWeapon_, int>();
+        Weapons.Add(snowCannon, 9999);
     }
 
-    public void AddAmmo(IWeapon weapon, int amount) {
+    public void AddAmmo(IWeapon_ weapon, int amount) {
         if (Weapons.TryGetValue(weapon, out int ammo)) Weapons[weapon] = ammo + amount;
         else Weapons[weapon] = amount;
         AmmoReplenished?.Invoke();
     }
-    public void decrimentAmmo(IWeapon weapon) {
+    public void decrimentAmmo(IWeapon_ weapon) {
         Weapons[weapon] = Weapons[weapon] - 1;
         ChekIsEmptyAmmo();
     }
-    public bool isAmmoEmpty(IWeapon weapon) {
+    public bool isAmmoEmpty(IWeapon_ weapon) {
         if (weapon is null) throw new NullReferenceException();
         return Weapons[weapon] <= 0;
     }
-    public IWeapon GetWeapon(IWeapon weapon) {
-        if (Weapons.TryGetValue(weapon, out int value)) {
-            if (value > 0) return weapon;
-        } 
-        return GetRandomWeapon();
-    }
 
-    public IWeapon GetNextWeapon(IWeapon currentWeapon)
+    public IWeapon_ GetNextWeapon(IWeapon_ currentWeapon)
     {
-        List<IWeapon> weapons = new List<IWeapon>();
+        List<IWeapon_> weapons = new List<IWeapon_>();
 
-        foreach(KeyValuePair<IWeapon, int> weapon in Weapons)
+        foreach(KeyValuePair<IWeapon_, int> weapon in Weapons)
             weapons.Add(weapon.Key);
 
         var count = weapons.FindIndex(x => x == currentWeapon);
@@ -59,11 +54,11 @@ public class Inventory : SerializedMonoBehaviour
         } 
     }
 
-    public IWeapon GetPreviousWeapon(IWeapon currentWeapon)
+    public IWeapon_ GetPreviousWeapon(IWeapon_ currentWeapon)
     {
-        List<IWeapon> weapons = new List<IWeapon>();
+        List<IWeapon_> weapons = new List<IWeapon_>();
 
-        foreach (KeyValuePair<IWeapon, int> weapon in Weapons)
+        foreach (KeyValuePair<IWeapon_, int> weapon in Weapons)
             weapons.Add(weapon.Key);
 
         var count = weapons.FindIndex(x => x == currentWeapon);
@@ -71,25 +66,37 @@ public class Inventory : SerializedMonoBehaviour
         else return weapons[count - 1];
     }
 
-    public IWeapon GetWeapon(WeaponVariety weapon) {
-        switch (weapon)
+    public IWeapon_ GetWeapon(WeaponVariety weapon) {
+        return GetWeapon(snowCannon);
+
+        //switch (weapon)
+        //{
+        //    case WeaponVariety.snowball:
+        //        return GetWeapon(snowball);
+        //    case WeaponVariety.snowCannon:
+        //        return GetWeapon(snowCannon);
+        //    default:
+        //        return GetRandomWeapon();
+        //}
+    }
+    public IWeapon_ GetWeapon(IWeapon_ weapon)
+    {
+        if (Weapons.TryGetValue(weapon, out int value))
         {
-            case WeaponVariety.snowball:
-                return GetWeapon(snowball);
-            default:
-                return GetRandomWeapon();
+            if (value > 0) return weapon;
         }
+        return GetRandomWeapon();
     }
 
-    public IWeapon GetRandomWeapon() {
+    public IWeapon_ GetRandomWeapon() {
         var getter = Weapons.Where(x => x.Value > 0).FirstOrDefault();
-        Debug.Log(getter);
+        Debug.Log(getter.Key);
         return getter.Key;
     }
 
     private void ChekIsEmptyAmmo() {
         int ammo = 0;
-        foreach(KeyValuePair<IWeapon, int> weapon in Weapons) ammo += weapon.Value;
+        foreach(KeyValuePair<IWeapon_, int> weapon in Weapons) ammo += weapon.Value;
         if (ammo <= 0) AmmoIsOver?.Invoke();
     }
 }

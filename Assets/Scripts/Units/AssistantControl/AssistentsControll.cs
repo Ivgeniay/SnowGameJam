@@ -2,7 +2,6 @@
 using Assets.Scripts.Player;
 using Assets.Scripts.Units.StateMech;
 using System;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.XR;
@@ -12,6 +11,7 @@ namespace Assets.Scripts.Units.AssistantControl
     public class AssistentsControll : MonoBehaviour, IGameStateHandler
     {
         private bool canControlAssistants = false;
+        [SerializeField]private LayerMask GroundlayerMask;
 
         private void Start()
         {
@@ -42,8 +42,7 @@ namespace Assets.Scripts.Units.AssistantControl
 
         private Vector3 FindPointDestination() {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Physics.Raycast(ray, out RaycastHit hitinfo);
-            Debug.Log(hitinfo.point);
+            Physics.Raycast(ray, out RaycastHit hitinfo, 1000, GroundlayerMask);
             return hitinfo.point;
         }
 

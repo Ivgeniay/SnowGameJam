@@ -47,28 +47,9 @@ namespace Assets.Scripts.Units.StateMech
         private void GameManagerOnInitialized() {
             Game.Game.Manager.GameStateManager.Register(this);
         }
-        //public void GameStateHandle(GameState gameState)
-        //{
-        //    switch (gameState)
-        //    {
-        //        case GameState.AssistentControl:
-        //            isFreezed = true;
-        //            break;
-        //        case GameState.Pause:
-        //            isFreezed = true;
-        //            break;
-        //        case GameState.Gameplay:
-        //            isFreezed = false;
-        //            break;
-        //        case GameState.GameOver:
-        //            isFreezed = true;
-        //            break;
-        //    }
-        //}
 
         public void GameStateHandle(GameState gameState) {
-            //if (gameState != GameState.Gameplay) Time.timeScale = 0;
-            //else Time.timeScale = 1;
+
         }
     }
 }

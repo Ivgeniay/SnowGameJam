@@ -1,46 +1,38 @@
-﻿using Assets.Scripts.Player.Shoot;
-using Assets.Scripts.Player.Shoot.DTO;
-using Assets.Scripts.Player.Weapon;
-using Assets.Scripts.Utilities;
-using Sisus.Init;
-using System.Linq;
+﻿using Assets.Scripts.Player.Weapon;
+using Assets.Scripts.Player.Weapon.Interfaces;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    public class ShootingСontrol : MonoBehaviour
+    public class ShootingСontrol : MonoBehaviour, IAttack
     {
         private PlayerBehavior playerBehavior;
-
         private bool isShowProjection = false;
-        private AimDTO aimDTO;
+        private Camera mainCamera;
 
         [SerializeField] private Transform spawnPoint;
+        [SerializeField] private IWeapon_ currentWeapon;
         [SerializeField] private Projection projection;
 
-        [SerializeField] private IWeapon currentWeapon;
-        [SerializeField] private IShoot shootType;
 
-        [Header("NonPhysics")]
-        [SerializeField] public Vector3 curve;
-        [SerializeField] public float throwLength;
-        [SerializeField] [Range(1, 100)] public int StepNonPhysic;
-        [SerializeField] [Range(1, 100)] public int frameDelayNonPhysics;
 
         private void Awake() {
+            gameObject.GetComponentInChildren<AnimationEventProxy>().PersonAttackController = this;
+            mainCamera = Camera.main;
+
             if (projection is null) projection = GetComponent<Projection>();
             if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
-            aimDTO = new();
-
-            //shootType = new PhysicAttack(transform, spawnPoint, (5000, 500, 1000));
-            shootType = new BesiersAttack(transform, spawnPoint);
         }
-        private void Start() {
-            currentWeapon = playerBehavior.GetWeaponFromInventory(WeaponVariety.snowball);
 
-            InputManager.Instance.MouseWheelPerformed += ChangeWeapon;
-            InputManager.Instance.AimPerformed += OnAimPerformed;
-            InputManager.Instance.AimCanceled += OnAimCanceled;
+        private void Start() {
+            currentWeapon = playerBehavior.GetWeaponFromInventory(WeaponVariety.snowCannon);
+
+            if (InputManager.Instance is not null)
+            {
+                InputManager.Instance.MouseWheelPerformed += ChangeWeapon;
+                InputManager.Instance.AimPerformed += OnAimPerformed;
+                InputManager.Instance.AimCanceled += OnAimCanceled;
+            }
         }
 
 
@@ -48,37 +40,23 @@ namespace Assets.Scripts.Player
             if (isShowProjection && !playerBehavior.isAmmoEmpty(currentWeapon)) ProjectionConrol();
             else projection.DisableLine();
         }
-
-        public void OnAttack(IWeapon weapon, TypeAttack typeAttack = TypeAttack.Physics)
+        public void OnAttack() {
+            var weapon = GetCurrentWeapon();
+            var endpoint = CalculatingEndPointShot();
+            Attack(weapon, endpoint);
+        }
+        private void Attack(IWeapon_ weapon_, Vector3 fireEndpointPosition)
         {
-            if (weapon is null) {
-                Debug.Log("HEY, THERE IS NO WEAPON");
-                return;
-            }
-            if (playerBehavior.isAmmoEmpty(weapon) is true) {
-                Debug.Log("HEY, THERE ARE NO AMMO");
-                return;
-            }
+            if (weapon_ == null) return;
+            if (playerBehavior.isAmmoEmpty(weapon_) is true) return;
 
-            shootType.GetAttack( new AttackDTO() { 
-                                    SpawnPoint = spawnPoint, 
-                                    Weapon = weapon });
-
-            playerBehavior.decrimentAmmo(weapon);
+            weapon_.Fire(fireEndpointPosition);
+            DecrimentAmmo(weapon_);
         }
-
-        public void TakeAim(Projection projection) {
-            aimDTO.Weapon = currentWeapon;
-            aimDTO.SpawnPoint = spawnPoint;
-            aimDTO.Projection = projection;
-
-            shootType.GetAim(aimDTO);
-        }
-
-        public IWeapon GetCurrentWeapon() => currentWeapon;
+        public IWeapon_ GetCurrentWeapon() => currentWeapon;
         private void ProjectionConrol() {
             projection.EnableLine();
-            TakeAim(projection);
+            currentWeapon.GetAim(projection);
         }
         private void OnAimCanceled() => isShowProjection = false;
         private void OnAimPerformed() => isShowProjection = true;
@@ -86,6 +64,19 @@ namespace Assets.Scripts.Player
             if (obj > 0) currentWeapon = playerBehavior.GetNextWeaponFromInventory(GetCurrentWeapon());
             else if (obj < 0) currentWeapon = playerBehavior.GetPreviousWeaponFromInventory(GetCurrentWeapon());
         }
+        private void DecrimentAmmo(IWeapon_ weapon_) => playerBehavior.decrimentAmmo(weapon_);
+
+        private Vector3 CalculatingEndPointShot() {
+            var _ray = new Ray(mainCamera.transform.position, Camera.main.transform.forward);
+            Physics.Raycast(_ray, out RaycastHit hitinfo);
+            return hitinfo.point;
+        }
+
+
+
+
+
+
         private void OnEnable()
         {
             if (InputManager.Instance is not null)
@@ -101,15 +92,10 @@ namespace Assets.Scripts.Player
             InputManager.Instance.AimPerformed -= OnAimPerformed;
             InputManager.Instance.AimCanceled -= OnAimCanceled;
         }
-        private void OnValidate() {
-            if (throwLength < 2) throwLength = 2;  
-        }
-
 
     }
 
-    public enum TypeAttack
-    {
+    public enum TypeAttack {
         Physics,
         Nonphysics
     }

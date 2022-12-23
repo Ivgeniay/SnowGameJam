@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Assets.Scripts.Player.Weapon.Interfaces;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Player.Weapon
 {
-    internal class Melee : MonoBehaviour, IWeapon, IBullet
+    internal class Melee : MonoBehaviour, IWeapon_
     {
         public bool isCollided { get; set; }
         private float damage;
@@ -42,5 +38,14 @@ namespace Assets.Scripts.Player.Weapon
             Destroy(this);
         }
 
+        public void Fire(Vector3 firePosition)
+        {
+            
+        }
+
+        public void GetAim(Projection projection)
+        {
+            
+        }
     }
 }

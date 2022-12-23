@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Game.Pause;
 using Assets.Scripts.Player.Control;
 using Assets.Scripts.Player.Weapon;
+using Assets.Scripts.Player.Weapon.Interfaces;
 using System;
 using UnityEngine;
 
@@ -34,13 +35,13 @@ namespace Assets.Scripts.Player
             if (currentGameState == GameState.Gameplay)
                 controller.MoveUpdate();
         }
-        public void AddAmmo(IWeapon weapon, int amount) => inventory.AddAmmo(weapon, amount);
-        public bool isAmmoEmpty(IWeapon weapon) => inventory.isAmmoEmpty(weapon);
-        public void decrimentAmmo(IWeapon weapon) => inventory?.decrimentAmmo(weapon);
-        public IWeapon GetNextWeaponFromInventory(IWeapon weapon) => inventory.GetNextWeapon(weapon);
-        public IWeapon GetPreviousWeaponFromInventory(IWeapon weapon) => inventory.GetPreviousWeapon(weapon);
-        public IWeapon GetWeaponFromInventory(WeaponVariety weapon) => inventory.GetWeapon(weapon);
-        public IWeapon GetCurrentWeapon() => shootingСontrol.GetCurrentWeapon();
+        public void AddAmmo(IWeapon_ weapon, int amount) => inventory.AddAmmo(weapon, amount);
+        public bool isAmmoEmpty(IWeapon_ weapon) => inventory.isAmmoEmpty(weapon);
+        public void decrimentAmmo(IWeapon_ weapon) => inventory?.decrimentAmmo(weapon);
+        public IWeapon_ GetNextWeaponFromInventory(IWeapon_ weapon) => inventory.GetNextWeapon(weapon);
+        public IWeapon_ GetPreviousWeaponFromInventory(IWeapon_ weapon) => inventory.GetPreviousWeapon(weapon);
+        public IWeapon_ GetWeaponFromInventory(WeaponVariety weapon) => inventory.GetWeapon(weapon);
+        public IWeapon_ GetCurrentWeapon() => shootingСontrol.GetCurrentWeapon();
         private void OnAmmoReplenished() => AmmoReplenished?.Invoke();
         private void OnAmmoIsOver() => AmmoIsOver?.Invoke();
         private void GameManagerOnInitialized() {

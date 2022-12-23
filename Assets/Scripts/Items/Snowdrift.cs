@@ -1,5 +1,6 @@
 using Assets.Scripts.Player;
 using Assets.Scripts.Player.Weapon;
+using Assets.Scripts.Player.Weapon.Interfaces;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 public class Snowdrift : SerializedMonoBehaviour
 {
-    [OdinSerialize] private IWeapon weapon;
+    [OdinSerialize] private IWeapon_ weapon;
     [SerializeField] private int AmmoQuantity;
 
     private void OnTriggerEnter(Collider other)

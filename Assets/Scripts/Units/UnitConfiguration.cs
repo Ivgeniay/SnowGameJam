@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.Player.Weapon;
+using Assets.Scripts.Player.Weapon.Interfaces;
 using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.Units.StateMech.Disposer;
+using Assets.Scripts.Utilities;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
@@ -19,6 +21,7 @@ namespace Assets.Scripts.Units
         public event Action<float> OnDamageChanged;
         public event Action<float> OnAttackDistanceChanged;
         public event Action<float> OnAttackDelayIsSecondsChanged;
+        public event Action<float> OnEnemyDetectionDistanceChanged;
 
         private NavMeshAgent agent;
         //private UnitBehavior unitBehavior;
@@ -29,12 +32,11 @@ namespace Assets.Scripts.Units
 
             agent = GetComponent<NavMeshAgent>();
             agent.speed = MovingSpeed;
-            agent.stoppingDistance = AttackDistance;
-        }
+    }
 
 
         [BoxGroup("Weapons settings")]
-        [OdinSerialize] public IWeapon weapon;
+        [OdinSerialize] public IWeapon_ weapon;
         [BoxGroup("Weapons settings")]
         [OdinSerialize] public Transform SpawnPoint;
 
@@ -45,13 +47,13 @@ namespace Assets.Scripts.Units
         private float _damage;
         private float _attackDistance;
         private float _attackDelayIsSeconds;
+        private float _enemyDetectionDistance;
 
 
-        [OdinSerialize] public int IndexCurrentAttack { get; set; } = 0;
-        [OdinSerialize] public int TypeAttackAnimation { get; private set; } = 0;
-        [OdinSerialize] public int TypeWalkAnimation { get; private set; } = 0;
-        [OdinSerialize] public int TypeDamagebleWalkAnimation { get; private set; } = 0;
-
+        //[OdinSerialize] public int IndexCurrentAttack { get; set; } = 0;
+        //[OdinSerialize] public int TypeAttackAnimation { get; private set; } = 0;
+        //[OdinSerialize] public int TypeWalkAnimation { get; private set; } = 0;
+        //[OdinSerialize] public int TypeDamagebleWalkAnimation { get; private set; } = 0;
         [OdinSerialize] [PropertyRange(0f, 10f)] public float MovingSpeed 
         { 
             get => _movingSpeed;
@@ -81,13 +83,14 @@ namespace Assets.Scripts.Units
             }
         }
 
-        [OdinSerialize] public float Damage
+        [OdinSerialize][PropertyRange(0f, 50f)]
+        public float Damage
         {
             get => _damage;
             set
             {
                 if (value < 0) return; 
-                _damage = value;
+                _damage= value;
                 OnDamageChanged?.Invoke(value);
             }
         }
@@ -101,7 +104,21 @@ namespace Assets.Scripts.Units
                 OnAttackDistanceChanged?.Invoke(value);
             }
         }
-        [OdinSerialize] public float AttackDelayIsSeconds
+
+        [OdinSerialize][PropertyRange(0f, 50f)]
+        public float EnemyDetectionDistance
+        {
+            get => _enemyDetectionDistance;
+            set
+            {
+                if (value < 0) return;
+                _enemyDetectionDistance = value;
+                OnEnemyDetectionDistanceChanged?.Invoke(value);
+            }
+        }
+        
+        [OdinSerialize][PropertyRange(0.1f, 10f)]
+        public float AttackDelayIsSeconds
         {
             get => _attackDelayIsSeconds;
             set
@@ -116,18 +133,19 @@ namespace Assets.Scripts.Units
         [OdinSerialize] public float Health { get; private set; } = 1f;
 
         private void OnDrawGizmos() {
-            Gizmos.DrawSphere(transform.position, AttackDistance);
+            Gizmos.DrawSphere(transform.position, EnemyDetectionDistance);
         }
 
         private void OnValidate()
         {
-            if (IndexCurrentAttack < 0) IndexCurrentAttack = 0;
-            if (TypeAttackAnimation < 0) TypeAttackAnimation = 0;
-            if (TypeWalkAnimation < 0) TypeWalkAnimation = 0;
-            if (TypeDamagebleWalkAnimation < 0) TypeDamagebleWalkAnimation = 0;
+            //if (IndexCurrentAttack < 0) IndexCurrentAttack = 0;
+            //if (TypeAttackAnimation < 0) TypeAttackAnimation = 0;
+            //if (TypeWalkAnimation < 0) TypeWalkAnimation = 0;
+            //if (TypeDamagebleWalkAnimation < 0) TypeDamagebleWalkAnimation = 0;
             if (Damage < 0) Damage = 0;
             if (StunTime < 0) StunTime = 0;
-            if (AttackDelayIsSeconds < 0) AttackDelayIsSeconds = 0;
+            if (AttackDelayIsSeconds < 0.1f) AttackDelayIsSeconds = 0.1f;
+            if (EnemyDetectionDistance < 0) EnemyDetectionDistance = 0;
         }
     }
 }

@@ -17,14 +17,13 @@ namespace Assets.Scripts.UI
             if(redLine is not null) renderer = redLine.GetComponent<Renderer>();
 
             _healthSystem.OnTakeDamage += _healthSystem_OnTakeDamage;
-            _healthSystem.OnDeath += _healthSystem_OnDeath;
+            _healthSystem.OnDied += OnDiedHandler;
 
             maxHp = _healthSystem.MaxHealth;
             renderer.material.color = gradient.Evaluate(1);
         }
 
-        private void _healthSystem_OnDeath(object sender, System.EventArgs e) {
-            
+        private void OnDiedHandler(object sender, OnNpcDieEventArg e) {
         }
 
         private void _healthSystem_OnTakeDamage(object sender, EventArgs.TakeDamagePartEventArgs e) {

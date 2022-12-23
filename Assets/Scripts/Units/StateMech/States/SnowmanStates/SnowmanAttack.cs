@@ -1,11 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-using Assets.Scripts.Utilities;
-using Assets.Scripts.Player.Weapon;
-using Assets.Scripts.Player;
-using System;
 using Assets.Scripts.Game.Pause;
+using Assets.Scripts.Player.Weapon.Interfaces;
 
 namespace Assets.Scripts.Units.StateMech.States
 {
@@ -25,31 +22,29 @@ namespace Assets.Scripts.Units.StateMech.States
         public float WalkDelayIsSeconds { get; private set; }
         public float AttackDelayIsSeconds { get; private set; }
 
-        private int _walkType;
-        public int WalkType {
-            get => _walkType;
-            set {
-                if (value >= 0)
-                    _walkType = value;
-            }
-        }
-        private int _attackType;
-        public int AttackType { 
-            get => _attackType; 
-            set{
-                if (value >= 0)
-                    _attackType = value;
-            } 
-        }
+        //private int _walkType;
+        //public int WalkType {
+        //    get => _walkType;
+        //    set {
+        //        if (value >= 0)
+        //            _walkType = value;
+        //    }
+        //}
+        //private int _attackType;
+        //public int AttackType { 
+        //    get => _attackType; 
+        //    set{
+        //        if (value >= 0)
+        //            _attackType = value;
+        //    } 
+        //}
         private float _damage;
 
         #region Mono
         public void Start() {
-            WalkType = unitConfiguration.TypeWalkAnimation;
-            AttackType = unitConfiguration.TypeAttackAnimation;
 
-            animator.SetInteger(AnimationConstants.WalkType, WalkType);
-            animator.SetInteger(AnimationConstants.AttackType, AttackType);
+            //animator.SetInteger(AnimationConstants.WalkType, WalkType);
+            //animator.SetInteger(AnimationConstants.AttackType, AttackType);
             animator.SetBool(AnimationConstants.IsWalking, true);
         }
 
@@ -64,10 +59,6 @@ namespace Assets.Scripts.Units.StateMech.States
             }
             else {
                 Attack();
-                //if (isAttacking)
-                //{
-                //    Attack();
-                //}
             }
 
         }
@@ -90,8 +81,8 @@ namespace Assets.Scripts.Units.StateMech.States
             unitConfiguration.OnAttackDistanceChanged += OnAttackDistanceChanged; ;
             unitConfiguration.OnAttackDelayIsSecondsChanged += OnAttackDelayIsSecondsChanged; ;
 
-            WalkType = unitConfiguration.TypeWalkAnimation;
-            AttackType = unitConfiguration.TypeAttackAnimation;
+            //WalkType = unitConfiguration.TypeWalkAnimation;
+            //AttackType = unitConfiguration.TypeAttackAnimation;
             _damage = unitConfiguration.Damage;
         }
         ~SnowmanAttack()
@@ -106,9 +97,7 @@ namespace Assets.Scripts.Units.StateMech.States
 
         #region EventHandlers
         private void OnAttackDelayIsSecondsChanged(float obj) => AttackDelayIsSeconds = obj;
-        private void OnAttackDistanceChanged(float obj) {
-            agent.stoppingDistance = obj;
-        }
+        private void OnAttackDistanceChanged(float obj) => agent.stoppingDistance = obj;
         private void OnDamageChanged(float obj) => _damage = obj;
         private void OnSpeedAnimationChanged(float obj) => animator.speed = obj;
         private void OnMovingSpeedChanged(float obj) => agent.speed = obj;
@@ -127,17 +116,17 @@ namespace Assets.Scripts.Units.StateMech.States
             //currentCoroutine = Coroutines.Start(AttackDelay(AttackDelayIsSeconds));
         }
 
-        public void OnAttack(IWeapon weapon)
+        public void OnAttack(IWeapon_ weapon)
         {
-            if (weapon is null) {
-                Debug.Log("HEY, THIS SNOWMAN HAS NO WEAPON");
-                return;
-            }
+            //if (weapon is null) {
+            //    Debug.Log("HEY, THIS SNOWMAN HAS NO WEAPON");
+            //    return;
+            //}
 
-            var instance = Instantiator.Instantiate(weapon.GetPrefab(), unitConfiguration.SpawnPoint.position, unitConfiguration.SpawnPoint.rotation);
-            var instanceScr = instance.GetComponent<IWeapon>();
-            instanceScr.SetCreator(transform);
-            instanceScr.Setup(((Vector3.up / 10f) + (transform.forward)) * unitConfiguration.Damage, unitConfiguration.SpawnPoint);
+            //var instance = Instantiator.Instantiate(weapon.GetPrefab(), unitConfiguration.SpawnPoint.position, unitConfiguration.SpawnPoint.rotation);
+            //var instanceScr = instance.GetComponent<IWeapon>();
+            //instanceScr.SetCreator(transform);
+            //instanceScr.Setup(((Vector3.up / 10f) + (transform.forward)) * unitConfiguration.Damage, unitConfiguration.SpawnPoint);
         }
 
         private void Walk() {
@@ -148,7 +137,7 @@ namespace Assets.Scripts.Units.StateMech.States
         private void WalkTypeAnimationDefinitions()
         {
             if (animator is null) return;
-            if (healthSystem.health >= healthSystem.MaxHealth) animator.SetInteger(AnimationConstants.WalkType, WalkType);
+            if (healthSystem.health >= healthSystem.MaxHealth) animator.SetInteger(AnimationConstants.WalkType, 1);
             else animator.SetInteger(AnimationConstants.WalkType, 2);
         }
 

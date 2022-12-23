@@ -18,7 +18,7 @@ namespace Assets.Scripts.Spawner
 
         public event Action<int> OnStageComplete;
         public event Action<int> OnStageStart;
-        //public event Action OnSpawned;
+        public event EventHandler<OnNpcInstantiateEventArg> OnNpcInstantiate;
 
         [OdinSerialize] private List<ISpawner> _spawns = new List<ISpawner>();
 
@@ -42,7 +42,7 @@ namespace Assets.Scripts.Spawner
         private void Awake() {
             Game.Game.Manager.OnInitialized += GameManagerOnInitialized;
         }
-
+ 
         #region
         private void Start() {
             GameObject.FindObjectsOfType<Spawner>().ForEach(el => _spawns.Add(el));
@@ -68,28 +68,28 @@ namespace Assets.Scripts.Spawner
                 var unit = spawner.ToSpawn();
                 var hs = unit.GetComponent<HealthSystem>();
                 productedAlive.Add(hs);
-                hs.OnDeath += OnDeath;
+                hs.OnDied += OnDied;
                 unit.Attack(XmasTree);
             }
         }
 
-        private void OnDeath(object sender, System.EventArgs e)
+        private void OnDied(object sender, OnNpcDieEventArg e)
         {
             var monoSender = sender as MonoBehaviour;
             if (monoSender is not null)
             {
                 var hs = monoSender.GetComponent<HealthSystem>();
-                hs.OnDeath -= OnDeath;
+                hs.OnDied -= OnDied;
                 productedAlive.Remove(hs);
             }
         }
 
-        private void OnNewStageStart(int obj) {
-            currentWave = obj;
-        }
+        private void OnNewStageStart(int obj) => currentWave = obj;
+        private void OnStageCompleted(int obj) { }
+        private void OnNpcInstantiatHandlere(object sender, OnNpcInstantiateEventArg e) => OnNpcInstantiate?.Invoke(sender, e);
 
-        private void OnStageCompleted(int obj) {
-        }
+        private void OnEnable() => _spawns.ForEach(spawner => { spawner.OnNpcInstantiate += OnNpcInstantiatHandlere; });
+        private void OnDisable() => _spawns.ForEach(spawner => { spawner.OnNpcInstantiate -= OnNpcInstantiatHandlere; });
 
         private IEnumerator SpawnByTimer()
         {

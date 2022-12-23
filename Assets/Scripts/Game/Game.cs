@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.EventArgs;
 using Assets.Scripts.Game.Pause;
 using Assets.Scripts.PeripheralManagement._Cursor;
+using Assets.Scripts.Spawner;
 using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.Utilities;
 using System;
@@ -12,7 +13,9 @@ namespace Assets.Scripts.Game
     public sealed class Game
     {
         public event Action OnInitialized;
-        public event EventHandler OnDeathNpcDestroy;
+        public event EventHandler<OnNpcDieEventArg> OnNpcDied;
+        public event Action<int> OnStageStart;
+        public event Action<int> OnStageComplete;
         public event EventHandler<TakeDamagePartEventArgs> OnNpcGetDamage;
         public event EventHandler<OnNpcInstantiateEventArg> OnNpcInstantiate;
 
@@ -27,7 +30,6 @@ namespace Assets.Scripts.Game
             }
         }
         private Game() { }
-        
 
         public void Initialize() {
             GameStateManager = new GameStateManager();
@@ -36,12 +38,19 @@ namespace Assets.Scripts.Game
 
             foreach (var el in GameObject.FindObjectsOfType<UnitBehavior>()) {
                 storage.AddNpc(el);
-                OnNpcInstantiate?.Invoke(this, new OnNpcInstantiateEventArg() { type = el.GetComponent<UnitBehavior>().BehaviourType });
-                Debug.Log(el.BehaviourType);
+                OnNpcInstantiate?.Invoke(this, new OnNpcInstantiateEventArg() { UnitBehavior = el });
             }
+
+            var spawnerController = GameObject.FindObjectOfType<SpawnerController>();
+            spawnerController.OnNpcInstantiate += OnNpcInstantiateHandler;
+            spawnerController.OnStageStart += OnStageStartHandler;
+            spawnerController.OnStageComplete += OnStageCompleteHandler;
 
             OnInitialized?.Invoke();
         }
+
+
+        
 
         public UnitBehavior InstantiateNpc(GameObject prefab, Vector3 position, Quaternion quaternion)
         {
@@ -49,10 +58,10 @@ namespace Assets.Scripts.Game
             var scr = go.GetComponent<UnitBehavior>();
             storage.AddNpc(scr);
 
-            OnNpcInstantiate?.Invoke(this, new OnNpcInstantiateEventArg() { type = scr.BehaviourType });
+            OnNpcInstantiate?.Invoke(this, new OnNpcInstantiateEventArg() { UnitBehavior = scr });
 
             var hs = go.GetComponent<HealthSystem>();
-            hs.OnDeath += OnDeathHandler;
+            hs.OnDied += OnNpcDiedHandler;
             hs.OnTakeDamage += OnTakeDamageHandler;
 
             return scr;
@@ -71,17 +80,19 @@ namespace Assets.Scripts.Game
         }
 
 
-        private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) {
-            OnNpcGetDamage?.Invoke(sender, e);
-        }
-
-        private void OnDeathHandler(object sender, System.EventArgs e) {
-            OnDeathNpcDestroy?.Invoke(sender, System.EventArgs.Empty);
-        }
+        private void OnStageStartHandler(int obj) => OnStageStart?.Invoke(obj);
+        private void OnStageCompleteHandler(int obj) => OnStageComplete?.Invoke(obj);
+        private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) => OnNpcGetDamage?.Invoke(sender, e);
+        private void OnNpcInstantiateHandler(object sender, OnNpcInstantiateEventArg e) => OnNpcInstantiate?.Invoke(sender, e);
+        private void OnNpcDiedHandler(object sender, OnNpcDieEventArg e) => OnNpcDied?.Invoke(sender, e);
     }
 }
 
 public class OnNpcInstantiateEventArg
 {
-    public Type type;
+    public UnitBehavior UnitBehavior;
+}
+public class OnNpcDieEventArg
+{
+    public UnitBehavior UnitBehavior;
 }

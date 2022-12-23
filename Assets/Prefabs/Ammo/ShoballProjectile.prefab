@@ -178,9 +178,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1 &7461643253301830893
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +222,7 @@ TrailRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7461643253301830893}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -255,7 +255,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.5
+  m_Time: 0.4
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -266,20 +266,20 @@ TrailRenderer:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: 0
-        outSlope: 0
+        inSlope: -0.9851855
+        outSlope: -0.9851855
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
+        outWeight: 0.91525996
       - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: -2.032836
-        outSlope: -2.032836
+        time: 0.99473685
+        value: 0.38667047
+        inSlope: 2.6000192
+        outSlope: 2.6000192
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.16432339
+        inWeight: 0.2010582
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -321,7 +321,7 @@ TrailRenderer:
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
-  m_MinVertexDistance: 0.1
+  m_MinVertexDistance: 0.03
   m_MaskInteraction: 0
   m_Autodestruct: 1
   m_Emitting: 1

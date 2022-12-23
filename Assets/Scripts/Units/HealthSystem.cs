@@ -1,6 +1,7 @@
 using Assets.Scripts.EventArgs;
 using Assets.Scripts.Units;
 using Assets.Scripts.Units.DamageMech;
+using Assets.Scripts.Units.StateMech;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
 {
-    public event EventHandler OnDeath;
+    public event EventHandler<OnNpcDieEventArg> OnDied;
     public event EventHandler<TakeDamagePartEventArgs> OnTakeDamage;
 
     private UnitConfiguration unitConfiguration;
@@ -23,7 +24,6 @@ public class HealthSystem : MonoBehaviour
         unitConfiguration = GetComponent<UnitConfiguration>();
         if (unitConfiguration is not null) {
             maxHealth = unitConfiguration.Health;
-            //Debug.Log(maxHealth);
         }
         health = maxHealth;
         damageablesParts = gameObject.GetComponentsInChildren<IDamageable>().ToList();
@@ -49,14 +49,14 @@ public class HealthSystem : MonoBehaviour
         if (head is not null) {
             health = 0;
             isDead = true;
-            OnDeath?.Invoke(this, EventArgs.Empty);
+            OnDied?.Invoke(this, new OnNpcDieEventArg() { UnitBehavior = transform.GetComponent<UnitBehavior>() });
             return;
         }
 
         if (health - e.Damage <= 0) {
             health = 0;
             isDead = true;
-            OnDeath?.Invoke(this, EventArgs.Empty);
+            OnDied?.Invoke(this, new OnNpcDieEventArg() { UnitBehavior = transform.GetComponent<UnitBehavior>() });
         }
         else {
             health -= e.Damage;

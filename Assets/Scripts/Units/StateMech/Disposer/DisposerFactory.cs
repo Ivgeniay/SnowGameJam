@@ -12,17 +12,14 @@ namespace Assets.Scripts.Units.StateMech.Disposer
             return (StateDisposerBase)Activator.CreateInstance(GetType(stateDisposerType), arr);
         }
 
-
-        public static Type GetType(StateDisposerType stateDisposerType){
-            switch (stateDisposerType)
+        public static Type GetType(StateDisposerType stateDisposerType)
+        {
+            return stateDisposerType switch
             {
-                case (StateDisposerType.Assistant):
-                    return typeof(AssistantDisposer); 
-                case (StateDisposerType.Snowman):
-                    return typeof(SnowmanStateDisposer);
-                default:
-                    return typeof(DefaultDesposer);
-            }
+                StateDisposerType.Assistant => typeof(AssistantDisposer),
+                StateDisposerType.Snowman => typeof(SnowmanStateDisposer),
+                _ => null
+            };
         }
     }
 }

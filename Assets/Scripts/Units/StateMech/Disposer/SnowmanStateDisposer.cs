@@ -35,7 +35,7 @@ namespace Assets.Scripts.Units.StateMech
 
             healthSystem = transform.GetComponent<HealthSystem>();
             if (healthSystem is not null) {
-                healthSystem.OnDeath += HealthSystem_OnDeath;
+                healthSystem.OnDied += OnDiedHandler;
                 healthSystem.OnTakeDamage += HealthSystem_OnTakeDamage;
             }
         }
@@ -76,7 +76,7 @@ namespace Assets.Scripts.Units.StateMech
             ChangeState(states[StateName.Stun]);
             Coroutines.Start(StunExit(stunTime));
         }
-        private void HealthSystem_OnDeath(object sender, System.EventArgs e) => Die();
+        private void OnDiedHandler(object sender, OnNpcDieEventArg e) => Die();
         private IEnumerator StunExit(float seconds) {
             yield return new WaitForSeconds(seconds);
             ChangeState(states[StateName.Attack]);
@@ -104,5 +104,6 @@ public enum StateName
     Stun,
     Attack,
     FollowPoint,
+    ScaningEneny,
     FollowObject,
 }

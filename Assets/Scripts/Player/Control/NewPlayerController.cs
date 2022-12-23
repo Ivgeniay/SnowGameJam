@@ -23,6 +23,7 @@ namespace Assets.Scripts.Player
         private PlayerBehavior playerBehavior;
         private PlayerControlContext playerControlContext;
         private CharacterController _controller;
+        private Camera mainCamera;
 
         private Vector3 _playerVelocity;
         private Vector3 pastMoveDirection;
@@ -65,6 +66,7 @@ namespace Assets.Scripts.Player
             if (_capsuleCollider is null) _capsuleCollider = GetComponent<CapsuleCollider>();
             Game.Game.Manager.OnInitialized += ManagerOnInitialized;
             OnIsGround += OnIsGroundHandler;
+            mainCamera = Camera.main;
         }
 
 
@@ -77,13 +79,10 @@ namespace Assets.Scripts.Player
             HandsLayer = animator.GetLayerIndex(AnimationConstants.HandsLayer);
             BaseLayer = animator.GetLayerIndex(AnimationConstants.BaseLayer);
 
-            //playerBehavior.AmmoReplenished += OnAmmoReplenished;
-            //playerBehavior.AmmoIsOver += OnAmmoIsOver;
-            InputManager.Instance.FastAttackPerformed += OnFastAttackPerformed;
-            InputManager.Instance.JumpPerformed += OnJumpPerformed;
-            //InputManager.Instance.AimStarted += OnAimStarted;
             InputManager.Instance.AimCanceled += OnAimCanceled;
             InputManager.Instance.AimPerformed += OnAimPerformed;
+            InputManager.Instance.JumpPerformed += OnJumpPerformed;
+            InputManager.Instance.FastAttackPerformed += OnFastAttackPerformed;
             InputManager.Instance.AssistanControllStarted += OnAssistanControllStarted;
             InputManager.Instance.AssistanControllCanceled += OnAssistanControllCanceled;
         }
@@ -126,12 +125,12 @@ namespace Assets.Scripts.Player
         {
             var movement = InputManager.Instance.GetPlayerMovement();
             var move = new Vector3(movement.x, 0, movement.y);
-            move = Camera.main!.transform.forward * move.z + Camera.main!.transform.right * move.x;
+            move = mainCamera!.transform.forward * move.z + mainCamera!.transform.right * move.x;
             move.y = 0;
 
             return move;
         }
-        private Vector3 RotatePlayerAhead() => transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
+        private Vector3 RotatePlayerAhead() => transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, mainCamera.transform.localEulerAngles.y, transform.localEulerAngles.z);
 
         #endregion
 

@@ -9,7 +9,6 @@ namespace Assets.Scripts.UI
     public class Score : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI score_TextMeshProUGUI;
-        [SerializeField] private SpawnerController spawnerController;
         [SerializeField] private int OnDeathEnemyScore;
         [SerializeField] private int OnHeadEnemyScore;
         [SerializeField] private int OnStageCompleteScore;
@@ -18,20 +17,17 @@ namespace Assets.Scripts.UI
             Game.Game.Manager.OnInitialized += GameManagerOnInitialized;
         }
 
-        private void Start() {
-        }
-
         private void GameManagerOnInitialized() {
             Game.Game.Manager.OnInitialized -= GameManagerOnInitialized;
+            Game.Game.Manager.OnNpcDied += OnDeathNpcDestroy;
             Game.Game.Manager.OnNpcGetDamage += OnNpcGetDamage;
-            Game.Game.Manager.OnDeathNpcDestroy += OnDeathNpcDestroy;
-            spawnerController.OnStageComplete += SpawnerControllerOnStageComplete;
+            Game.Game.Manager.OnStageComplete += SpawnerControllerOnStageComplete;
         }
 
         private void SpawnerControllerOnStageComplete(int obj) =>
             score_TextMeshProUGUI.text = ParseAndCalculateScore(score_TextMeshProUGUI.text, OnStageCompleteScore);
 
-        private void OnDeathNpcDestroy(object sender, System.EventArgs e) =>
+        private void OnDeathNpcDestroy(object sender, OnNpcDieEventArg e) =>
             score_TextMeshProUGUI.text = ParseAndCalculateScore(score_TextMeshProUGUI.text, OnDeathEnemyScore);
         
 
@@ -47,9 +43,9 @@ namespace Assets.Scripts.UI
         }
 
         private void OnDisable() {
+            Game.Game.Manager.OnNpcDied -= OnDeathNpcDestroy;
             Game.Game.Manager.OnNpcGetDamage -= OnNpcGetDamage;
-            Game.Game.Manager.OnDeathNpcDestroy -= OnDeathNpcDestroy;
-            spawnerController.OnStageComplete -= SpawnerControllerOnStageComplete;
+            Game.Game.Manager.OnStageComplete -= SpawnerControllerOnStageComplete;
         }
     }
 }

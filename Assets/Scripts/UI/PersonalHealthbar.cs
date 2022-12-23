@@ -34,7 +34,7 @@ namespace Assets.Scripts.UI
         private void OnDestroy() => Unsubscribe();
         private void OnDisable() => Unsubscribe();
         private void OnTakeDamageHandler(object sender, EventArgs.TakeDamagePartEventArgs e) => SetSlider();
-        private void OnDeathHandler(object sender, System.EventArgs e)
+        private void OnDiedHandler(object sender, OnNpcDieEventArg e)
         {
             controlSlider.value = 0;
             Unsubscribe();
@@ -47,12 +47,12 @@ namespace Assets.Scripts.UI
         private void Subscribe() {
             if (hs is null) hs = followedObject.GetComponent<HealthSystem>();
             hs.OnTakeDamage += OnTakeDamageHandler;
-            hs.OnDeath += OnDeathHandler;
+            hs.OnDied += OnDiedHandler;
         }
         private void Unsubscribe() {
             if (hs is null) hs = followedObject.GetComponent<HealthSystem>();
             hs.OnTakeDamage -= OnTakeDamageHandler;
-            hs.OnDeath += OnDeathHandler;
+            hs.OnDied += OnDiedHandler;
         }
 
     }
