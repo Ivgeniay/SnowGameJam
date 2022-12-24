@@ -1,34 +1,37 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Player.Weapon.Interfaces;
 using Assets.Scripts.Player.Shoot;
+using Blobcreate.ProjectileToolkit;
+using System.Net;
 
 namespace Assets.Scripts.Player.Weapon
 {
     public class SnowCannon : MonoBehaviour, IWeapon_
     {
-        [Header("NonPhysics")]
-        [SerializeField] public Vector3 curve;
-        [SerializeField] public float throwLength;
-        [SerializeField][Range(1, 100)] public int StepNonPhysic;
-        [SerializeField][Range(1, 100)] public int frameDelayNonPhysics;
-
         [SerializeField] private Transform firePoint;
         [SerializeField] private Snowball snowball;
 
-        [SerializeField] private float force = 3000;
-        [SerializeField] private float beginingForse = 700;
+        [SerializeField] private float angleFastAttack;
+        [SerializeField] private float angleAimAttack;
+        [SerializeField] private float scatterRadius;
 
         private IShoot shootType;
 
-        private void Start()
-        {
-            //shootType = new PhysicAttack(transform, firePoint, (5000, 500, 1000));
-            shootType = new BesiersAttack(transform, firePoint, snowball, (StepNonPhysic, frameDelayNonPhysics));
+        private void Start() {
+            shootType = new NewPhysicAttack(firePoint, snowball, (angleFastAttack, angleAimAttack));
         }
 
-        public void Fire(Vector3 fireEndPointPosition)
-        {
-            shootType.GetAttack(fireEndPointPosition);
+        public void Fire(Vector3 fireEndPointPosition) {
+            var scatterX = Random.Range(0, scatterRadius);
+            var scatterY = Random.Range(0, scatterRadius);
+            var scatterVector = new Vector3(scatterX, scatterY, 0);
+
+            var fireEndPointPosition_ = fireEndPointPosition + scatterVector;
+            shootType.GetAttack(fireEndPointPosition_);
+        }
+
+        public void GetAim(TrajectoryPredictor trajectoryPredictor, Vector3 endPoint) {
+            shootType.GetAim(trajectoryPredictor, endPoint);
         }
 
 
@@ -44,10 +47,7 @@ namespace Assets.Scripts.Player.Weapon
         //    force = beginingForse;
         //}
 
-        public void GetAim(Projection projection) => shootType.GetAim();
-
         private void OnValidate() {
-            if (throwLength < 2) throwLength = 2;
         }
 
     }

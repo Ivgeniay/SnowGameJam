@@ -56,6 +56,7 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
 
             if (GetDistance(transform.position, targetTransform.position) <= attackDistance) {
                 if (canAttack) {
+                    RotateTransform(transform, targetTransform.position);
                     animator.SetTrigger(AnimationConstants.Attack);
                     canAttack = false;
                 }
@@ -101,6 +102,9 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         }
         public IWeapon_ GetCurrentWeapon() {
             return unitConfiguration.weapon;
+        }
+        private void RotateTransform(Transform transform, Vector3 to) {
+            transform.LookAt(to);
         }
 
         private IEnumerator TimerAttack(bool canAttack, float delay) {

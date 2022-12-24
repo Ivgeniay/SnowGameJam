@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Utilities;
+using Blobcreate.ProjectileToolkit;
 using System.Net;
 using UnityEngine;
 
@@ -43,7 +44,7 @@ namespace Assets.Scripts.Player.Shoot
 
             //force = beginingForse;
         }
-        public void GetAim()
+        public void GetAim(TrajectoryPredictor trajectoryPredictor, Vector3 endPoint)
         {
             if (force < maxForce) force += increaseInSecond * Time.deltaTime;
             else force = maxForce;

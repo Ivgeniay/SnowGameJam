@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Player.Weapon.Interfaces;
+using Blobcreate.ProjectileToolkit;
 using System.Collections;
 using UnityEngine;
 
@@ -43,7 +44,7 @@ namespace Assets.Scripts.Player.Weapon
             
         }
 
-        public void GetAim(Projection projection)
+        public void GetAim(TrajectoryPredictor trajectoryPredictor, Vector3 endpoint)
         {
             
         }

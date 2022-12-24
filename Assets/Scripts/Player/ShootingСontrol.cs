@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Player.Weapon.Interfaces;
+using Blobcreate.ProjectileToolkit;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -12,15 +13,14 @@ namespace Assets.Scripts.Player
 
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private IWeapon_ currentWeapon;
-        [SerializeField] private Projection projection;
-
-
+        [SerializeField] private TrajectoryPredictor trajectoryPredictor;
+        [SerializeField] private Transform Pointer;
 
         private void Awake() {
             gameObject.GetComponentInChildren<AnimationEventProxy>().PersonAttackController = this;
             mainCamera = Camera.main;
 
-            if (projection is null) projection = GetComponent<Projection>();
+            if (trajectoryPredictor is null) trajectoryPredictor = GetComponent<TrajectoryPredictor>();
             if (playerBehavior is null) playerBehavior = GetComponent<PlayerBehavior>();
         }
 
@@ -38,7 +38,7 @@ namespace Assets.Scripts.Player
 
         private void Update() {
             if (isShowProjection && !playerBehavior.isAmmoEmpty(currentWeapon)) ProjectionConrol();
-            else projection.DisableLine();
+            else trajectoryPredictor.enabled = false;
         }
         public void OnAttack() {
             var weapon = GetCurrentWeapon();
@@ -55,8 +55,9 @@ namespace Assets.Scripts.Player
         }
         public IWeapon_ GetCurrentWeapon() => currentWeapon;
         private void ProjectionConrol() {
-            projection.EnableLine();
-            currentWeapon.GetAim(projection);
+            trajectoryPredictor.enabled = true;
+            var endpoint = CalculatingEndPointShot();
+            currentWeapon.GetAim(trajectoryPredictor, endpoint);
         }
         private void OnAimCanceled() => isShowProjection = false;
         private void OnAimPerformed() => isShowProjection = true;
@@ -69,6 +70,8 @@ namespace Assets.Scripts.Player
         private Vector3 CalculatingEndPointShot() {
             var _ray = new Ray(mainCamera.transform.position, Camera.main.transform.forward);
             Physics.Raycast(_ray, out RaycastHit hitinfo);
+            Debug.Log(hitinfo.collider.name);
+            Instantiate(Pointer, hitinfo.point, Quaternion.identity);
             return hitinfo.point;
         }
 

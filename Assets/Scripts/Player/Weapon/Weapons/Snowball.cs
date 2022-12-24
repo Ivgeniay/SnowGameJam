@@ -12,16 +12,16 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player.Weapon
 {
-    public class Snowball : MonoBehaviour, IWeapon, IBullet, INonPhysicWeapon
+    public class Snowball : MonoBehaviour, IBullet      //, IWeapon, INonPhysicWeapon
     {
         [SerializeField] private Transform impactEffect;
 
         private Transform snowBallSpawnPoint;
         private Rigidbody rigidbody;
         private float damage { get; set; }
-        private Transform creator;
-        private CurvatureData curvatureData;
 
+        private CurvatureData curvatureData;
+        private Transform creator;
         private NonPhysicParameters nonPhysicParameters;
         private Besiers besie;
 
@@ -34,9 +34,8 @@ namespace Assets.Scripts.Player.Weapon
             }
         }
 
-
         private void Update() {
-            SelfDestroy(-100);
+            SelfDestroy(-15);
         }
 
         private void FixedUpdate() {
@@ -65,32 +64,17 @@ namespace Assets.Scripts.Player.Weapon
         }
 
         #endregion
-        #region IWeapon
-        public bool isCollided { get; set; } = false;
-
-        private bool isGhost = false;
-        public Transform GetPrefab() => transform;
-        public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint = null, CurvatureData curvatureData = null)
-        {
-            Debug.Log(velocity);
-            this.snowBallSpawnPoint = snowBallSpawnPoint;
-            this.curvatureData = curvatureData;
-            rigidbody.AddForce(velocity);
-
-            damage = 1;
-        }
-        public void GhostSetup(in Vector3 velocity, CurvatureData curvatureData = null)
-        {
-            isGhost = true;
-            this.curvatureData = curvatureData;
-            rigidbody.AddForce(velocity);
-        }
-        public void SetCreator(Transform transform) => creator = transform;
-        #endregion  
         #region IBullet
         public Transform GetCreater() => creator;
+        public void SetDamage(float damage) => this.damage = damage;
         public float GetDamage() => damage;
         #endregion  
+
+        private void SelfDestroy(float yPosition) {
+            if (transform.position.y > yPosition) return;
+            Destroy(gameObject);
+        }
+
         #region NonPhy
         public Vector3[] ItineraryPoints { get; set; }
         public IEnumerator SetNonPhyMove(NonPhysicParameters _nonPhysicParameters)
@@ -130,12 +114,27 @@ namespace Assets.Scripts.Player.Weapon
             
         }
         #endregion
+        #region IWeapon
+        public bool isCollided { get; set; } = false;
 
-        private void SelfDestroy(float yPosition) {
-            if (transform.position.y > yPosition) return;
-            Destroy(gameObject);
+        private bool isGhost = false;
+        public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint = null, CurvatureData curvatureData = null)
+        {
+            Debug.Log(velocity);
+            this.snowBallSpawnPoint = snowBallSpawnPoint;
+            this.curvatureData = curvatureData;
+            rigidbody.AddForce(velocity);
+
+            damage = 1;
         }
-
-
+        public void GhostSetup(in Vector3 velocity, CurvatureData curvatureData = null)
+        {
+            isGhost = true;
+            this.curvatureData = curvatureData;
+            rigidbody.AddForce(velocity);
+        }
+        public Transform GetPrefab() => transform;
+        public void SetCreator(Transform transform) => creator = transform;
+        #endregion  
     }
 }

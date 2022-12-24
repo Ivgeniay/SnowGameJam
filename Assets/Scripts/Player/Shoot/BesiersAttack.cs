@@ -7,6 +7,7 @@ using UnityEngine;
 using System;
 using Unity.VisualScripting;
 using UnityEngine.UIElements;
+using Blobcreate.ProjectileToolkit;
 
 namespace Assets.Scripts.Player.Shoot
 {
@@ -20,7 +21,6 @@ namespace Assets.Scripts.Player.Shoot
         private Transform spawnPoint;
 
         private Besiers besiers;
-        private Projection projection;
         private IBullet bullet;
 
         private int maxPhysicsFrameIterationsProjection;
@@ -41,21 +41,14 @@ namespace Assets.Scripts.Player.Shoot
             this.frameDelayNonPhysics = bulletSettings.Item2;
 
             this.lineRenderer = transform.GetComponentInParent<LineRenderer>();
-            this.projection = GameObject.FindObjectOfType<PlayerBehavior>().GetComponentInParent<Projection>();
-
-            maxPhysicsFrameIterationsProjection = projection.maxPhysicsFrameIterations;
-            projection.OnMaxPhysicsFrameIterationsChanged += OnMaxPhysicsFrameIterationsChanged;
 
             besiers = new Besiers();
             positionPoints = new Vector3[3];
         }
 
-        ~BesiersAttack() {
-            projection.OnMaxPhysicsFrameIterationsChanged -= OnMaxPhysicsFrameIterationsChanged;
-        }
         
 
-        public void GetAim()
+        public void GetAim(TrajectoryPredictor trajectoryPredictor, Vector3 endPoint)
         {
             //withAim = true;
 

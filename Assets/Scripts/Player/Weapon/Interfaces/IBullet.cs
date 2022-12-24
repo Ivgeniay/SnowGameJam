@@ -11,5 +11,6 @@ namespace Assets.Scripts
     {
         public float GetDamage();
         public Transform GetCreater();
+        public void SetDamage(float damage);
     }
 }
