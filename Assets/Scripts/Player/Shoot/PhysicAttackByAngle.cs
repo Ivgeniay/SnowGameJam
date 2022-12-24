@@ -4,21 +4,23 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player.Shoot
 {
-    public class NewPhysicAttack : IShoot
+    public class PhysicAttackByAngle : IShoot
     {
         private IBullet bullet;
         private Transform spawnPoint;
 
         private float angleFastAttack;
         private float angleAimAttack;
+        private float damege;
         private float gravity = Physics.gravity.y;
 
-        public NewPhysicAttack(Transform spawnPoint, IBullet bullet, (float angleFastAttack, float angleAimAttack) shootingOptions)
+        public PhysicAttackByAngle(Transform spawnPoint, IBullet bullet, (float angleFastAttack, float angleAimAttack, float damage) shootingOptions)
         {
             this.spawnPoint = spawnPoint;
             this.bullet = bullet;
             this.angleFastAttack = shootingOptions.angleFastAttack;
             this.angleAimAttack = shootingOptions.angleAimAttack;
+            this.damege = shootingOptions.damage;
         }
 
         public void GetAttack(Vector3 endPoint) {
@@ -28,7 +30,7 @@ namespace Assets.Scripts.Player.Shoot
             var rigitbody = inst.GetComponent<Rigidbody>();
             var IBullet = inst.GetComponent<IBullet>();
 
-            IBullet.SetDamage(1);
+            IBullet.SetDamage(damege);
             var velocity = Projectile.VelocityByAngle(spawnPoint.position, endPoint, angleFastAttack);
             
             rigitbody.velocity = velocity;
@@ -56,10 +58,5 @@ namespace Assets.Scripts.Player.Shoot
         private float GetDistance(Vector3 from, Vector3 to) => (to-from).magnitude;
         private Vector3 GetVectorBetweenTwoPoints(Vector3 pointOne, Vector3 pointTwo) => pointTwo - pointOne;
         private Vector3 GetHorizontalProjection(Vector3 vector) => new Vector3(vector.x, 0, vector.z);
-
-        public Vector3 GetPointImpact()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

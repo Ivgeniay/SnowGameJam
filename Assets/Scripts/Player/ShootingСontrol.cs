@@ -70,8 +70,10 @@ namespace Assets.Scripts.Player
         private Vector3 CalculatingEndPointShot() {
             var _ray = new Ray(mainCamera.transform.position, Camera.main.transform.forward);
             Physics.Raycast(_ray, out RaycastHit hitinfo);
+    #if UNITY_EDITOR
             Debug.Log(hitinfo.collider.name);
             Instantiate(Pointer, hitinfo.point, Quaternion.identity);
+    #endif
             return hitinfo.point;
         }
 

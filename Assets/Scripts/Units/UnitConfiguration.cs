@@ -12,7 +12,6 @@ using UnityEngine.AI;
 
 namespace Assets.Scripts.Units
 {
-    [ExecuteAlways]
     public class UnitConfiguration : SerializedMonoBehaviour
     {
         public event Action<float> OnMovingSpeedChanged;
@@ -138,10 +137,6 @@ namespace Assets.Scripts.Units
 
         private void OnValidate()
         {
-            //if (IndexCurrentAttack < 0) IndexCurrentAttack = 0;
-            //if (TypeAttackAnimation < 0) TypeAttackAnimation = 0;
-            //if (TypeWalkAnimation < 0) TypeWalkAnimation = 0;
-            //if (TypeDamagebleWalkAnimation < 0) TypeDamagebleWalkAnimation = 0;
             if (Damage < 0) Damage = 0;
             if (StunTime < 0) StunTime = 0;
             if (AttackDelayIsSeconds < 0.1f) AttackDelayIsSeconds = 0.1f;

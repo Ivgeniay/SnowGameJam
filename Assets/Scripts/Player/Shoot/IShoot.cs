@@ -7,6 +7,5 @@ namespace Assets.Scripts.Player.Shoot
     {
         public void GetAttack(Vector3 endPoint);
         public void GetAim(TrajectoryPredictor trajectoryPredictor, Vector3 endPoint);
-        public Vector3 GetPointImpact();
     }
 }
