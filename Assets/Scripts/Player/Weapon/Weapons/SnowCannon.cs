@@ -4,6 +4,8 @@ using Assets.Scripts.Player.Shoot;
 using Blobcreate.ProjectileToolkit;
 using System.Net;
 using Sirenix.OdinInspector;
+using System;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Player.Weapon
 {
@@ -38,16 +40,22 @@ namespace Assets.Scripts.Player.Weapon
         }
 
         public void Fire(Vector3 fireEndPointPosition) {
-            var scatterX = Random.Range(0, scatterRadius);
-            var scatterY = Random.Range(0, scatterRadius);
-            var scatterVector = new Vector3(scatterX, scatterY, 0);
+            try { 
+                var scatterX = Random.Range(0, scatterRadius);
+                var scatterY = Random.Range(0, scatterRadius);
+                var scatterVector = new Vector3(scatterX, scatterY, 0);
 
-            var fireEndPointPosition_ = fireEndPointPosition + scatterVector;
-            shootType.GetAttack(fireEndPointPosition_);
+                var fireEndPointPosition_ = fireEndPointPosition + scatterVector;
+                shootType.GetAttack(fireEndPointPosition_);
+            }
+            catch (Exception e) { throw; }
         }
 
         public void GetAim(TrajectoryPredictor trajectoryPredictor, Vector3 endPoint) {
-            shootType.GetAim(trajectoryPredictor, endPoint);
+            try {
+                shootType.GetAim(trajectoryPredictor, endPoint);
+            }
+            catch (Exception e) { throw; }
         }
 
         private IShoot ChangeAttack(TypeAttack typeAttack)

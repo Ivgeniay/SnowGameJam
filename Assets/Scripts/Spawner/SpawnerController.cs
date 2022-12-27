@@ -20,6 +20,8 @@ namespace Assets.Scripts.Spawner
         public event Action<int> OnStageStart;
         public event EventHandler<OnNpcInstantiateEventArg> OnNpcInstantiate;
 
+        [SerializeField] private List<SpawnWave> _spawnWaves = new List<SpawnWave>();
+
         [OdinSerialize] private List<ISpawner> _spawns = new List<ISpawner>();
 
         [Header("Game Objects setUp")]
@@ -46,13 +48,15 @@ namespace Assets.Scripts.Spawner
         #region
         private void Start() {
             GameObject.FindObjectsOfType<Spawner>().ForEach(el => _spawns.Add(el));
+
+            //_spawns.ForEach(el => el.OnNpcInstantiate += OnNpcInstantiatHandlere);
             OnStageComplete += OnStageCompleted;
             OnStageStart += OnNewStageStart;
         }
 
         private void Update()
         {
-            //Debug.Log($"Can produce: {canProduce}");
+            
         }
 
         private void GameManagerOnInitialized() {
@@ -86,7 +90,9 @@ namespace Assets.Scripts.Spawner
 
         private void OnNewStageStart(int obj) => currentWave = obj;
         private void OnStageCompleted(int obj) { }
-        private void OnNpcInstantiatHandlere(object sender, OnNpcInstantiateEventArg e) => OnNpcInstantiate?.Invoke(sender, e);
+        private void OnNpcInstantiatHandlere(object sender, OnNpcInstantiateEventArg e) {
+            OnNpcInstantiate?.Invoke(sender, e);
+        }
 
         private void OnEnable() => _spawns.ForEach(spawner => { spawner.OnNpcInstantiate += OnNpcInstantiatHandlere; });
         private void OnDisable() => _spawns.ForEach(spawner => { spawner.OnNpcInstantiate -= OnNpcInstantiatHandlere; });
@@ -131,5 +137,13 @@ namespace Assets.Scripts.Spawner
 
 
 
+    }
+
+    [Serializable]
+    public class SpawnWave {
+        public Transform spawnMonsters;
+        public int id;
+        public float timeSpawnInSeconds;
+        public float timeSpawnWaveOffset;
     }
 }

@@ -46,13 +46,14 @@ namespace Assets.Scripts.Player.Shoot
         }
         private Vector3 GetHeading(Vector3 from, Vector3 to) => to - from; 
         private float GetDistance(Vector3 vector) => vector.magnitude; 
+        private float GetDistance(Vector3 from, Vector3 to) => GetDistance(to - from);
         private Vector3 GetDirection(Vector3 vector, float distance) => vector/distance; 
 
         public void GetAim(TrajectoryPredictor trajectoryPredictor, Vector3 endPoint)
         {
-            //throw new NotImplementedException();
+            var velocity = GetVelocityByDirection(spawnPoint.position, endPoint, speed);
+            trajectoryPredictor.Render(spawnPoint.position, velocity, GetDistance(spawnPoint.position, endPoint));
         }
-
 
     }
 }

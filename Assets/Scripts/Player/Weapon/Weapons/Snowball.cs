@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Particles;
 using Assets.Scripts.Player.Weapon.DTO;
 using Assets.Scripts.Player.Weapon.Interfaces;
+using Assets.Scripts.Sound;
 using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.Utilities;
 using Init.Demo;
@@ -9,12 +10,15 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Player.Weapon
 {
     public class Snowball : MonoBehaviour, IBullet      //, IWeapon, INonPhysicWeapon
     {
         [SerializeField] private Transform impactEffect;
+        [SerializeField] private string[] nameSounds;
+        [SerializeField] private AudioSource audioSource;
 
         private Transform snowBallSpawnPoint;
         private Rigidbody rigidbody;
@@ -34,6 +38,10 @@ namespace Assets.Scripts.Player.Weapon
             }
         }
 
+        private void Start() {
+            if (audioSource is not null && nameSounds.Length > 0) AudioManager.instance.PlaySound(nameSounds[Random.Range(0, nameSounds.Length)], audioSource);
+        }
+
         private void Update() {
             SelfDestroy(-15);
         }
@@ -49,7 +57,7 @@ namespace Assets.Scripts.Player.Weapon
             //Debug.Log($"{this} created by {GetCreater()} collision {collision.transform.name}");
             if (isCollided) return;
             if (GetCreater() == collision.transform) return;
-
+            if (collision.transform.tag == "Gun" || collision.transform.tag == "Player") return;
 
             var unitBehaviour = collision.transform.GetComponentInParent<UnitBehavior>();
             if (unitBehaviour != null) {

@@ -23,21 +23,18 @@ namespace Assets.Scripts.Units
         public event Action<float> OnEnemyDetectionDistanceChanged;
 
         private NavMeshAgent agent;
-        //private UnitBehavior unitBehavior;
-        private StateDisposerType stateDisposerType;
 
         private void Awake() {
-            //unitBehavior = transform.GetComponent<UnitBehavior>();
-
             agent = GetComponent<NavMeshAgent>();
             agent.speed = MovingSpeed;
-    }
+        }
 
 
         [BoxGroup("Weapons settings")]
         [OdinSerialize] public IWeapon_ weapon;
         [BoxGroup("Weapons settings")]
         [OdinSerialize] public Transform SpawnPoint;
+        [SerializeField] private StateDisposerType stateDisposerType;
 
         [Title("UnitBehaviour settings")]
         private float _movingSpeed;
@@ -53,7 +50,10 @@ namespace Assets.Scripts.Units
         //[OdinSerialize] public int TypeAttackAnimation { get; private set; } = 0;
         //[OdinSerialize] public int TypeWalkAnimation { get; private set; } = 0;
         //[OdinSerialize] public int TypeDamagebleWalkAnimation { get; private set; } = 0;
-        [OdinSerialize] [PropertyRange(0f, 10f)] public float MovingSpeed 
+        [OdinSerialize] 
+        [PropertyRange(0f, 10f)]
+        [HideIf("stateDisposerType", StateDisposerType.none)]
+        public float MovingSpeed 
         { 
             get => _movingSpeed;
             set
@@ -62,7 +62,10 @@ namespace Assets.Scripts.Units
                 OnMovingSpeedChanged?.Invoke(value);
             }
         }
-        [OdinSerialize] [PropertyRange(0f, 10f)] public float SpeedAnimation
+        [OdinSerialize] 
+        [PropertyRange(0f, 10f)] 
+        [ShowIf("stateDisposerType", StateDisposerType.Snowman)]
+        public float SpeedAnimation
         {
             get => _speedAnimation;
             set
@@ -72,7 +75,9 @@ namespace Assets.Scripts.Units
             }
         }
 
-        [OdinSerialize] public float StunTime
+        [OdinSerialize]
+        [ShowIf("stateDisposerType", StateDisposerType.Snowman)] 
+        public float StunTime
         {
             get => _stunTime;
             set
@@ -82,7 +87,9 @@ namespace Assets.Scripts.Units
             }
         }
 
-        [OdinSerialize][PropertyRange(0f, 50f)]
+        [OdinSerialize]
+        [PropertyRange(0f, 50f)]
+        [HideIf("stateDisposerType", StateDisposerType.none)]
         public float Damage
         {
             get => _damage;
@@ -93,7 +100,10 @@ namespace Assets.Scripts.Units
                 OnDamageChanged?.Invoke(value);
             }
         }
-        [OdinSerialize][PropertyRange(0f, 50f)] public float AttackDistance
+        [OdinSerialize]
+        [PropertyRange(0f, 50f)] 
+        [HideIf("stateDisposerType", StateDisposerType.none)]
+        public float AttackDistance
         {
             get => _attackDistance;
             set
@@ -104,7 +114,9 @@ namespace Assets.Scripts.Units
             }
         }
 
-        [OdinSerialize][PropertyRange(0f, 50f)]
+        [OdinSerialize]
+        [PropertyRange(0f, 50f)]
+        [ShowIf("stateDisposerType", StateDisposerType.Assistant)]
         public float EnemyDetectionDistance
         {
             get => _enemyDetectionDistance;
@@ -116,7 +128,9 @@ namespace Assets.Scripts.Units
             }
         }
         
-        [OdinSerialize][PropertyRange(0.1f, 10f)]
+        [OdinSerialize]
+        [PropertyRange(0.1f, 10f)]
+        [HideIf("stateDisposerType", StateDisposerType.none)]
         public float AttackDelayIsSeconds
         {
             get => _attackDelayIsSeconds;

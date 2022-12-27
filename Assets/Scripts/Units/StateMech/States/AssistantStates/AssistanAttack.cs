@@ -97,8 +97,13 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
             Coroutines.Start(TimerAttack(true, attackDelayInSeconds));
         }
         private void Attack(Transform target, IWeapon_ weapon) {
-            animator.SetTrigger(AnimationConstants.Attack);
-            weapon.Fire(targetTransform.position + Vector3.up);
+            try {
+                weapon.Fire(targetTransform.position + Vector3.up);
+                animator.SetTrigger(AnimationConstants.Attack);
+            }
+            catch (Exception ex) {
+                Debug.LogException(ex);
+            }
         }
         public IWeapon_ GetCurrentWeapon() {
             return unitConfiguration.weapon;

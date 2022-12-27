@@ -14,11 +14,13 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         private readonly Animator animator;
         private Transform transform;
         private NavMeshAgent agent;
+        private NavMeshPath meshPath;
         private Vector3 destination;
         private LineRenderer lineRenderer;
         private UnitConfiguration unitConfiguration;
 
 
+        private bool isReachablePath;
         private float acceleration = 5;
         private int BaseLayer;
 
@@ -32,6 +34,7 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
             unitConfiguration = transform.GetComponent<UnitConfiguration>();
 
             if (!agent.isActiveAndEnabled) Logger.Logger.SendMsg("Agent is not active");
+            meshPath = new NavMeshPath();
 
             if (transform.TryGetComponent<LineRenderer>(out LineRenderer lineRenderer))
                 this.lineRenderer = lineRenderer;
@@ -67,7 +70,13 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
             lineRenderer.positionCount = 0;
         }
 
-        public void AddNewPointOfDestination(Vector3 point) => pointsDest.Add(point);
+        public bool CalculatePath(Vector3 pointDestination, NavMeshPath meshPath) => agent.CalculatePath(pointDestination, meshPath);
+        public void AddNewPointOfDestination(Vector3 point) 
+        {
+            if (CalculatePath(point, meshPath))
+                pointsDest.Add(point);
+        }
+
         public void DeletePointOfDestination(Vector3 point) {
             pointsDest.Remove(point);
             OnFollowPointLeft?.Invoke(pointsDest);
@@ -85,7 +94,8 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
             else return transform.position;
         }
         private void ChangePointOfDestination(Vector3 point, NavMeshAgent agent) {
-            agent.destination = point;
+            agent.SetDestination(point);
+            
         }
 
         private void SetInMotion(NavMeshAgent agent, Vector3 destination) => agent.SetDestination(destination);

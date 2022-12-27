@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Player.Weapon.Interfaces;
 using Blobcreate.ProjectileToolkit;
+using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
@@ -52,6 +53,7 @@ namespace Assets.Scripts.Player
 
             weapon_.Fire(fireEndpointPosition);
             DecrimentAmmo(weapon_);
+
         }
         public IWeapon_ GetCurrentWeapon() => currentWeapon;
         private void ProjectionConrol() {
@@ -71,8 +73,8 @@ namespace Assets.Scripts.Player
             var _ray = new Ray(mainCamera.transform.position, Camera.main.transform.forward);
             Physics.Raycast(_ray, out RaycastHit hitinfo);
     #if UNITY_EDITOR
-            Debug.Log(hitinfo.collider.name);
-            Instantiate(Pointer, hitinfo.point, Quaternion.identity);
+            //Debug.Log(hitinfo.collider.name);
+            //Instantiate(Pointer, hitinfo.point, Quaternion.identity);
     #endif
             return hitinfo.point;
         }

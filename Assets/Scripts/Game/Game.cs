@@ -83,8 +83,17 @@ namespace Assets.Scripts.Game
         private void OnStageStartHandler(int obj) => OnStageStart?.Invoke(obj);
         private void OnStageCompleteHandler(int obj) => OnStageComplete?.Invoke(obj);
         private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) => OnNpcGetDamage?.Invoke(sender, e);
-        private void OnNpcInstantiateHandler(object sender, OnNpcInstantiateEventArg e) => OnNpcInstantiate?.Invoke(sender, e);
-        private void OnNpcDiedHandler(object sender, OnNpcDieEventArg e) => OnNpcDied?.Invoke(sender, e);
+        private void OnNpcInstantiateHandler(object sender, OnNpcInstantiateEventArg e) {
+            OnNpcInstantiate?.Invoke(sender, e);
+        }
+        private void OnNpcDiedHandler(object sender, OnNpcDieEventArg e) {
+            storage.RemoveNpc(e.UnitBehavior);
+            var hs = e.UnitBehavior.GetComponent<HealthSystem>();
+            hs.OnDied -= OnNpcDiedHandler;
+            hs.OnTakeDamage -= OnTakeDamageHandler;
+
+            OnNpcDied?.Invoke(sender, e);
+        }
     }
 }
 

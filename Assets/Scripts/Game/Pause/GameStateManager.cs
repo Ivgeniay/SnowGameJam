@@ -6,6 +6,9 @@ namespace Assets.Scripts.Game.Pause
 {
     public class GameStateManager
     {
+        public GameStateManager() {
+            _currentState = GameState.beforeGamePlay;
+        }
         private readonly List<IGameStateHandler> gameStateHandlers = new List<IGameStateHandler>();
 
         private GameState _currentState;

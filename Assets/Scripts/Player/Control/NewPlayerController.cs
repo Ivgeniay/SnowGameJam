@@ -192,6 +192,7 @@ namespace Assets.Scripts.Player
         } 
         private void OnFastAttackPerformed()
         {
+            if (Game.Game.Manager.GameStateManager.CurrentGameState != GameState.Gameplay) return;
             if (currentGameState is not GameState.Gameplay) return;
             animator.SetTrigger(AnimationConstants.Attack);
 
