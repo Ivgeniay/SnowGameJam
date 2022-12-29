@@ -35,12 +35,13 @@ namespace Assets.Scripts.Player.Weapon
         private IShoot shootType;
 
         private void Start() {
-            //shootType = new PhysicAttackByAngle(firePoint, snowball, (angleFastAttack, angleAimAttack));
             shootType = ChangeAttack(typeAttack);
         }
 
         public void Fire(Vector3 fireEndPointPosition) {
             try { 
+
+                if (shootType is null) shootType = new PhysicAttackBySpeed(firePoint, snowball, (speed, damage));
                 var scatterX = Random.Range(0, scatterRadius);
                 var scatterY = Random.Range(0, scatterRadius);
                 var scatterVector = new Vector3(scatterX, scatterY, 0);
@@ -66,6 +67,7 @@ namespace Assets.Scripts.Player.Weapon
                 TypeAttack.PhysicBySpeed => new PhysicAttackBySpeed(firePoint, snowball, (speed, damage)),
             };
         }
+
 
         private void OnValidate() {
             if (angleFastAttack < 1) angleFastAttack = 1;

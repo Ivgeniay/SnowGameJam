@@ -3,10 +3,13 @@ using UnityEngine.AI;
 using System.Collections;
 using Assets.Scripts.Game.Pause;
 using Assets.Scripts.Player.Weapon.Interfaces;
+using Assets.Scripts.Units.GlobalTarget;
+using System;
+using Unity.VisualScripting;
 
 namespace Assets.Scripts.Units.StateMech.States
 {
-    public class SnowmanAttack : IState, IGameStateHandler
+    public class SnowmanAttack : IState, IAttack
     {
         
         private UnitConfiguration unitConfiguration;
@@ -21,37 +24,23 @@ namespace Assets.Scripts.Units.StateMech.States
         private bool isAttacking = false;
         public float WalkDelayIsSeconds { get; private set; }
         public float AttackDelayIsSeconds { get; private set; }
-
-        //private int _walkType;
-        //public int WalkType {
-        //    get => _walkType;
-        //    set {
-        //        if (value >= 0)
-        //            _walkType = value;
-        //    }
-        //}
-        //private int _attackType;
-        //public int AttackType { 
-        //    get => _attackType; 
-        //    set{
-        //        if (value >= 0)
-        //            _attackType = value;
-        //    } 
-        //}
         private float _damage;
+
+        private GameState previoslyState;
+        private float temporaryAnimationSpeed;
 
         #region Mono
         public void Start() {
-
-            //animator.SetInteger(AnimationConstants.WalkType, WalkType);
-            //animator.SetInteger(AnimationConstants.AttackType, AttackType);
+            animator.ResetTrigger(AnimationConstants.Attack);
             animator.SetBool(AnimationConstants.IsWalking, true);
+            animator.SetFloat("TargetDistance", agent.remainingDistance);
         }
 
         public void Update() {
             if (targetTransform is null) return;
 
             agent.destination = targetTransform.position;
+            animator.SetFloat("TargetDistance", agent.remainingDistance);
 
             if (agent.remainingDistance > unitConfiguration.AttackDistance) {
                 agent.destination = targetTransform.position;
@@ -75,23 +64,14 @@ namespace Assets.Scripts.Units.StateMech.States
             this.healthSystem = transform.GetComponent<HealthSystem>();
             this.unitConfiguration = transform.GetComponent<UnitConfiguration>();
 
+
             unitConfiguration.OnMovingSpeedChanged += OnMovingSpeedChanged;
             unitConfiguration.OnSpeedAnimationChanged += OnSpeedAnimationChanged;
             unitConfiguration.OnDamageChanged += OnDamageChanged; ;
             unitConfiguration.OnAttackDistanceChanged += OnAttackDistanceChanged; ;
             unitConfiguration.OnAttackDelayIsSecondsChanged += OnAttackDelayIsSecondsChanged; ;
 
-            //WalkType = unitConfiguration.TypeWalkAnimation;
-            //AttackType = unitConfiguration.TypeAttackAnimation;
             _damage = unitConfiguration.Damage;
-        }
-        ~SnowmanAttack()
-        {
-            unitConfiguration.OnMovingSpeedChanged -= OnMovingSpeedChanged;
-            unitConfiguration.OnSpeedAnimationChanged -= OnSpeedAnimationChanged;
-            unitConfiguration.OnDamageChanged -= OnDamageChanged; ;
-            unitConfiguration.OnAttackDistanceChanged -= OnAttackDistanceChanged; ;
-            unitConfiguration.OnAttackDelayIsSecondsChanged -= OnAttackDelayIsSecondsChanged; ;
         }
         #endregion
 
@@ -111,22 +91,11 @@ namespace Assets.Scripts.Units.StateMech.States
             animator.SetTrigger(AnimationConstants.Attack);
 
             transform.LookAt(targetTransform.position);
-            OnAttack(unitConfiguration.weapon);
-
-            //currentCoroutine = Coroutines.Start(AttackDelay(AttackDelayIsSeconds));
         }
 
-        public void OnAttack(IWeapon_ weapon)
-        {
-            //if (weapon is null) {
-            //    Debug.Log("HEY, THIS SNOWMAN HAS NO WEAPON");
-            //    return;
-            //}
-
-            //var instance = Instantiator.Instantiate(weapon.GetPrefab(), unitConfiguration.SpawnPoint.position, unitConfiguration.SpawnPoint.rotation);
-            //var instanceScr = instance.GetComponent<IWeapon>();
-            //instanceScr.SetCreator(transform);
-            //instanceScr.Setup(((Vector3.up / 10f) + (transform.forward)) * unitConfiguration.Damage, unitConfiguration.SpawnPoint);
+        public void OnAttack() {
+            var globalScr = targetTransform.GetComponent<IGlobalTarget>();
+            globalScr.TakeDamage(transform.position, Convert.ToInt32(_damage));
         }
 
         private void Walk() {
@@ -137,8 +106,7 @@ namespace Assets.Scripts.Units.StateMech.States
         private void WalkTypeAnimationDefinitions()
         {
             if (animator is null) return;
-            if (healthSystem.health >= healthSystem.MaxHealth) animator.SetInteger(AnimationConstants.WalkType, 1);
-            else animator.SetInteger(AnimationConstants.WalkType, 2);
+            animator.SetInteger(AnimationConstants.WalkType, 0);
         }
 
         public void ChangeTarget(Transform targetTransform)
@@ -153,9 +121,17 @@ namespace Assets.Scripts.Units.StateMech.States
         }
 
         #endregion
-        public void GameStateHandle(GameState gameState)
-        {
-        }
+        //public void GameStateHandle(GameState gameState)
+        //{
+        //    if (transform.gameObject.IsDestroyed()) return;
+
+        //    if (gameState == GameState.Gameplay) {
+        //        if (animator is not null) animator.speed = unitConfiguration.SpeedAnimation;
+        //    }
+        //    else {
+        //        if (animator is not null) animator.speed = 0f;
+        //    }
+        //}
     }
 }
 

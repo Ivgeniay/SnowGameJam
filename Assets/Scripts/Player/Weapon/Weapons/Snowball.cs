@@ -17,9 +17,11 @@ namespace Assets.Scripts.Player.Weapon
     public class Snowball : MonoBehaviour, IBullet      //, IWeapon, INonPhysicWeapon
     {
         [SerializeField] private Transform impactEffect;
-        [SerializeField] private string[] nameSounds;
+        [SerializeField] private string[] nameWooshSounds;
+        [SerializeField] private string[] nameHitSounds;
         [SerializeField] private AudioSource audioSource;
-
+        [SerializeField] private LayerMask ignoreLayer;
+ 
         private Transform snowBallSpawnPoint;
         private Rigidbody rigidbody;
         private float damage { get; set; }
@@ -39,7 +41,7 @@ namespace Assets.Scripts.Player.Weapon
         }
 
         private void Start() {
-            if (audioSource is not null && nameSounds.Length > 0) AudioManager.instance.PlaySound(nameSounds[Random.Range(0, nameSounds.Length)], audioSource);
+            if (audioSource is not null && nameWooshSounds.Length > 0) AudioManager.instance.PlaySound(nameWooshSounds[Random.Range(0, nameWooshSounds.Length)], audioSource);
         }
 
         private void Update() {
@@ -54,10 +56,8 @@ namespace Assets.Scripts.Player.Weapon
 
         private void OnCollisionEnter(Collision collision)
         {
-            //Debug.Log($"{this} created by {GetCreater()} collision {collision.transform.name}");
-            if (isCollided) return;
             if (GetCreater() == collision.transform) return;
-            if (collision.transform.tag == "Gun" || collision.transform.tag == "Player") return;
+            if (collision.gameObject.layer == ignoreLayer) return;
 
             var unitBehaviour = collision.transform.GetComponentInParent<UnitBehavior>();
             if (unitBehaviour != null) {
@@ -65,10 +65,10 @@ namespace Assets.Scripts.Player.Weapon
                 if (GetCreater() == trans) return;
             }
 
-            if (!isGhost) Instantiate(impactEffect, transform.position, Quaternion.LookRotation(collision.contacts[0].normal));
-            
+            var audioSource = collision.gameObject.AddComponent<AudioSource>();
+            if (audioSource is not null && nameHitSounds.Length > 0) AudioManager.instance.PlaySound(nameHitSounds[Random.Range(0, nameHitSounds.Length)], audioSource);
+
             Destroy(gameObject);
-            isCollided = true;
         }
 
         #endregion
@@ -122,27 +122,5 @@ namespace Assets.Scripts.Player.Weapon
             
         }
         #endregion
-        #region IWeapon
-        public bool isCollided { get; set; } = false;
-
-        private bool isGhost = false;
-        public void Setup(in Vector3 velocity, Transform snowBallSpawnPoint = null, CurvatureData curvatureData = null)
-        {
-            Debug.Log(velocity);
-            this.snowBallSpawnPoint = snowBallSpawnPoint;
-            this.curvatureData = curvatureData;
-            rigidbody.AddForce(velocity);
-
-            damage = 1;
-        }
-        public void GhostSetup(in Vector3 velocity, CurvatureData curvatureData = null)
-        {
-            isGhost = true;
-            this.curvatureData = curvatureData;
-            rigidbody.AddForce(velocity);
-        }
-        public Transform GetPrefab() => transform;
-        public void SetCreator(Transform transform) => creator = transform;
-        #endregion  
     }
 }

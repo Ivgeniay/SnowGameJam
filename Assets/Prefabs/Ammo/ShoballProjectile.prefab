@@ -155,7 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   impactEffect: {fileID: 132280928587042886, guid: cf57ccfb90df16448872801b719905b5,
     type: 3}
-  nameSounds:
+  nameWooshSounds:
   - SnowBallFly1
   - SnowBallFly2
   - SnowBallFly3
@@ -165,7 +165,15 @@ MonoBehaviour:
   - SnowBallFly7
   - SnowBallFly8
   - SnowBallFly9
+  nameHitSounds:
+  - hit1
+  - hit2
+  - hit3
+  - hit4
   audioSource: {fileID: 2257422727782887259}
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 296
 --- !u!54 &-701449129959242565
 Rigidbody:
   m_ObjectHideFlags: 0

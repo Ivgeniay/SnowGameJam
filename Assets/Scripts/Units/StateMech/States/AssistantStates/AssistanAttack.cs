@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Player.Weapon;
+﻿using Assets.Scripts.Game.Pause;
+using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Player.Weapon.Interfaces;
 using Assets.Scripts.Utilities;
 using Init.Demo;
@@ -14,7 +15,7 @@ using Timer = System.Threading.Timer;
 
 namespace Assets.Scripts.Units.StateMech.States.AssistantStates
 {
-    public class AssistanAttack : IState, IAttack
+    public class AssistanAttack : IState, IAttack, IGameStateHandler, IRestartable
     {
         public event Action OnTargerDistroy;
         public event Action<Vector3> OnNeedToMove;
@@ -30,6 +31,8 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
 
         private bool canAttack;
 
+        private GameState currentState;
+        private float temporaryAnimationSpeed;
 
         public AssistanAttack(Transform transform) {
             this.transform = transform;
@@ -48,6 +51,11 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
 
             unitConfiguration.OnAttackDelayIsSecondsChanged += OnAttackDelayIsSecondsChangedHandler;
             unitConfiguration.OnAttackDistanceChanged += OnAttackDistanceChangedHandler;
+
+            Game.Game.Manager.GameStateManager.Register(this);
+            Game.Game.Manager.Restart.Register(this);
+
+            temporaryAnimationSpeed = animator.speed;
         }
 
 
@@ -69,6 +77,7 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         }
 
         private void CheckingNull(Transform targetTransform) {
+            if (targetTransform.gameObject is null) return;
             if (targetTransform is null) return;
         }
         private void ChangePointOfDestination(Vector3 point, NavMeshAgent agent) {
@@ -88,7 +97,6 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         }
         public void ChangeTarget(Transform target) => targetTransform = target;
 
-        private float GetDistance(Vector3 position, Vector3 TargetPosition) => (TargetPosition - position).magnitude;
         public void OnAttack() {
             var targetIsDestroy = targetTransform.IsDestroyed();
             if (targetIsDestroy == false) {
@@ -105,6 +113,7 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
                 Debug.LogException(ex);
             }
         }
+        private float GetDistance(Vector3 position, Vector3 TargetPosition) => (TargetPosition - position).magnitude;
         public IWeapon_ GetCurrentWeapon() {
             return unitConfiguration.weapon;
         }
@@ -124,6 +133,21 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         private void TargetOnDiedHandler(object sender, OnNpcDieEventArg e) {
             OnTargerDistroy?.Invoke();
             targetTransform = null;
+        }
+
+        public void GameStateHandle(GameState gameState)
+        {
+            if (gameState != GameState.Gameplay) {
+                temporaryAnimationSpeed = animator.speed;
+                animator.speed = 0f;
+            }
+            else {
+                animator.speed = temporaryAnimationSpeed;
+            }
+        }
+
+        public void Restart() {
+            Exit();
         }
     }
 }

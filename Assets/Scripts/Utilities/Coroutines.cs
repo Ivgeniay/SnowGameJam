@@ -26,6 +26,8 @@ namespace Assets.Scripts.Utilities
 
         public static void Stop (Coroutine coroutine) => instance.StopCoroutine(coroutine);
         public static void Stop(IEnumerator coroutine) => instance.StopCoroutine(coroutine);
+        public static void StopAll() => instance.StopAllCoroutines();
+
     }
 
 }

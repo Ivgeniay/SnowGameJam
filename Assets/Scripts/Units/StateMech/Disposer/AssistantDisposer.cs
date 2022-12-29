@@ -10,7 +10,7 @@ using System.Drawing;
 
 namespace Assets.Scripts.Units.StateMech
 {
-    public class AssistantDisposer : StateDisposerBase
+    public class AssistantDisposer : StateDisposerBase, IRestartable
     {
         private float enemyDetectionDistance;
         private List<Transform> enemiesTransforms = new List<Transform>();
@@ -29,6 +29,7 @@ namespace Assets.Scripts.Units.StateMech
             unitConfiguration.OnAttackDistanceChanged += OnEnemyDetectionDistanceChangedHandler;
             Game.Game.Manager.OnNpcInstantiate += OnEnemySpawnHandler;
             Game.Game.Manager.OnNpcDied += OnEnemyDiedHandler;
+            Game.Game.Manager.Restart.Register(this);
         }
 
         #region UnitDisposer
@@ -115,6 +116,10 @@ namespace Assets.Scripts.Units.StateMech
         private void OnTargerDistroyHandler() => Follow(assistantCombatPosition);
         private void OnNeedToMoveHandler(Vector3 obj) => FollowDecoratorWithRememberPath(obj, true);
 
-
+        public void Restart() {
+            enemiesTransforms = new List<Transform>();
+            assistantCombatPosition = transform.position;
+            assistantTemporaryPoint = transform.position;
+        }
     }
 }

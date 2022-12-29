@@ -1,24 +1,37 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Game.Pause;
+using UnityEngine;
 
 namespace Assets.Scripts.PeripheralManagement._Cursor
 {
-    public class CursorSetting
+    public class CursorSetting : IGameStateHandler
     {
-        public CursorSetting()
-        {
+        public CursorSetting() {
+            Game.Game.Manager.GameStateManager.Register(this);
         }
 
-        public void Hide() {
+        public void GameStateHandle(GameState gameState)
+        {
+            if (gameState == GameState.Gameplay) {
+                Hide();
+                Lock();
+            }
+            else {
+                Show();
+                Unlock();
+            }
+        }
+
+        private void Hide() {
             Cursor.visible = false;
         }
-        public void Lock() {
+        private void Lock() {
             Cursor.lockState = CursorLockMode.Locked;
         }
 
-        public void Show() {
+        private void Show() {
             Cursor.visible = true;
         }
-        public void Unlock() {
+        private void Unlock() {
             Cursor.lockState = CursorLockMode.None;
         }
 

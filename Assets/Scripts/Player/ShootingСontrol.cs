@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Player.Weapon;
+﻿using Assets.Scripts.Game.Pause;
+using Assets.Scripts.Player.Weapon;
 using Assets.Scripts.Player.Weapon.Interfaces;
 using Blobcreate.ProjectileToolkit;
 using System;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    public class ShootingСontrol : MonoBehaviour, IAttack
+    public class ShootingСontrol : MonoBehaviour, IAttack, IGameStateHandler
     {
         private PlayerBehavior playerBehavior;
         private bool isShowProjection = false;
@@ -17,7 +18,10 @@ namespace Assets.Scripts.Player
         [SerializeField] private TrajectoryPredictor trajectoryPredictor;
         [SerializeField] private Transform Pointer;
 
+        private GameState currentGameState { get; set; }
+
         private void Awake() {
+            Game.Game.Manager.OnInitialized += GameManagerOnInitialized;
             gameObject.GetComponentInChildren<AnimationEventProxy>().PersonAttackController = this;
             mainCamera = Camera.main;
 
@@ -38,6 +42,7 @@ namespace Assets.Scripts.Player
 
 
         private void Update() {
+            if (currentGameState != GameState.Gameplay) return;
             if (isShowProjection && !playerBehavior.isAmmoEmpty(currentWeapon)) ProjectionConrol();
             else trajectoryPredictor.enabled = false;
         }
@@ -79,11 +84,6 @@ namespace Assets.Scripts.Player
             return hitinfo.point;
         }
 
-
-
-
-
-
         private void OnEnable()
         {
             if (InputManager.Instance is not null)
@@ -100,6 +100,15 @@ namespace Assets.Scripts.Player
             InputManager.Instance.AimCanceled -= OnAimCanceled;
         }
 
+
+        private void GameManagerOnInitialized()
+        {
+            Game.Game.Manager.OnInitialized -= GameManagerOnInitialized;
+            Game.Game.Manager.GameStateManager.Register(this);
+        }
+        public void GameStateHandle(GameState gameState) {
+            currentGameState = gameState;
+        }
     }
 
     public enum TypeAttack {

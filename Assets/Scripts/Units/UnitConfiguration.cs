@@ -46,10 +46,6 @@ namespace Assets.Scripts.Units
         private float _enemyDetectionDistance;
 
 
-        //[OdinSerialize] public int IndexCurrentAttack { get; set; } = 0;
-        //[OdinSerialize] public int TypeAttackAnimation { get; private set; } = 0;
-        //[OdinSerialize] public int TypeWalkAnimation { get; private set; } = 0;
-        //[OdinSerialize] public int TypeDamagebleWalkAnimation { get; private set; } = 0;
         [OdinSerialize] 
         [PropertyRange(0f, 10f)]
         [HideIf("stateDisposerType", StateDisposerType.none)]
@@ -64,7 +60,7 @@ namespace Assets.Scripts.Units
         }
         [OdinSerialize] 
         [PropertyRange(0f, 10f)] 
-        [ShowIf("stateDisposerType", StateDisposerType.Snowman)]
+
         public float SpeedAnimation
         {
             get => _speedAnimation;

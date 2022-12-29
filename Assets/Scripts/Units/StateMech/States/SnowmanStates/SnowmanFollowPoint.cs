@@ -18,6 +18,8 @@ namespace Assets.Scripts.Units.StateMech.States
         }
 
         public void Start() {
+            animator.SetBool(AnimationConstants.IsWalking, true);
+            animator.SetInteger(AnimationConstants.IsWalking, 0);
         }
         public void Update() {
             agent.destination = pointDestination;

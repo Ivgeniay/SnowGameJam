@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Scripts.Player
 {
 
-    public class PlayerBehavior : MonoBehaviour, IGameStateHandler
+    public class PlayerBehavior : MonoBehaviour, IGameStateHandler, IRestartable
     {
         public event Action AmmoIsOver;
         public event Action AmmoReplenished;
@@ -19,8 +19,13 @@ namespace Assets.Scripts.Player
         private Inventory inventory;
 
         private GameState currentGameState { get; set; }
+        private Vector3 startPosition;
+        private Quaternion startRotation;
 
         private void Awake() {
+            startPosition = transform.position;
+            startRotation = transform.rotation;
+
             if (controller is null) controller = GetComponent<IControllable>();
             if (shootingСontrol is null) shootingСontrol = GetComponent<ShootingСontrol>();
             if (playerControlContext is null) playerControlContext = controller.GetContext();
@@ -47,13 +52,17 @@ namespace Assets.Scripts.Player
         private void GameManagerOnInitialized() {
             Game.Game.Manager.OnInitialized -= GameManagerOnInitialized;
             Game.Game.Manager.GameStateManager.Register(this);
+            Game.Game.Manager.Restart.Register(this);
         }
         public void GameStateHandle(GameState gameState) {
-            Debug.Log(gameState);
             currentGameState = gameState;
             if (gameState != GameState.Gameplay) Time.timeScale = 0;
             else Time.timeScale = 1;
         }
 
+        public void Restart() {
+            transform.position = startPosition;
+            transform.rotation = startRotation;
+        }
     }
 }

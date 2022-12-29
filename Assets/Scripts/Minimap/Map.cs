@@ -10,7 +10,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class Map : SerializedMonoBehaviour
+public class Map : SerializedMonoBehaviour, IRestartable
 {
     private event Action<bool> OnIcon;
     private event Action<bool> OnOrtographic;
@@ -89,6 +89,9 @@ public class Map : SerializedMonoBehaviour
     }
     private void ValidateCamera()
     {
+        var arr = GameObject.FindObjectsOfType<IconMinimap>();
+        arr.ForEach(el => icons.Add(el.GetComponent<Transform>()));
+
         if (isIcons == true) {
             RenderCamera.cullingMask = viewLayerMask;
             icons.ForEach(el => el.gameObject.SetActive(true));
@@ -116,7 +119,6 @@ public class Map : SerializedMonoBehaviour
         if(rotateFollow) {
             RotateIcons(icons);
             transform.rotation = Quaternion.Euler(90f, followPoint.eulerAngles.y, 0f);
-            //icons.ForEach(e => e.rotation = Quaternion.Euler(90f, followPoint.eulerAngles.y, 0f));
         }
     }
     private void RotateIcons(List<Transform> transforms)
@@ -149,8 +151,8 @@ public class Map : SerializedMonoBehaviour
         icons.ForEach(el => el.localScale = new Vector3(obj, obj, 1));
     }
 
-    private void OnGameInitializedHandler()
-    {
+    private void OnGameInitializedHandler() {
+        Game.Manager.Restart.Register(this);
     }
 
     private void OnNpcDiedHandler(object sender, OnNpcDieEventArg e)
@@ -163,8 +165,20 @@ public class Map : SerializedMonoBehaviour
     private void OnNpcInstantiateHandler(object sender, OnNpcInstantiateEventArg e)
     {
         var icon = e.UnitBehavior.GetComponentInChildren<IconMinimap>();
-        if (icon is not null)
+        if (icon is not null) {
+            icon.transform.localScale = new Vector3(iconScale, iconScale, 1);
             icons.Add(icon.transform);
+        }
     }
 
+    public void Restart() {
+        icons.Clear();
+        StartCoroutine(DelayedValidation());
+    }
+
+    private IEnumerator DelayedValidation()
+    {
+        yield return null;
+        ValidateCamera();
+    }
 }

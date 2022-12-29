@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Game.Pause;
+using Assets.Scripts.Utilities;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using Sirenix.Utilities;
@@ -13,7 +14,7 @@ using Random = System.Random;
 
 namespace Assets.Scripts.Spawner
 {
-    public class SpawnerController : SerializedMonoBehaviour, IGameStateHandler
+    public class SpawnerController : SerializedMonoBehaviour, IGameStateHandler, IRestartable
     {
 
         public event Action<int> OnStageComplete;
@@ -22,7 +23,7 @@ namespace Assets.Scripts.Spawner
 
         [SerializeField] private List<SpawnWave> _spawnWaves = new List<SpawnWave>();
 
-        [OdinSerialize] private List<ISpawner> _spawns = new List<ISpawner>();
+        private List<ISpawner> _spawns = new List<ISpawner>();
 
         [Header("Game Objects setUp")]
         [SerializeField] private Transform XmasTree;
@@ -38,6 +39,7 @@ namespace Assets.Scripts.Spawner
         [SerializeField] private int[] enemyNumDependWave = new int[10];
 
         private List<HealthSystem> productedAlive = new List<HealthSystem>();
+        private Coroutine coroutine;
 
         private bool canProduce { get => Game.Game.Manager.GameStateManager.CurrentGameState == GameState.Gameplay;}
 
@@ -47,11 +49,17 @@ namespace Assets.Scripts.Spawner
  
         #region
         private void Start() {
+            _spawns = new List<ISpawner>();
             GameObject.FindObjectsOfType<Spawner>().ForEach(el => _spawns.Add(el));
 
-            //_spawns.ForEach(el => el.OnNpcInstantiate += OnNpcInstantiatHandlere);
             OnStageComplete += OnStageCompleted;
             OnStageStart += OnNewStageStart;
+
+            Game.Game.Manager.Restart.Register(this);
+        }
+
+        private void StartProduce() {
+            coroutine = Coroutines.Start(SpawnByTimer());
         }
 
         private void Update()
@@ -61,7 +69,7 @@ namespace Assets.Scripts.Spawner
 
         private void GameManagerOnInitialized() {
             Game.Game.Manager.GameStateManager.Register(this);
-            StartCoroutine(SpawnByTimer());
+            StartProduce();
         }
         #endregion
 
@@ -135,8 +143,25 @@ namespace Assets.Scripts.Spawner
         public void GameStateHandle(GameState gameState) {
         }
 
+        private void OnDestroy() {
+            Game.Game.Manager.Restart.Unregister(this);
+        }
 
+        public void Restart()
+        {
+            if (coroutine is not null)
+            {
+                Coroutines.Stop(coroutine);
+                StopCoroutine(coroutine);
+            }
+            
+            Coroutines.Stop(SpawnByTimer());
+            Coroutines.StopAll();
+            StopAllCoroutines();
 
+            productedAlive = new List<HealthSystem>();
+            StartProduce();
+        }
     }
 
     [Serializable]

@@ -4,27 +4,40 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 
 namespace Assets.Scripts.Units.StateMech
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(HealthSystem))]
     [RequireComponent(typeof(UnitConfiguration))]
-    public class UnitBehavior : MonoBehaviour, IBehaviour, IGameStateHandler
+    public class UnitBehavior : MonoBehaviour, IBehaviour, IGameStateHandler, IRestartable
     {
         [SerializeField] private StateDisposerType stateDisposerType;
 
         private StateDisposerBase stateDisposer;
         private bool isFreezed = false;
+        private Animator animator;
+        private UnitConfiguration unitConfiguration;
+
+        private Vector3 startPosition;
+        private Quaternion startRotation;
 
         #region Mono
         private void Awake() {
+            startPosition = transform.position;
+            startRotation = transform.rotation;
+
             stateDisposer = DisposerFactory.GetDisposer(stateDisposerType, transform);
+            animator = GetComponentInChildren<Animator>();
+            unitConfiguration = GetComponent<UnitConfiguration>();
         }
         private void Start() {
             if (stateDisposer is null) throw new Exception($"stateDisposer is null {this}");
             stateDisposer.StartAction();
-            Game.Game.Manager.OnInitialized += GameManagerOnInitialized;
+            //Game.Game.Manager.OnInitialized += GameManagerOnInitialized;
+            Game.Game.Manager.GameStateManager.Register(this);
+            Game.Game.Manager.Restart.Register(this);
         }
         private void Update() {
             if (stateDisposer is null) throw new Exception($"stateDisposer is null {this}");
@@ -48,8 +61,31 @@ namespace Assets.Scripts.Units.StateMech
             Game.Game.Manager.GameStateManager.Register(this);
         }
 
-        public void GameStateHandle(GameState gameState) {
+        public void GameStateHandle(GameState gameState)
+        {
+            if (transform.gameObject.IsDestroyed()) return;
 
+            if (gameState == GameState.Gameplay) {
+                if (animator is not null) animator.speed = unitConfiguration.SpeedAnimation;
+            }
+            else {
+                if (animator is not null) animator.speed = 0f;
+            }
+        }
+
+        private void OnDestroy() {
+            Game.Game.Manager.GameStateManager.Unregister(this);
+            Game.Game.Manager.Restart.Unregister(this);
+        }
+
+        public void Restart() {
+            if (stateDisposerType == StateDisposerType.Snowman) {
+                Destroy(gameObject);
+            }
+            else if (stateDisposerType == StateDisposerType.Assistant) {
+                transform.position = startPosition;
+                transform.rotation = startRotation;
+            }
         }
     }
 }

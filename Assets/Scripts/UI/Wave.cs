@@ -5,13 +5,16 @@ using UnityEngine;
 
 namespace Assets.Scripts.UI
 {
-    public class Wave : MonoBehaviour
+    public class Wave : MonoBehaviour, IRestartable
     {
         [SerializeField] private TextMeshProUGUI numberWave_TextMeshProUGUI;
+
         [SerializeField] private GameObject newWaveLable;
         [SerializeField] private TextMeshProUGUI textFadeOut_TextMeshProUGUI;
         [SerializeField] private float delay;
         [SerializeField] private int durationFadeSpeed;
+
+        private Coroutine currentCoroutine;
 
         private void Awake()
         {
@@ -22,14 +25,15 @@ namespace Assets.Scripts.UI
         {
             Game.Game.Manager.OnInitialized -= GameManagerOnInitialized;
             Game.Game.Manager.OnStageStart += OnStageStartHandler;
+            Game.Game.Manager.Restart.Register(this);
         }
 
         private void OnStageStartHandler(int obj)
         {
             numberWave_TextMeshProUGUI.text = obj.ToString();
-            SetVisible(textFadeOut_TextMeshProUGUI);
-            newWaveLable.SetActive(true);
-            StartCoroutine(NewWaveLableSetUnActive(delay));
+            //SetVisible(textFadeOut_TextMeshProUGUI);
+            //newWaveLable.gameObject.SetActive(true);
+            //currentCoroutine = StartCoroutine(NewWaveLableSetUnActive(delay));
         }
 
         private IEnumerator NewWaveLableSetUnActive(float delay) {
@@ -46,7 +50,7 @@ namespace Assets.Scripts.UI
                 if (i <= 0) break;
                 textMeshPro.color = new Color32(255, 255, 255, (byte)i);
             }
-            newWaveLable.SetActive(false);
+            newWaveLable.gameObject.SetActive(false);
         }
 
         private void SetVisible(TextMeshProUGUI textMeshPro)
@@ -54,5 +58,12 @@ namespace Assets.Scripts.UI
             textMeshPro.color = new Color32(255, 255, 255, 255);
         }
 
+        public void Restart() {
+            if (currentCoroutine is not null)
+                StopCoroutine(currentCoroutine);
+            StopAllCoroutines();
+
+            numberWave_TextMeshProUGUI.text = "1";
+        }
     }
 }

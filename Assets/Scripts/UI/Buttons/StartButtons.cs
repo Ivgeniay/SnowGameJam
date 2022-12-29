@@ -8,8 +8,6 @@ namespace Assets.Scripts.UI.Buttons
         public GameObject Menu;
         public void OnStartButtonClick() {
             Game.Game.Manager.GameStateManager.SetState(GameState.Gameplay);
-            Game.Game.Manager.CursorSetting.Hide();
-            Game.Game.Manager.CursorSetting.Lock();
             Menu.SetActive(false);
         }
     }

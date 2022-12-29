@@ -1,10 +1,13 @@
 ﻿using Assets.Scripts.EventArgs;
+using Assets.Scripts.Game;
 using Assets.Scripts.Game.Pause;
 using Assets.Scripts.PeripheralManagement._Cursor;
 using Assets.Scripts.Spawner;
+using Assets.Scripts.Units.GlobalTarget;
 using Assets.Scripts.Units.StateMech;
 using Assets.Scripts.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -18,23 +21,44 @@ namespace Assets.Scripts.Game
         public event Action<int> OnStageComplete;
         public event EventHandler<TakeDamagePartEventArgs> OnNpcGetDamage;
         public event EventHandler<OnNpcInstantiateEventArg> OnNpcInstantiate;
+        public event Action<TreeDamageEventArgs> OnXMasTreeTakeDamage;
+        public event Action OnXMasTreeDie;
+        public event Action<int> OnScoreChanged;
+
+        public readonly StorageNpc storage;
+        public readonly PlayerRepository PlayerRepository;
+        public readonly Restart Restart;
+        public Score Score;
 
         private static Game instance;
-        public StorageNpc storage;
+        private IGlobalTarget globalTarget;
+        private CursorSetting CursorSetting;
         public GameStateManager GameStateManager { get; private set; }
-        public CursorSetting CursorSetting { get; private set; }
         public static Game Manager {
-            get { 
-                if (instance is null) return instance = new Game();
+            get {
+                if (instance is null) {
+                    instance = new Game();
+                    return instance;
+                }
                 return instance; 
             }
         }
-        private Game() { }
+        private Game() {
+            Restart = new();
+            storage = new();
+            PlayerRepository = new();
+        }
 
         public void Initialize() {
             GameStateManager = new GameStateManager();
             CursorSetting = new CursorSetting();
-            storage = new StorageNpc();
+
+            var GMMono = GameObject.FindObjectOfType<GameManagerMono>();
+            Score = new Score(GMMono.OnDeathEnemyScore, GMMono.OnHeadEnemyScore, GMMono.OnStageCompleteScore);
+
+            globalTarget = GameObject.FindObjectOfType<XMasTree>();
+            globalTarget.OnXMasTreeTakeDamage += OnXMasTreeTakeDamageHandler;
+            globalTarget.OnXMasTreeDie += OnXMasTreeDieHandler;
 
             foreach (var el in GameObject.FindObjectsOfType<UnitBehavior>()) {
                 storage.AddNpc(el);
@@ -48,9 +72,6 @@ namespace Assets.Scripts.Game
 
             OnInitialized?.Invoke();
         }
-
-
-        
 
         public UnitBehavior InstantiateNpc(GameObject prefab, Vector3 position, Quaternion quaternion)
         {
@@ -83,6 +104,12 @@ namespace Assets.Scripts.Game
         private void OnStageStartHandler(int obj) => OnStageStart?.Invoke(obj);
         private void OnStageCompleteHandler(int obj) => OnStageComplete?.Invoke(obj);
         private void OnTakeDamageHandler(object sender, TakeDamagePartEventArgs e) => OnNpcGetDamage?.Invoke(sender, e);
+        private void OnXMasTreeDieHandler()
+        {
+            OnXMasTreeDie?.Invoke();
+        }
+        private void OnXMasTreeTakeDamageHandler(TreeDamageEventArgs obj) => OnXMasTreeTakeDamage?.Invoke(obj);
+
         private void OnNpcInstantiateHandler(object sender, OnNpcInstantiateEventArg e) {
             OnNpcInstantiate?.Invoke(sender, e);
         }
@@ -104,4 +131,20 @@ public class OnNpcInstantiateEventArg
 public class OnNpcDieEventArg
 {
     public UnitBehavior UnitBehavior;
+}
+
+public class Restart
+{
+    private readonly List<IRestartable> restartable = new List<IRestartable>();
+    public Restart()
+    {
+
+    }
+
+    public void Register(IRestartable gameStateHandler) => this.restartable.Add(gameStateHandler);
+    public void Unregister(IRestartable gameStateHandler) => this.restartable.Remove(gameStateHandler);
+
+    public void RestartGame() {
+        restartable.ForEach(el => el.Restart());
+    }
 }

@@ -27,4 +27,13 @@ namespace Assets.Scripts.Game.Pause
             gameStateHandlers.ForEach(el => el.GameStateHandle(NewGameState));
         }
     }
+
+    public enum GameState
+    {
+        beforeGamePlay,
+        Gameplay,
+        AssistentControl,
+        Pause,
+        GameOver
+    }
 }

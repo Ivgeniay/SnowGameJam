@@ -1,10 +1,7 @@
 using Assets.Scripts.Game.Pause;
 using Assets.Scripts.Player.Control;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 namespace Assets.Scripts.Player
 {
@@ -33,6 +30,8 @@ namespace Assets.Scripts.Player
         private int HandsLayer;
         private int BaseLayer;
 
+        private float minAnimationFraction = 0.002f;
+
         private bool _isAimingNow = false;
         private bool isAimingNow { get => _isAimingNow;
             set {
@@ -51,7 +50,6 @@ namespace Assets.Scripts.Player
         }
 
         private GameState currentGameState { get; set; }
-
         private void ManagerOnInitialized() {
             Game.Game.Manager.OnInitialized -= ManagerOnInitialized;
             currentGameState = Game.Game.Manager.GameStateManager.CurrentGameState;
@@ -93,6 +91,8 @@ namespace Assets.Scripts.Player
             CharacterYVelocityReset();
             if( playerControlContext.PlayerState != PlayerState.AssistantControl ) PlayerMove();
             ApplyGravity();
+
+
         }
         #endregion
 
@@ -107,16 +107,28 @@ namespace Assets.Scripts.Player
                 transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * 10);
 
                 pastMoveDirection = moveDirection;
-                SetFractionToAnimator(animator, CalculateFractionToAnimator(animator, 1, acceleration));
+                
+                SetFractionToBlandBaseLayerAnimator(animator, CalculateFractionToAnimator(animator, 1, acceleration));
+                SetFractionToAnimatorLayer(animator, HandsLayer, CalculateFractionToAnimatorLayer(animator, HandsLayer, 1, acceleration));
             }
             else {
                 if (_isAimingNow == true)
+                {
                     RotatePlayerAhead();
+                    SetFractionToAnimatorLayer(animator, HandsLayer, CalculateFractionToAnimatorLayer(animator, HandsLayer, 1, acceleration));
+                }
+                else
+                {
+                    if (GetFractionFromAnimatorLayer(animator, HandsLayer) > minAnimationFraction) {
+                        SetFractionToBlandBaseLayerAnimator(animator, CalculateFractionToAnimatorLayer(animator, HandsLayer, 0, slowdown));
+                    }
+                }
 
-                if (GetFractionFromAnimator(animator) > 0.002f) {
-                    SetFractionToAnimator(animator, CalculateFractionToAnimator(animator, 0, slowdown));
+                if (GetFractionFromAnimator(animator) > minAnimationFraction) {
+                    SetFractionToAnimatorLayer(animator, HandsLayer, CalculateFractionToAnimator(animator, 0, slowdown));
                     _controller.Move(pastMoveDirection * (GetCurrentMoveSpeedFromAnimator(animator, playerSpeed) * Time.deltaTime));
                 }
+
             }
         }
 
@@ -136,8 +148,11 @@ namespace Assets.Scripts.Player
 
         #region Speed
         private float GetFractionFromAnimator(Animator animator) => animator.GetFloat(AnimationConstants.BaseLayerBlend);
-        private void SetFractionToAnimator(Animator animator, float currentFraction) => animator.SetFloat(AnimationConstants.BaseLayerBlend, currentFraction);
+        private float GetFractionFromAnimatorLayer(Animator animator, int layer) => animator.GetLayerWeight(layer);
+        private void SetFractionToBlandBaseLayerAnimator(Animator animator, float currentFraction) => animator.SetFloat(AnimationConstants.BaseLayerBlend, currentFraction);
+        private void SetFractionToAnimatorLayer(Animator animator, int layer, float currentFraction) => animator.SetLayerWeight(layer, currentFraction);
         private float CalculateFractionToAnimator(Animator animator, float goalFraction, float acceleration) => Mathf.Lerp(GetFractionFromAnimator(animator), goalFraction, acceleration * Time.fixedDeltaTime);
+        private float CalculateFractionToAnimatorLayer(Animator animator, int layer, float goalFraction, float acceleration) => Mathf.Lerp(GetFractionFromAnimatorLayer(animator, layer), goalFraction, acceleration * Time.fixedDeltaTime);
         private float GetCurrentMoveSpeedFromAnimator(Animator animator, float maxSpeed) => Mathf.Lerp(0, maxSpeed, GetFractionFromAnimator(animator));
         #endregion
 
@@ -180,6 +195,7 @@ namespace Assets.Scripts.Player
         #region AIM/Attack
         private void OnAimCanceled() {
             playerControlContext.SetPlayerState(PlayerState.Normal);
+            if (currentGameState is not GameState.Gameplay) return;
 
             animator.SetTrigger(AnimationConstants.Attack);
             isAimingNow = false;
@@ -194,8 +210,8 @@ namespace Assets.Scripts.Player
         {
             if (Game.Game.Manager.GameStateManager.CurrentGameState != GameState.Gameplay) return;
             if (currentGameState is not GameState.Gameplay) return;
+            SetFractionToAnimatorLayer(animator, HandsLayer, 1);
             animator.SetTrigger(AnimationConstants.Attack);
-
         }
         private void SetAimAnimator(Animator animator, bool isAiming) => animator.SetBool(AnimationConstants.IsAiming, isAiming);
         #endregion

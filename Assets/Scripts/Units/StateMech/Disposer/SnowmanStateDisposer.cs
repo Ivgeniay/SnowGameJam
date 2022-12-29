@@ -64,14 +64,16 @@ namespace Assets.Scripts.Units.StateMech
             states.Add(StateName.Die, new SnowmanDie(transform, animator));
             states.Add(StateName.Idle, new SnowmanIdle());
             states.Add(StateName.Stun, new SnowmanStun(transform, animator));
-            states.Add(StateName.Attack, new SnowmanAttack(transform, animator));
             states.Add(StateName.FollowPoint, new SnowmanFollowPoint(transform, animator));
+
+            var stateAttack = new SnowmanAttack(transform, animator);
+            states.Add(StateName.Attack, stateAttack);
+            this.transform.GetComponentInChildren<AnimationEventProxy>().PersonAttackController = stateAttack;
 
             return states;
         }
         private void HealthSystem_OnTakeDamage(object sender, TakeDamagePartEventArgs e) {
             if (healthSystem.isDead) return;
-            //Debug.Log($"Sender:{sender} Shooter:{e.Shooter} Damage:{e.Damage} CurrentHealth: {e.currentHealth}");
 
             ChangeState(states[StateName.Stun]);
             Coroutines.Start(StunExit(stunTime));

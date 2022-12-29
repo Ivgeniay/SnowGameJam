@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 namespace Assets.Scripts.Units.StateMech.States.AssistantStates
 {
-    public class AssistantFollowPoint : IState
+    public class AssistantFollowPoint : IState, IRestartable
     {
         public event Action<Vector3> OnFollowPointDone;
         public event Action<List<Vector3>> OnFollowPointLeft;
@@ -48,6 +48,8 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         public void Start() {
             lineRenderer.positionCount = pointsDest.Count + 1;
             if (destination == Vector3.zero) ChangePointOfDestination(GetNextPointPositionToFolow(pointsDest), agent);
+
+            Game.Game.Manager.Restart.Register(this);
         }
 
         public void Update() {
@@ -106,7 +108,11 @@ namespace Assets.Scripts.Units.StateMech.States.AssistantStates
         private void SetFractionToAnimator(Animator animator, float currentFraction) => animator.SetFloat(AnimationConstants.BaseLayerBlend, currentFraction);
         private float CalculateFractionToAnimator(Animator animator, float goalFraction, float acceleration) => Mathf.Lerp(GetFractionFromAnimator(animator), goalFraction, acceleration * Time.fixedDeltaTime);
         private float GetCurrentMoveSpeedFromAnimator(Animator animator, float maxSpeed) => Mathf.Lerp(0, maxSpeed, GetFractionFromAnimator(animator));
+
         #endregion
 
+        public void Restart() {
+            pointsDest = new List<Vector3>();
+        }
     }
 }
