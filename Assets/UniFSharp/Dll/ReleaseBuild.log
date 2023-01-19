@@ -1,0 +1,6 @@
+  Определение проектов для восстановления...
+  Все проекты обновлены для восстановления.
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3245: Не удалось разрешить данную ссылку. Не удалось обнаружить сборку "Assembly-CSharp-Editor". Убедитесь, что сборка существует на диске. Если данная ссылка требуется в коде, это может вызвать ошибки компиляции.
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3245: Не удалось разрешить данную ссылку. Не удалось обнаружить сборку "fs". Убедитесь, что сборка существует на диске. Если данная ссылка требуется в коде, это может вызвать ошибки компиляции.
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3243: не удается разрешить конфликт между "Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" и "Assembly-CSharp-Editor". Произвольный выбор "Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null".
+D:\Programming\Projects\Unity\SnowJam\Assets\_Project\Scripts\WheelRotate.fs(8,36): error FS0039: Значение, пространство имен, тип или модуль "transform" не определены. Возможно, требуется одно из следующих:   Transform

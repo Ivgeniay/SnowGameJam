@@ -1,0 +1,59 @@
+  Определение проектов для восстановления...
+  Все проекты обновлены для восстановления.
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277: обнаружены конфликты между разными версиями "Newtonsoft.Json", разрешить которые не удалось.
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277: Произошел конфликт между "Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" и "Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:     Выбрано "Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed", поскольку оно являлось основным, в отличии от "Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:     Ссылки, зависящие от "Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" [D:\Program Fales (x69)\Unity Editor\2021.3.16f1\Editor\Data\Managed\Newtonsoft.Json.dll].
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         D:\Program Fales (x69)\Unity Editor\2021.3.16f1\Editor\Data\Managed\Newtonsoft.Json.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "D:\Program Fales (x69)\Unity Editor\2021.3.16f1\Editor\Data\Managed\Newtonsoft.Json.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Newtonsoft.Json
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:     Ссылки, зависящие от "Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" [].
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Telemetry.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Telemetry.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Telemetry
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Registration
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Registration.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Registration.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Registration
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Internal.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Internal.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Internal
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Threading
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Telemetry
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Scheduler
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Networking
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Registration
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Environments.Internal
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Device
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Configuration.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Configuration
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.CollabProxy.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Editor.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Editor.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.CollabProxy.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Configuration.Editor.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Configuration.Editor.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Configuration.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.CollabProxy.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Configuration.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.Services.Core.Configuration.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Configuration
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Registration
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Configuration.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.Services.Core.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.CollabProxy.Editor
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277: обнаружены конфликты между разными версиями "System.Net.Http", разрешить которые не удалось.
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277: Произошел конфликт между "System.Net.Http, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" и "System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:     Выбрано "System.Net.Http, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", поскольку оно являлось основным, в отличии от "System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:     Ссылки, зависящие от "System.Net.Http, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" [C:\Program Files\dotnet\packs\NETStandard.Library.Ref\2.1.0\ref\netstandard2.1\System.Net.Http.dll].
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         C:\Program Files\dotnet\packs\NETStandard.Library.Ref\2.1.0\ref\netstandard2.1\System.Net.Http.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "C:\Program Files\dotnet\packs\NETStandard.Library.Ref\2.1.0\ref\netstandard2.1\System.Net.Http.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             C:\Program Files\dotnet\packs\NETStandard.Library.Ref\2.1.0\ref\netstandard2.1\System.Net.Http.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:     Ссылки, зависящие от "System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" [].
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:         D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.CollabProxy.Editor.dll
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:           Элемент файла проекта содержит, что вызвало ссылку "D:\Programming\Projects\Unity\SnowJam\Library\ScriptAssemblies\Unity.CollabProxy.Editor.dll".
+C:\Program Files\dotnet\sdk\7.0.101\Microsoft.Common.CurrentVersion.targets(2352,5): warning MSB3277:             Unity.CollabProxy.Editor
+  Assembly-FSharp -> D:\Programming\Projects\Unity\SnowJam\Assets\UniFSharp\Dll\Assemblie-FSharp.dll
